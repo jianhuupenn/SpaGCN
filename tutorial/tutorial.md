@@ -33,13 +33,6 @@ pip3 install --user SpaGCN
 """
 ```
 
-
-
-
-    '\npip3 install SpaGCN\n#Note: you need to make sure that the pip is for python3，or we should install SpaGCN by\npython3 -m pip install SpaGCN\npip3 install SpaGCN\n#If you do not have permission (when you get a permission denied error), you should install SpaGCN by\npip3 install --user SpaGCN\n'
-
-
-
 - Github
 Download the package from Github and install it locally:
 
@@ -51,13 +44,6 @@ cd SpaGCN/SpaGCN_package/
 python3 setup.py install --user
 """
 ```
-
-
-
-
-    '\ngit clone https://github.com/jianhuupenn/SpaGCN\ncd SpaGCN/SpaGCN_package/\npython3 setup.py install --user\n'
-
-
 
 - Anaconda
 If you do not have Python3.5 or Python3.6 installed, consider installing Anaconda (see Installing Anaconda). After installing Anaconda, you can create a new environment, for example, SpaGCN (you can change to any name you like).
@@ -76,13 +62,6 @@ python3 setup.py install
 conda deactivate
 """
 ```
-
-
-
-
-    '\n#create an environment called SpaGCN\nconda create -n SpaGCN python=3.7.9\n#activate your environment \nconda activate ItClust\ngit clone https://github.com/jianhuupenn/SpaGCN\ncd SpaGCN/SpaGCN_package/\npython3 setup.py build\npython3 setup.py install\nconda deactivate\n'
-
-
 
 ### 1. Import python modules
 
@@ -133,9 +112,6 @@ adata=sc.read("../tutorial/data/sample_data.h5ad")
 image=io.imread("../tutorial/data/histology.tif")
 ```
 
-    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
-
-
 ### 3. Calculate adjacent matrix
 
 
@@ -151,8 +127,6 @@ np.savetxt('../tutorial/data/adj.csv', adj, delimiter=',')
 ```
 
     Calculateing adj matrix using histology image...
-    Var of c0,c1,c2 =  46.84205750749746 174.55510595352243 33.30687202862215
-    Var of x,y,z =  390.6990007265343 942.1320230796399 942.1320230796397
     Calculating spot  0
     Calculating spot  500
     Calculating spot  1000
@@ -208,32 +182,13 @@ fig=sc.pl.scatter(adata,alpha=1,x="x5",y="x4",color="pred",show=False,size=15000
 fig.set_aspect('equal', 'box')
 fig
 ```
-
-    /Users/hujian1/anaconda3/envs/pytorch/lib/python3.7/site-packages/anndata/_core/anndata.py:1094: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
-      if not is_categorical(df_full[k]):
-
-
     Initializing cluster centers with louvain, resolution =  0.6
     Epoch  0
     delta_label  0.003572410002748008 < tol  0.005
     Reach tolerance threshold. Stopping training.
 
+![png](Dmains.png)
 
-    /Users/hujian1/anaconda3/envs/pytorch/lib/python3.7/site-packages/anndata/_core/anndata.py:1192: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
-      if is_string_dtype(df[key]) and not is_categorical(df[key])
-
-
-
-
-
-    <matplotlib.axes._axes.Axes at 0x1a32b2e710>
-
-
-
-
-    
-![png](dmains.png)
-    
 
 
 ### 5. Identify SVGs
@@ -294,35 +249,13 @@ for g in SVG:
 
 ```
 
-    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
-
 
     radius= 2 average number of neighbors for each spot is 8.982649842271293
      Cluster 1 has neighbors:
     Dmain  5 :  806
     Dmain  0 :  313
 
-
-    /Users/hujian1/anaconda3/envs/pytorch/lib/python3.7/site-packages/anndata/_core/anndata.py:1094: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
-      if not is_categorical(df_full[k]):
-    /Users/hujian1/anaconda3/envs/pytorch/lib/python3.7/site-packages/anndata/_core/anndata.py:1192: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
-      if is_string_dtype(df[key]) and not is_categorical(df[key])
-
-
     Domain 1 : ['PCP4']
-
-
-    /Users/hujian1/anaconda3/envs/pytorch/lib/python3.7/site-packages/anndata/_core/anndata.py:1192: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
-      if is_string_dtype(df[key]) and not is_categorical(df[key])
-
-
-
     
 ![png](PCP4.png)
     
-
-
-
-```python
-
-```
