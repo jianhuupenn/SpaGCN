@@ -79,11 +79,9 @@ import SpaGCN as spg
 
 ### 2. Read in data
 The current version of SpaGCN requres three input data: 
-1. The gene expression matrix(n by k); 
-<br>
-2. Spatial coordinateds of samples; 
-<br>
-3. Histology image(optional).
+- The gene expression matrix(n by k); 
+- Spatial coordinateds of samples; 
+- Histology image(optional).
 <br>
 The gene expreesion data can be stored as an AnnData object. AnnData stores a data matrix .X together with annotations of observations .obs, variables .var and unstructured annotations .uns. 
 
