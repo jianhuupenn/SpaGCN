@@ -1,8 +1,9 @@
+python-igraph
 torch
 pandas
 numpy
 scipy
 scanpy
 anndata
-natsort
+louvain
 sklearn

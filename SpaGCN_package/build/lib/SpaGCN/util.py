@@ -85,7 +85,7 @@ def find_neighbor_clusters(target_cluster,cell_id, x, y, pred,radius, ratio=1/2)
         return ret
 
 
-def rank_genes_groups(input_adata, target_cluster,nbr_list, label_col, adj_nbr=True, log=True):
+def rank_genes_groups(input_adata, target_cluster,nbr_list, label_col, adj_nbr=True, log=False):
     if adj_nbr:
         nbr_list=nbr_list+[target_cluster]
         adata=input_adata[input_adata.obs[label_col].isin(nbr_list)]
@@ -110,7 +110,7 @@ def rank_genes_groups(input_adata, target_cluster,nbr_list, label_col, adj_nbr=T
     fraction_obs = obs_bool.groupby(level=0).sum() / obs_bool.groupby(level=0).count()
     # compute fold change.
     if log: #The adata already logged
-        fold_change=(mean_obs.loc[1] - mean_obs.loc[0]).values
+        fold_change=np.exp((mean_obs.loc[1] - mean_obs.loc[0]).values)
     else:
         fold_change = (mean_obs.loc[1] / (mean_obs.loc[0]+ 1e-9)).values
     df = {'genes': genes, 'in_group_fraction': fraction_obs.loc[1].tolist(), "out_group_fraction":fraction_obs.loc[0].tolist(),"in_out_group_ratio":(fraction_obs.loc[1]/fraction_obs.loc[0]).tolist(),"in_group_mean_exp": mean_obs.loc[1].tolist(), "out_group_mean_exp": mean_obs.loc[0].tolist(),"fold_change":fold_change.tolist(), "pvals_adj":pvals_adj}

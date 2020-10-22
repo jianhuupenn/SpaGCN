@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import scanpy as sc
 import math
-from skimage import io, color
 import matplotlib.colors as clr
 import matplotlib.pyplot as plt
 
@@ -45,7 +44,7 @@ def calculate_adj_matrix(x, y, x_pixel=None, y_pixel=None, image=None, beta=49, 
 		z=z.tolist()
 		print("Var of x,y,z = ", np.var(x),np.var(y),np.var(z))
 		for i in range(len(x)):
-			if i%50==0:
+			if i%500==0:
 				print("Calculating spot ", i)
 			for j in range(len(x)):
 				x1,y1,z1,x2,y2,z2=x[i],y[i],z[i],x[j],y[j],z[j]
