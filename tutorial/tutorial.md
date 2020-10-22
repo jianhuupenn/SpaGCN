@@ -187,7 +187,7 @@ fig
     delta_label  0.003572410002748008 < tol  0.005
     Reach tolerance threshold. Stopping training.
 
-![png](Dmains.png)
+![png](Domains.png)
 
 
 
