@@ -79,7 +79,6 @@ import SpaGCN as spg
 
 ### 2. Read in data
 The current version of SpaGCN requres three input data: 
-<br>
 1. The gene expression matrix(n by k); 
 <br>
 2. Spatial coordinateds of samples; 
