@@ -12,7 +12,7 @@ For thorough details, see the preprint: [Bioxiv]()
 
 ## Usage
 
-The [**ISpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementation of a garph convolutional network for spatial transcriptomics. With SpaGCN, you can:
+The [**SpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementation of a garph convolutional network for spatial transcriptomics. With SpaGCN, you can:
 
 - Preprocess spatial transcriptomics data from various formats.
 - Build a graph convolutional network with deep iterative clustering algorithm to identify spatial domains
