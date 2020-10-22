@@ -1,0 +1,8 @@
+torch
+pandas
+numpy
+scipy
+scanpy
+anndata
+natsort
+sklearn

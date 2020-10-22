@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: SpaGCN
+Version: 0.0.5
+Summary: SpaGCN: Integrating gene expression and histology to identify spatial domains and spatially variable genes using graph convolutional networks
+Home-page: https://github.com/jianhuupenn/SpaGCN
+Author: Jian Hu
+Author-email: jianhu@pennmedicine.upenn.edu
+License: UNKNOWN
+Description: SpaGCN
+        
+        SpaGCN: Integrating gene expression and histology to identify spatial domains and spatially variable genes using graph convolutional networks
+        
+        For more info, please go to our github page: https://github.com/jianhuupenn/SpaGCN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
