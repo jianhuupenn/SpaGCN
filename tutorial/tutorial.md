@@ -249,7 +249,7 @@ for g in SVG:
 
     radius= 2 average number of neighbors for each spot is 8.982649842271293
      Cluster 1 has neighbors:
-    Dmain  5 :  806
+    Dmain  2 :  806
     Dmain  0 :  313
 
     Domain 1 : ['PCP4']
