@@ -337,15 +337,12 @@ fig=sc.pl.scatter(raw, x="x5", y="x4", color="meta_relative",title=meta_name,col
 fig.set_aspect('equal', 'box')
 fig
 fig.figure.savefig("../tutorial/"+meta_name+"_raw_relative.png", dpi=300)
-![png](PCP4.png)
-
-
 
 ```
 
 
     
-![png](output_22_0.png)
+![png](KRT8+ACTA2-FTH1+MT1G-KRT8+KRT19-SNAP25+SNAP25-MBP+GFAP-SNAP25_raw_relative.png)
     
 
 
@@ -365,21 +362,6 @@ raw.obs["sub_cluster"]=spg.detect_subclusters(cell_id=raw.obs.index.tolist(),
 
 ```
 
-    /Users/hujian1/anaconda3/envs/pytorch/lib/python3.7/site-packages/SpaGCN-0.0.5-py3.7.egg/SpaGCN/util.py:182: SettingWithCopyWarning: 
-    A value is trying to be set on a copy of a slice from a DataFrame.
-    Try using .loc[row_indexer,col_indexer] = value instead
-    
-    See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-      target_df["sub_cluster"]=sub_cluster
-    /Users/hujian1/anaconda3/envs/pytorch/lib/python3.7/site-packages/SpaGCN-0.0.5-py3.7.egg/SpaGCN/util.py:183: SettingWithCopyWarning: 
-    A value is trying to be set on a copy of a slice from a DataFrame.
-    Try using .loc[row_indexer,col_indexer] = value instead
-    
-    See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-      target_df["sub_cluster"]=target_df["sub_cluster"].astype('category')
-
-
-
 ```python
 colors_use=['#FFFF00', '#4a6fe3', '#bb7784', '#2ca02c', '#ff9896', "#C1CEFA",'#98df8a', '#ffbb78', '#ff7f0e', '#1f77b4', '#800080', '#959595', '#ffff00', '#014d01', '#0000ff', '#ff0000', '#000000']
 num_celltype=len(raw.obs["sub_cluster"].unique())
@@ -389,15 +371,8 @@ fig.set_aspect('equal', 'box')
 fig
 fig.figure.savefig("../tutorial/Domain1_subdomains.png", dpi=300)
 ```
-
-    /Users/hujian1/anaconda3/envs/pytorch/lib/python3.7/site-packages/anndata/_core/anndata.py:1192: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
-      if is_string_dtype(df[key]) and not is_categorical(df[key])
-    ... storing 'sub_cluster' as categorical
-
-
-
     
-![png](output_25_1.png)
+![png](Domain1_subdomains.png)
     
 
 
