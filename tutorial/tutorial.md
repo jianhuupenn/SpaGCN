@@ -19,7 +19,7 @@ platform.python_version()
 Note: Because SpaGCN pends on pytorch, you should make sure torch is correctly installed.
 <br>
 Now you can install the current release of SpaGCN by the following three ways:
-- PyPI: Directly install the package from PyPI.
+- PyPI: Directly install the package from PyPI.(Not completed)
 
 
 ```python
