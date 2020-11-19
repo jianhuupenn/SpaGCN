@@ -1,7 +1,7 @@
 <h1><center>SpaGCN Tutorial</center></h1>
 
 
-<center>Author: Jian Hu, Xiangjie Li, Kyle Coleman, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
+<center>Author: Jian Hu, Xiangjie Li, Kyle Coleman, Amelia Schroeder, David Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
 
 ### 0. Installation
 To install SpaGCN package you must make sure that your python version is over 3.5.=. If you don’t know the version of python you can check it by:
