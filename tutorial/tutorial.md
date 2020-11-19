@@ -256,7 +256,7 @@ for g in SVG:
 ![png](PCP4_raw_relative.png)
 
 
-### 6. Identify Meta Gene
+### 6. Identify Meta Gene (Domain 4 as an example)
 
 
 ```python
@@ -346,7 +346,7 @@ fig.figure.savefig("../tutorial/"+meta_name+"_raw_relative.png", dpi=300)
     
 
 
-### 7. Identify Subdomain
+### 7. Identify Subdomain (Domain 1 as an example)
 
 
 ```python
