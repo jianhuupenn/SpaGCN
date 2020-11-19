@@ -253,7 +253,7 @@ for g in SVG:
 
     Domain 1 : ['PCP4']
     
-![png](PCP4.png)
+![png](PCP4_raw_relative.png)
 
 
 ### 6. Identify Meta Gene
