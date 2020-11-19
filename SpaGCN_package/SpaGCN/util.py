@@ -187,12 +187,64 @@ def detect_subclusters(cell_id, x, y, pred, target_cluster, radius=3, res=0.2):
             tmp.append(target_df.loc[j,"sub_cluster"])
         else:
             tmp.append("-1")
-    ret = {'cell_id': cell_id, 'sub_cluster_'+str(target_cluster): tmp}
-    ret = pd.DataFrame(data=ret)
-    ret.index=ret['cell_id']
+    #ret = {'cell_id': cell_id, 'sub_cluster_'+str(target_cluster): tmp}
+    #ret = pd.DataFrame(data=ret)
+    #ret.index=ret['cell_id']
+    ret=tmp
     return ret
 
-
+def find_meta_gene(input_adata,
+                    pred,
+                    target_domain,
+                    start_gene,
+                    mean_diff=0,
+                    early_stop=True,
+                    max_iter=5,
+                    use_raw=False):
+    meta_name=start_gene
+    adata=input_adata.copy()
+    adata.obs["meta"]=adata.X[:,adata.var.index==start_gene]
+    adata.obs["pred"]=pred
+    num_non_target=adata.shape[0]
+    for i in range(max_iter):
+        #Select cells
+        tmp=adata[((adata.obs["meta"]>np.mean(adata.obs[adata.obs["pred"]==target_domain]["meta"]))|(adata.obs["pred"]==target_domain))]
+        tmp.obs["target"]=((tmp.obs["pred"]==target_domain)*1).astype('category').copy()
+        #DE
+        sc.tl.rank_genes_groups(tmp, groupby="target",reference="rest", n_genes=1,method='wilcoxon')
+        adj_g=tmp.uns['rank_genes_groups']["names"][0][0]
+        add_g=tmp.uns['rank_genes_groups']["names"][0][1]
+        meta_name_cur=meta_name+"+"+add_g+"-"+adj_g
+        print("Add gene: ", add_g)
+        print("Minus gene: ", adj_g)
+        #Meta gene
+        adata.obs[add_g]=adata.X[:,adata.var.index==add_g]
+        adata.obs[adj_g]=adata.X[:,adata.var.index==adj_g]
+        adata.obs["meta_cur"]=(adata.obs["meta"]+adata.obs[add_g]-adata.obs[adj_g])
+        adata.obs["meta_cur"]=adata.obs["meta_cur"]-np.min(adata.obs["meta_cur"])
+        mean_diff_cur=np.mean(adata.obs["meta_cur"][adata.obs["pred"]==target_domain])-np.mean(adata.obs["meta_cur"][adata.obs["pred"]!=target_domain])
+        num_non_target_cur=np.sum(tmp.obs["target"]==0)
+        if (early_stop==False) | ((num_non_target>=num_non_target_cur) & (mean_diff<=mean_diff_cur)):
+            num_non_target=num_non_target_cur
+            mean_diff=mean_diff_cur
+            print("Absolute mean change:", mean_diff)
+            print("Number of non-target spots reduced to:",num_non_target)
+        else:
+            print("Stopped!", "Previous Number of non-target spots",num_non_target, num_non_target_cur, mean_diff,mean_diff_cur)
+            print("Previous Number of non-target spots",num_non_target, num_non_target_cur, mean_diff,mean_diff_cur)
+            print("Previous Number of non-target spots",num_non_target)
+            print("Current Number of non-target spots",num_non_target_cur)
+            print("Absolute mean change", mean_diff)
+            print("===========================================================================")
+            print("Meta gene: ", meta_name)
+            print("===========================================================================")
+            return adata.obs["meta"].tolist()
+        meta_name=meta_name_cur
+        adata.obs["meta"]=adata.obs["meta_cur"]
+        print("===========================================================================")
+        print("Meta gene: ", meta_name)
+        print("===========================================================================")
+    return meta_name, adata.obs["meta"].tolist()
 
 
 
