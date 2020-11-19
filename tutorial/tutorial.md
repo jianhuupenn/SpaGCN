@@ -261,7 +261,7 @@ for g in SVG:
 
 ```python
 from scipy.sparse import issparse
-adata=sc.read("./data/results.h5ad")
+adata=sc.read("../tutorial/results.h5ad")
 pred=adata.obs["pred"].astype('category')
 raw=sc.read("./data/sample_data.h5ad")
 raw.var_names_make_unique()
