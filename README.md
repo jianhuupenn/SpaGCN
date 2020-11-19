@@ -26,7 +26,7 @@ For tutorial, please refer to: https://github.com/jianhuupenn/SpaGCN/blob/master
 Toy data can be downloaded at: https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
 
 ## System Requirements
-Python support packages: "python-igraph","torch","pandas","numpy","scipy","scanpy","anndata","louvain","sklearn".
+Python support packages: igraph, torch, pandas, numpy, scipy, scanpy, anndata, louvain, sklearn.
 
 ## Versions the software has been tested on
 Environment 1:
