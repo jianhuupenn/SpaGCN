@@ -23,6 +23,21 @@ The [**SpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementa
 <br>
 For tutorial, please refer to: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md
 Toy data can be downloaded at: https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
+
+## System Requirements
+Python support packages: "python-igraph","torch","pandas","numpy","scipy","scanpy","anndata","louvain","sklearn".
+
+## Versions the software has been tested on
+Environment 1:
+- System: Mac OS 10.13.6
+- Python: 3.7.0
+- Python packages: pandas = 1.1.3, numpy = 1.18.1, python-igraph=0.7.1,torch=1.5.1,louvain=0.6.1,scipy = 1.4.1, scanpy = 1.4.4.post1, anndata = 0.6.22.post1, natsort = 7.0.1, sklearn = 0.22.1
+
+Environment 2:
+- System: annoconda
+- Python: 3.7.9
+- Python packages: pandas = 1.1.3, numpy = 1.19.1, python-igraph=0.8.3,torch=1.6.0,louvain=0.7.0,scipy = 1.5.2, scanpy = 1.6.0, anndata = 0.7.4, natsort = 7.0.1, sklearn = 0.23.3
+
 ## Contributing
 
 Souce code: [Github](https://github.com/jianhuupenn/SpaGCN)  
