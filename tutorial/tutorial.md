@@ -93,7 +93,6 @@ The gene expreesion data can be stored as an AnnData object. AnnData stores a da
 
 ```python
 """
-"""
 #Read original data and save it to h5ad
 from scanpy import read_10x_h5
 adata = read_10x_h5("../tutorial/data/expression_matrix.h5")
