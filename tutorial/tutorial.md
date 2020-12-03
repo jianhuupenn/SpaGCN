@@ -391,9 +391,8 @@ fig=sc.pl.scatter(raw,alpha=1,x="x5",y="x4",color="sub_cluster",show=False,size=
 fig.set_aspect('equal', 'box')
 fig
 fig.figure.savefig("../tutorial/Domain2_subdomains.png", dpi=300)```
-    
+        
+```
 ![png](Domain2_subdomains.png)
-    
-
 
 
