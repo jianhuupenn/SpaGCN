@@ -238,12 +238,13 @@ def find_meta_gene(input_adata,
             print("===========================================================================")
             print("Meta gene: ", meta_name)
             print("===========================================================================")
-            return adata.obs["meta"].tolist()
+            return meta_name, adata.obs["meta"].tolist()
         meta_name=meta_name_cur
         adata.obs["meta"]=adata.obs["meta_cur"]
         print("===========================================================================")
-        print("Meta gene: ", meta_name)
+        print("Meta gene is: ", meta_name)
         print("===========================================================================")
+    
     return meta_name, adata.obs["meta"].tolist()
 
 
