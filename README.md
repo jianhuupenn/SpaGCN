@@ -9,7 +9,7 @@ SpaGCN is a graph convolutional network to integrate gene expression and histolo
 ![SpaGCN workflow](docs/asserts/images/workflow.jpg)
 Figure created by Nan Ma.
 <br>
-For thorough details, see the preprint: [Bioxiv]()
+For thorough details, see the preprint: [Bioxiv](https://www.biorxiv.org/content/10.1101/2020.11.30.405118v1)
 <br>
 
 ## Usage
@@ -53,5 +53,6 @@ We are continuing adding new features. Bug reports or feature requests are welco
 
 Please consider citing the following reference:
 https://www.biorxiv.org/content/10.1101/2020.11.30.405118v1
+
 - 
 <br>
