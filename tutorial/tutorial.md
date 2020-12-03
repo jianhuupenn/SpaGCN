@@ -256,7 +256,7 @@ import matplotlib.pyplot as plt
 color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
 #Plot some SVGs
 for g in SVG:
-    fig=spg.plot_relative_exp(raw, g, "x5", "x4", use_raw=True,color=color_self,spot_size=200000)
+    fig=spg.plot_relative_exp(raw, g, "x5", "x4", use_raw=True,color=color_self,spot_size=120000)
     fig.set_aspect('equal', 'box')
     fig.figure.savefig("../tutorial/"+g+"_raw_relative.png", dpi=300)
 
