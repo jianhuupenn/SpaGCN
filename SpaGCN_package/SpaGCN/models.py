@@ -13,12 +13,13 @@ from . layers import GraphConvolution
 
 
 class simple_GC_DEC(nn.Module):
-    def __init__(self, nfeat, nhid, alpha=0.2):
+    def __init__(self, nfeat, nhid, alpha=0.2, louvain_seed=0):
         super(simple_GC_DEC, self).__init__()
         self.gc = GraphConvolution(nfeat, nhid)
         self.nhid=nhid
         #self.mu determined by the init method
         self.alpha=alpha
+        self.loiuvain_seed=louvain_seed
 
     def forward(self, x, adj):
         x=self.gc(x, adj)
@@ -66,7 +67,7 @@ class simple_GC_DEC(nn.Module):
             else:
                 adata=sc.AnnData(X)
             sc.pp.neighbors(adata, n_neighbors=n_neighbors)
-            sc.tl.louvain(adata,resolution=res)
+            sc.tl.louvain(adata, resolution=res, random_state=self.loiuvain_seed)
             y_pred=adata.obs['louvain'].astype(int).to_numpy()
             self.n_clusters=len(np.unique(y_pred))
         #----------------------------------------------------------------
