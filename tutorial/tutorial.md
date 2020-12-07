@@ -27,7 +27,6 @@ Now you can install the current release of SpaGCN by the following three ways:
 pip3 install SpaGCN
 #Note: you need to make sure that the pip is for python3，or we should install SpaGCN by
 python3 -m pip install SpaGCN
-pip3 install SpaGCN
 #If you do not have permission (when you get a permission denied error), you should install SpaGCN by
 pip3 install --user SpaGCN
 """
