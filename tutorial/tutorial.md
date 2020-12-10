@@ -4,7 +4,7 @@
 <center>Author: Jian Hu, Xiangjie Li, Kyle Coleman, Amelia Schroeder, David Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
 
 ### 0. Installation
-The insyallation should take less than 5 minutes on a normal computer.To install SpaGCN package you must make sure that your python version is over 3.5.=. If you don’t know the version of python you can check it by:
+The installation should take less than 5 minutes on a normal computer.To install SpaGCN package you must make sure that your python version is over 3.5.=. If you don’t know the version of python you can check it by:
 
 
 ```python
