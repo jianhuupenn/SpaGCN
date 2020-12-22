@@ -127,9 +127,9 @@ def relative_func(expres):
 def plot_relative_exp(input_adata, gene, x_name, y_name,color,use_raw=False, spot_size=200000):
     adata=input_adata.copy()
     if use_raw:
-        X=adata.X
-    else:
         X=adata.raw.X
+    else:
+        X=adata.X
     if issparse(X):
         X=pd.DataFrame(X.A)
     else:
