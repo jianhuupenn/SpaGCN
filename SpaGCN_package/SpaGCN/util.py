@@ -39,12 +39,12 @@ def prefilter_specialgenes(adata,Gene1Pattern="ERCC",Gene2Pattern="MT-"):
 
 def test_l(adj, list_l):
     for l in list_l:
-        adj_exp=np.exp(-1*adj/(2*(l**2)))
+        adj_exp=np.exp(-1*(adj**2)/(2*(l**2)))
         print("l is ",str(l),"Percentage of total expression contributed by neighborhoods:",np.mean(np.sum(adj_exp,1))-1)
 
 def find_l(p, adj, start=0.5, end=2,sep=0.01, tol=0.01):
     for i in np.arange(start, end, sep):
-        adj_exp=np.exp(-1*adj/(2*(i**2)))
+        adj_exp=np.exp(-1*(adj**2)/(2*(i**2)))
         q=np.mean(np.sum(adj_exp,1))-1
         print("L=", str(i), "P=", str(round(q,5)))
         if np.abs(p-q)<tol:
