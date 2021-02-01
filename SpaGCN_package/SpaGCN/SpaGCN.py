@@ -47,6 +47,7 @@ class SpaGCN(object):
         self.tol=tol
         self.louvain_seed=louvain_seed
         assert adata.shape[0]==adj.shape[0]==adj.shape[1]
+        print("Start training the model")
         pca = PCA(n_components=self.num_pcs)
         if issparse(adata.X):
             pca.fit(adata.X.A)

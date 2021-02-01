@@ -60,7 +60,7 @@ class simple_GC_DEC(nn.Module):
                 #------Kmeans only use exp info, no spatial
                 y_pred = kmeans.fit_predict(X)  #Here we use X as numpy
         elif init=="louvain":
-            print("Initializing cluster centers with louvain, resolution = ", res)
+            print("Initializing cluster centers with louvain, resolution = ", res, "seed = ", louvain_seed)
             if init_spa:
                 adata=sc.AnnData(features.detach().numpy())
             else:
