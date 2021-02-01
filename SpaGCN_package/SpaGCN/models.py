@@ -19,7 +19,7 @@ class simple_GC_DEC(nn.Module):
         self.nhid=nhid
         #self.mu determined by the init method
         self.alpha=alpha
-        self.loiuvain_seed=louvain_seed
+        self.louvain_seed=louvain_seed
 
     def forward(self, x, adj):
         x=self.gc(x, adj)
@@ -67,7 +67,7 @@ class simple_GC_DEC(nn.Module):
             else:
                 adata=sc.AnnData(X)
             sc.pp.neighbors(adata, n_neighbors=n_neighbors)
-            sc.tl.louvain(adata, resolution=res, random_state=self.loiuvain_seed)
+            sc.tl.louvain(adata, resolution=res, random_state=self.louvain_seed)
             y_pred=adata.obs['louvain'].astype(int).to_numpy()
             self.n_clusters=len(np.unique(y_pred))
         #----------------------------------------------------------------
