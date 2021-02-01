@@ -45,6 +45,7 @@ class SpaGCN(object):
         self.n_clusters=n_clusters
         self.res=res
         self.tol=tol
+        self.louvain_seed=louvain_seed
         assert adata.shape[0]==adj.shape[0]==adj.shape[1]
         pca = PCA(n_components=self.num_pcs)
         if issparse(adata.X):
@@ -58,8 +59,8 @@ class SpaGCN(object):
             raise ValueError('l should not be set before fitting the model!')
         adj_exp=np.exp(-1*(adj**2)/(2*(self.l**2)))
         #----------Train model----------
-        self.model=simple_GC_DEC(embed.shape[1],embed.shape[1], louvain_seed=louvain_seed)
-        self.model.fit(embed,adj_exp,lr=self.lr,max_epochs=self.max_epochs,weight_decay=self.weight_decay,opt=self.opt,init_spa=self.init_spa,init=self.init,n_neighbors=self.n_neighbors,n_clusters=self.n_clusters,res=self.res, tol=self.tol)
+        self.model=simple_GC_DEC(embed.shape[1],embed.shape[1])
+        self.model.fit(embed,adj_exp,lr=self.lr,max_epochs=self.max_epochs,weight_decay=self.weight_decay,opt=self.opt,init_spa=self.init_spa,init=self.init,louvain_seed=self.louvain_seed,n_neighbors=self.n_neighbors,n_clusters=self.n_clusters,res=self.res, tol=self.tol)
         self.embed=embed
         self.adj_exp=adj_exp
 

@@ -13,13 +13,12 @@ from . layers import GraphConvolution
 
 
 class simple_GC_DEC(nn.Module):
-    def __init__(self, nfeat, nhid, alpha=0.2, louvain_seed=0):
+    def __init__(self, nfeat, nhid, alpha=0.2):
         super(simple_GC_DEC, self).__init__()
         self.gc = GraphConvolution(nfeat, nhid)
         self.nhid=nhid
         #self.mu determined by the init method
         self.alpha=alpha
-        self.louvain_seed=louvain_seed
 
     def forward(self, x, adj):
         x=self.gc(x, adj)
@@ -41,7 +40,7 @@ class simple_GC_DEC(nn.Module):
         p = p / torch.sum(p, dim=1, keepdim=True)
         return p
 
-    def fit(self, X,adj,  lr=0.001, max_epochs=5000, update_interval=5, trajectory_interval=50,weight_decay=5e-4,opt="sgd",init="louvain",n_neighbors=10,res=0.4,n_clusters=10,init_spa=True,tol=1e-3):
+    def fit(self, X,adj,  lr=0.001, max_epochs=5000, update_interval=5, trajectory_interval=50,weight_decay=5e-4,opt="sgd",init="louvain",louvain_seed=0,n_neighbors=10,res=0.4,n_clusters=10,init_spa=True,tol=1e-3):
         self.trajectory=[]
         if opt=="sgd":
             optimizer = optim.SGD(self.parameters(), lr=lr, momentum=0.9)
@@ -67,7 +66,7 @@ class simple_GC_DEC(nn.Module):
             else:
                 adata=sc.AnnData(X)
             sc.pp.neighbors(adata, n_neighbors=n_neighbors)
-            sc.tl.louvain(adata, resolution=res, random_state=self.louvain_seed)
+            sc.tl.louvain(adata, resolution=res, random_state=louvain_seed)
             y_pred=adata.obs['louvain'].astype(int).to_numpy()
             self.n_clusters=len(np.unique(y_pred))
         #----------------------------------------------------------------
