@@ -162,14 +162,14 @@ p=0.5
 #Find l
 #spg.test_l(adj,[0.5,0.8,1,1.2])
 """
-l is  0.5 Percentage of total expression contributed by neighborhoods: 0.022694894646745123
-l is  0.8 Percentage of total expression contributed by neighborhoods: 0.5607284420349321
-l is  1 Percentage of total expression contributed by neighborhoods: 2.0466495056643024
-l is  1.2 Percentage of total expression contributed by neighborhoods: 5.558170663311434
+l is  1 Percentage of total expression contributed by neighborhoods: 0.14210978201640234
+l is  1.2 Percentage of total expression contributed by neighborhoods: 0.27567267363292736
+l is  1.4 Percentage of total expression contributed by neighborhoods: 0.4624683974467727
+l is  1.6 Percentage of total expression contributed by neighborhoods: 0.7092476168925743
 """
-#Therefore,search l around 0.8
-#l=spg.find_l(p=p,adj=adj,start=0.75, end=0.8,sep=0.001, tol=0.01)
-l=0.79
+#Therefore,search l around 1.5
+#l=spg.find_l(p=p,adj=adj,start=1.4, end=1.6,sep=0.01, tol=0.01)
+l=1.43
 res=0.65
 clf=spg.SpaGCN()
 clf.set_l(l)
