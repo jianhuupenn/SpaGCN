@@ -160,7 +160,7 @@ sc.pp.log1p(adata)
 #Set percentage of total expression contributed by neighborhoods
 p=0.5
 #Find l
-#spg.test_l(adj,[0.5,0.8,1,1.2])
+#spg.test_l(adj,[1, 1.2, 1.4, 1.6])
 """
 l is  1 Percentage of total expression contributed by neighborhoods: 0.14210978201640234
 l is  1.2 Percentage of total expression contributed by neighborhoods: 0.27567267363292736
