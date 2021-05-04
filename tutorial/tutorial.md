@@ -396,7 +396,6 @@ print("SVGs for domain ", str(target),":", filtered_info["genes"].tolist())
 filtered_info
 ```
 
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -519,9 +518,6 @@ meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
 raw.obs["meta"]=meta_exp
 ```
 
-    Trying to set attribute `.obs` of view, copying.
-    Trying to set attribute `.obs` of view, copying.
-
 
     Add gene:  MGP
     Minus gene:  FTH1
@@ -530,11 +526,6 @@ raw.obs["meta"]=meta_exp
     ===========================================================================
     Meta gene is:  GFAP+MGP-FTH1
     ===========================================================================
-
-
-    Trying to set attribute `.obs` of view, copying.
-
-
     Add gene:  MYL9
     Minus gene:  MBP
     Absolute mean change: 2.175557
