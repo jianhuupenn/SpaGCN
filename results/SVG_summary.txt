@@ -29,14 +29,14 @@ d_g={0: ['TAGLN', 'AEBP1', 'ISLR'], 1: ['SCGB3A1', 'SERPINA1', 'SPINK1', 'MUC1',
 
 
 #-------------------------------- Slide-seq v2 ----------------------------------------------------------------
-Domain 0 : 18
-Domain 1 : 2
-Domain 2 : 24
-Domain 3 : 7
-Domain 4 : 0
-Domain 5 : 9
-d_g={0: ['Tuba1a', 'Sox11', 'Tmsb4x', 'Actb', 'Nfib', 'Basp1', 'Tcf4', 'Nnat', 'Sox4', 'Tubb3', 'Igfbpl1', 'Dcx', 'Tsc22d1', 'Nsg2', 'Neurod6', 'Trim2', 'Neurod2', 'Enc1'], 1: ['Nfib', 'Sox5'], 2: ['Fabp7', 'Hsp90ab1', 'Hnrnpa2b1', 'Malat1', 'Dbi', 'Marcks', 'Gnas', 'Ctnnb1', 'Meis2', 'Ccnd2', 'mt-Nd1', 'Fus', 'Zbtb20', 'Ncl', 'Vim', 'Ckb', 'Nedd4', 'Sfpq', 'Pea15a', 'H1f0', 'Top2a', 'Serbp1', 'Tuba1b', 'Sfrp1'], 3: ['Tuba1a', 'Map1b', 'Actb', 'Ncam1', 'Gpm6a', 'Syt4', 'Pbx1'], 4: [], 5: ['Map1b', 'Ccnd2', 'mt-Rnr2', 'Nnat', 'Dynll2', 'Arhgap11a', 'Ncl', 'Nes', 'Epha5']}
-
+Domain 0 : 2
+Domain 1 : 15
+Domain 2 : 4
+Domain 3 : 0
+Domain 4 : 24
+Domain 5 : 14
+Total number of SVGs:  59
+d_g={1: ['Nfib', 'Sox5'], 0: ['Tuba1a', 'Sox11', 'Actb', 'Nfib', 'Basp1', 'Sox4', 'Nnat', 'Igfbpl1', 'Tubb3', 'Meis2', 'Dcx', 'Enc1', 'Nsg2', 'Neurod6', 'Neurod2'], 3: ['Map1b', 'Stmn2', 'Mapt', 'Gap43'], 4: [], 2: ['Fabp7', 'Hsp90ab1', 'Hnrnpa2b1', 'Marcks', 'Dbi', 'Gnas', 'Rpl4', 'Ctnnb1', 'Ccnd2', 'mt-Nd1', 'Fus', 'Ywhae', 'Vim', 'Zbtb20', 'Ncl', 'Ckb', 'Nedd4', 'Pea15a', 'Top2a', 'Ybx1', 'Serbp1', 'Tuba1b', 'Sfrp1', 'Ddah1'], 5: ['Ccnd2', 'Map1b', 'Dynll2', 'Arhgap11a', 'Nnat', 'Nes', 'Ncl', 'Epha5', 'Zeb1', 'Gxylt1', 'Zc3h13', 'Cenpb', 'Scrn1', 'Cacng4']}
 
 
 #-------------------------------- STARmap ----------------------------------------------------------------
