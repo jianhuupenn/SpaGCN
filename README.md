@@ -25,6 +25,8 @@ The [**SpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementa
 <br>
 For tutorial, please refer to: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md
 <br>
+A Jupyter notebook of the tutorial is accessible from : https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.ipynb
+<br>
 Toy data can be downloaded at: https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
 
 ## System Requirements
