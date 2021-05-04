@@ -98,16 +98,11 @@ spg.__version__
     '1.0.0'
 
 
-
 ### 2. Read in data
 The current version of SpaGCN requres three input data: 
-<br>
-1. The gene expression matrix(n by k); 
-<br>
-2. Spatial coordinateds of samples; 
-<br>
-3. Histology image(optional).
-<br>
+- The gene expression matrix(n by k); 
+- Spatial coordinateds of samples; 
+- Histology image(optional).
 The gene expreesion data can be stored as an AnnData object. AnnData stores a data matrix .X together with annotations of observations .obs, variables .var and unstructured annotations .uns. 
 
 
@@ -133,9 +128,6 @@ adata=sc.read("../tutorial/data/sample_data.h5ad")
 #Read in hitology image
 img=cv2.imread("../tutorial/data/histology.tif")
 ```
-
-    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
-
 
 ### 3. Calculate adjacent matrix
 
@@ -187,9 +179,6 @@ spg.prefilter_specialgenes(adata)
 sc.pp.normalize_per_cell(adata)
 sc.pp.log1p(adata)
 ```
-
-    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
-
 
 #### 4.2 Set hyper-parameters
 
@@ -407,22 +396,6 @@ print("SVGs for domain ", str(target),":", filtered_info["genes"].tolist())
 filtered_info
 ```
 
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
 </style>
 <table border="1" class="dataframe">
   <thead>
