@@ -1,7 +1,7 @@
 <h1><center>SpaGCN Tutorial</center></h1>
 
 
-<center>Author: Jian Hu, Xiangjie Li, Kyle Coleman, Amelia Schroeder, David Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
+<center>Author: Jian Hu,*, Xiangjie Li, Kyle Coleman, Amelia Schroeder, Nan Ma, David J. Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
 
 ### 0. Installation
 The installation should take a few minutes on a normal computer. To install SpaGCN package you must make sure that your python version is over 3.5.=. If you don’t know the version of python you can check it by:
@@ -12,7 +12,11 @@ import platform
 platform.python_version()
 ```
 
-    '3.7.9'
+
+
+
+    '3.8.8'
+
 
 
 
@@ -64,15 +68,12 @@ conda deactivate
 
 ### 1. Import python modules
 
-
 ```python
 import os,csv,re
 import pandas as pd
 import numpy as np
 import scanpy as sc
 import math
-#pip3 install scikit-image
-from skimage import io, color
 import SpaGCN as spg
 from scipy.sparse import issparse
 import random, torch
@@ -80,13 +81,33 @@ import warnings
 warnings.filterwarnings("ignore")
 import matplotlib.colors as clr
 import matplotlib.pyplot as plt
+#Use opencv to read in image data
+#!pip3 install opencv-python
+import cv2
+import SpaGCN as spg
 ```
+
+
+```python
+spg.__version__
+```
+
+
+
+
+    '1.0.0'
+
+
 
 ### 2. Read in data
 The current version of SpaGCN requres three input data: 
-- The gene expression matrix(n by k); 
-- Spatial coordinateds of samples; 
-- Histology image(optional).
+<br>
+1. The gene expression matrix(n by k); 
+<br>
+2. Spatial coordinateds of samples; 
+<br>
+3. Histology image(optional).
+<br>
 The gene expreesion data can be stored as an AnnData object. AnnData stores a data matrix .X together with annotations of observations .obs, variables .var and unstructured annotations .uns. 
 
 
@@ -110,126 +131,247 @@ adata.write_h5ad("../tutorial/data/sample_data.h5ad")
 #Read in gene expression and spatial location
 adata=sc.read("../tutorial/data/sample_data.h5ad")
 #Read in hitology image
-#image=io.imread("../tutorial/data/histology.tif")
+img=cv2.imread("../tutorial/data/histology.tif")
 ```
+
+    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+
 
 ### 3. Calculate adjacent matrix
 
 
 ```python
+#Set coordinates
+adata.obs["x_array"]=adata.obs["x2"]
+adata.obs["y_array"]=adata.obs["x3"]
+adata.obs["x_pixel"]=adata.obs["x4"]
+adata.obs["y_pixel"]=adata.obs["x5"]
+x_array=adata.obs["x_array"].tolist()
+y_array=adata.obs["y_array"].tolist()
+x_pixel=adata.obs["x_pixel"].tolist()
+y_pixel=adata.obs["y_pixel"].tolist()
+
+#Test coordinates on the image
+img_new=img.copy()
+for i in range(len(x_pixel)):
+    x=x_pixel[i]
+    y=y_pixel[i]
+    img_new[int(x-20):int(x+20), int(y-20):int(y+20),:]=0
+
+cv2.imwrite('./sample_results/151673_map.jpg', img_new)
+
+#Calculate adjacent matrix
 b=49
 a=1
-#Spot coordinates
-x2=adata.obs["x2"].tolist()
-x3=adata.obs["x3"].tolist()
-#Pixel coordinates
-x4=adata.obs["x4"].tolist()
-x5=adata.obs["x5"].tolist()
-adj=spg.calculate_adj_matrix(x=x2,y=x3, x_pixel=x4, y_pixel=x5, image=image, beta=b, alpha=a, histology=True)
-#np.savetxt('../tutorial/data/adj.csv', adj, delimiter=',')
+adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=image, beta=b, alpha=a, histology=True)
+np.savetxt('./data/adj.csv', adj, delimiter=',')
 ```
 
     Calculateing adj matrix using histology image...
-    Calculating spot  0
-    Calculating spot  500
-    Calculating spot  1000
-    Calculating spot  1500
-    Calculating spot  2000
-    Calculating spot  2500
-    Calculating spot  3000
-    Calculating spot  3500
+    Var of c0,c1,c2 =  33.30687202862215 174.55510595352243 46.84205750749746
+    Var of x,y,z =  5606737.526317932 4468793.817921193 5606737.526317932
 
 
-### 4. Run SpaGCN
+### 4. Spatial domain detection using SpaGCN
+
+#### 4.1 Expression data preprocessing
 
 
 ```python
-#Set seed
-random.seed(200)
-torch.manual_seed(200)
-np.random.seed(200)
-#The clustering results may not be exactly the same
-adata=sc.read("../tutorial/data/sample_data.h5ad")
-adj=np.loadtxt('../tutorial/data/adj.csv', delimiter=',')
+adata=sc.read("./data/sample_data.h5ad")
+adj=np.loadtxt('./data/adj.csv', delimiter=',')
 adata.var_names_make_unique()
 spg.prefilter_genes(adata,min_cells=3) # avoiding all genes are zeros
 spg.prefilter_specialgenes(adata)
-#Normalize and take log for UMI-------
+#Normalize and take log for UMI
 sc.pp.normalize_per_cell(adata)
 sc.pp.log1p(adata)
-#Set percentage of total expression contributed by neighborhoods
-p=0.5
-#Find l
-#spg.test_l(adj,[1, 1.2, 1.4, 1.6])
-"""
-l is  1 Percentage of total expression contributed by neighborhoods: 0.14210978201640234
-l is  1.2 Percentage of total expression contributed by neighborhoods: 0.27567267363292736
-l is  1.4 Percentage of total expression contributed by neighborhoods: 0.4624683974467727
-l is  1.6 Percentage of total expression contributed by neighborhoods: 0.7092476168925743
-"""
-#Therefore,search l around 1.5
-#l=spg.find_l(p=p,adj=adj,start=1.4, end=1.6,sep=0.01, tol=0.01)
-l=1.43
-res=0.65
-clf=spg.SpaGCN()
-clf.set_l(l)
-#Init using louvain
-clf.train(adata,adj,init_spa=True,init="louvain",res=res, louvain_seed=0,tol=5e-3)
-#Or init using kmeans
-#clf.train(adata,adj,init_spa=True,init="kmeans",n_clusters=7, tol=5e-3)
-y_pred, prob=clf.predict()
-
-adata.obs["pred"]= y_pred
-adata.obs["pred"]=adata.obs["pred"].astype('category')
-#Save
-adata.write_h5ad("../tutorial/results.h5ad")
-
-#Plot
-colors_use=['#111010', '#FFFF00', '#4a6fe3', '#bb7784', '#bec1d4', '#ff9896', '#98df8a', '#ffbb78', '#2ca02c', '#ff7f0e', '#1f77b4', '#800080', '#959595', '#ffff00', '#014d01', '#0000ff', '#ff0000', '#000000']
-num_celltype=len(adata.obs["pred"].unique())
-adata.uns["pred_colors"]=list(colors_use[:num_celltype])
-fig=sc.pl.scatter(adata,alpha=1,x="x5",y="x4",color="pred",show=False,size=120000/adata.shape[0])
-fig.set_aspect('equal', 'box')
-fig.figure.savefig("../tutorial/Domains.png", dpi=300)
-fig
 ```
-    Initializing cluster centers with louvain, resolution =  0.6
-    Epoch  0
-    delta_label  0.00494641384995878 < tol  0.005
-    Reach tolerance threshold. Stopping training.
 
-![png](Domains.png)
+    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
 
 
-
-### 5. Identify SVGs (Use domain 5 as an example)
+#### 4.2 Set hyper-parameters
 
 
 ```python
+#p: percentage of total expression contributed by neighborhoods.
+p=0.5 
 
-adata=sc.read("../tutorial/results.h5ad")
-pred=adata.obs["pred"].astype('category')
+#l: parameter to control p.
+#Find the l value given p, first use spg.test_l() function to get a rough estimate of the range l falls in
+spg.test_l(adj,[1, 10, 100, 500, 1000])
+"""
+l is  1 Percentage of total expression contributed by neighborhoods: 0.0
+l is  10 Percentage of total expression contributed by neighborhoods: 0.0
+l is  100 Percentage of total expression contributed by neighborhoods: 0.23831094397316965
+l is  500 Percentage of total expression contributed by neighborhoods: 28.014718550027993
+l is  1000 Percentage of total expression contributed by neighborhoods: 153.8820492650696
+"""
+#Search l from 100 to 1000
+l=spg.find_l(p=p,adj=adj,start=100, end=500,sep=1, tol=0.01)
+
+#res: resolution in the initial Louvain's Clustering methods.
+#If the number of clusters known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
+#For this toy data, we set the number of clusters=7 since this tissue has 7 layers
+n_clusters=7
+#Set seed
+r_seed=t_seed=n_seed=100
+#Seaech for suitable resolution
+res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed)
+```
+
+    l is  1 Percentage of total expression contributed by neighborhoods: 0.0
+    l is  10 Percentage of total expression contributed by neighborhoods: 0.0
+    l is  100 Percentage of total expression contributed by neighborhoods: 0.23831094397316965
+    l is  500 Percentage of total expression contributed by neighborhoods: 28.014718550027993
+    l is  1000 Percentage of total expression contributed by neighborhoods: 153.8820492650696
+    L= 100 P= 0.23831
+    L= 101 P= 0.24709
+    L= 102 P= 0.25606
+    L= 103 P= 0.2652
+    L= 104 P= 0.27454
+    L= 105 P= 0.28405
+    L= 106 P= 0.29376
+    L= 107 P= 0.30365
+    L= 108 P= 0.31374
+    L= 109 P= 0.32402
+    L= 110 P= 0.33449
+    L= 111 P= 0.34515
+    L= 112 P= 0.35601
+    L= 113 P= 0.36707
+    L= 114 P= 0.37832
+    L= 115 P= 0.38978
+    L= 116 P= 0.40144
+    L= 117 P= 0.41329
+    L= 118 P= 0.42536
+    L= 119 P= 0.43763
+    L= 120 P= 0.4501
+    L= 121 P= 0.46278
+    L= 122 P= 0.47567
+    L= 123 P= 0.48877
+    L= 124 P= 0.50208
+    Start at res =  0.7 step =  0.1
+    Initializing cluster centers with louvain, resolution =  0.7
+    Epoch  0
+    Epoch  10
+    Res =  0.7 Num of clusters =  7
+    recommended res =  0.7
+
+
+#### 4.3 Run SpaGCN
+
+
+```python
+clf=spg.SpaGCN()
+clf.set_l(l)
+#Set seed
+random.seed(r_seed)
+torch.manual_seed(t_seed)
+np.random.seed(n_seed)
+#Run
+clf.train(adata,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
+y_pred, prob=clf.predict()
+adata.obs["pred"]= y_pred
+adata.obs["pred"]=adata.obs["pred"].astype('category')
+#Do cluster refinement(optional)
+adj_2d=spg.calculate_adj_matrix(x=x_array,y=y_array, histology=False)
+refined_pred=spg.refine(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred"].tolist(), dis=adj_2d, shape="hexagon")
+adata.obs["refined_pred"]=refined_pred
+adata.obs["refined_pred"]=adata.obs["refined_pred"].astype('category')
+#Save results
+#adata.write_h5ad("./sample_results/results.h5ad")
+```
+
+    Initializing cluster centers with louvain, resolution =  0.7
+    Epoch  0
+    Epoch  10
+    Epoch  20
+    Epoch  30
+    Epoch  40
+    Epoch  50
+    Epoch  60
+    Epoch  70
+    Epoch  80
+    Epoch  90
+    Epoch  100
+    Epoch  110
+    Epoch  120
+    Epoch  130
+    Epoch  140
+    Epoch  150
+    Epoch  160
+    Epoch  170
+    Epoch  180
+    Epoch  190
+    Calculateing adj matrix using xy only...
+
+
+#### 4.4 Plot spatial domains
+
+
+```python
+adata=sc.read("./sample_results/results.h5ad")
+#Set colors used
+plot_color=["#F56867","#FEB915","#C798EE","#59BE86","#7495D3","#D1D1D1","#6D1A9C","#15821E","#3A84E6","#997273","#787878","#DB4C6C","#9E7A7A","#554236","#AF5F3C","#93796C","#F9BD3F","#DAB370","#877F6C","#268785"]
+#Plot spatial domains
+domains="pred"
+num_celltype=len(adata.obs[domains].unique())
+adata.uns[domains+"_colors"]=list(plot_color[:num_celltype])
+ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domains,color_map=plot_color,show=False,size=100000/adata.shape[0])
+ax.set_aspect('equal', 'box')
+ax.axes.invert_yaxis()
+plt.savefig("./sample_results/pred.png", dpi=600)
+plt.close()
+
+#Plot refinedspatial domains
+domains="refined_pred"
+num_celltype=len(adata.obs[domains].unique())
+adata.uns[domains+"_colors"]=list(plot_color[:num_celltype])
+ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domains,color_map=plot_color,show=False,size=100000/adata.shape[0])
+ax.set_aspect('equal', 'box')
+ax.axes.invert_yaxis()
+plt.savefig("./sample_results/refined_pred.png", dpi=600)
+plt.close()
+```
+
+**Spatial Domains**![](./sample_results/pred.png) **Refined Spatial Domains**![](./sample_results/refined_pred.png)
+
+### 5. Identify SVGs
+
+
+```python
+#Read in raw data
 raw=sc.read("../tutorial/data/sample_data.h5ad")
 raw.var_names_make_unique()
-raw.obs["pred"]=pred
+raw.obs["pred"]=adata.obs["pred"].astype('category')
+raw.obs["x_array"]=raw.obs["x2"]
+raw.obs["y_array"]=raw.obs["x3"]
+raw.obs["x_pixel"]=raw.obs["x4"]
+raw.obs["y_pixel"]=raw.obs["x5"]
 #Convert sparse matrix to non-sparse
 raw.X=(raw.X.A if issparse(raw.X) else raw.X)
-#set adata.raw
 raw.raw=raw
 sc.pp.log1p(raw)
 
-#Using domain 5 as an example
+#Use domain 0 as an example
+target=0
+#Set filtering criterials
 min_in_group_fraction=0.8
 min_in_out_group_ratio=1
 min_fold_change=1.5
-target=5
+#Find neighboring domains of domain 0
+#Set radius such that each spot in the target domain has approximately 10 neighbors on average
+#Some potentional r values: np.quantile(adj_2d[adj_2d!=0],q=[0.003, 0.005])
+r=3
 nbr_domians=spg.find_neighbor_clusters(target_cluster=target,
                                    cell_id=raw.obs.index.tolist(), 
-                                   x=raw.obs["x2"].tolist(), 
-                                   y=raw.obs["x3"].tolist(), 
+                                   x=raw.obs["x_array"].tolist(), 
+                                   y=raw.obs["y_array"].tolist(), 
                                    pred=raw.obs["pred"].tolist(),
-                                   radius=2,
+                                   radius=r,
                                    ratio=1/2)
+
 nbr_domians=nbr_domians[0:3]
 de_genes_info=spg.rank_genes_groups(input_adata=raw,
                                 target_cluster=target,
@@ -237,161 +379,228 @@ de_genes_info=spg.rank_genes_groups(input_adata=raw,
                                 label_col="pred", 
                                 adj_nbr=True, 
                                 log=True)
+
 de_genes_info=de_genes_info[(de_genes_info["pvals_adj"]<0.05)]
-#de_genes_info=de_genes_info.sort_values(by="in_group_fraction", ascending=False)
 filtered_info=de_genes_info
 filtered_info=filtered_info[(filtered_info["pvals_adj"]<0.05) &
-(filtered_info["in_out_group_ratio"]>=min_in_out_group_ratio) &
-(filtered_info["in_group_fraction"]>=min_in_group_fraction) &
-(filtered_info["fold_change"]>=min_fold_change)]
+                            (filtered_info["in_out_group_ratio"]>min_in_out_group_ratio) &
+                            (filtered_info["in_group_fraction"]>min_in_group_fraction) &
+                            (filtered_info["fold_change"]>min_fold_change)]
 filtered_info=filtered_info.sort_values(by="in_group_fraction", ascending=False)
-SVG=filtered_info["genes"].tolist()
+filtered_info["target_dmain"]=target
+filtered_info["neighbors"]=str(nbr_domians)
+print("SVGs for domain ", str(target),":", filtered_info["genes"].tolist())
+```
 
-print("Domain", target,":", SVG)
+    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
 
-#Plot SVG
-import matplotlib.colors as clr
-import matplotlib.pyplot as plt
+
+    radius= 3 average number of neighbors for each spot is 12.524523160762943
+     Cluster 0 has neighbors:
+    Dmain  3 :  863
+    Dmain  2 :  517
+    SVGs for domain  0 : ['CAMK2N1', 'ENC1', 'GPM6A', 'ARPP19', 'HPCAL1']
+
+
+
+```python
+filtered_info
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>genes</th>
+      <th>in_group_fraction</th>
+      <th>out_group_fraction</th>
+      <th>in_out_group_ratio</th>
+      <th>in_group_mean_exp</th>
+      <th>out_group_mean_exp</th>
+      <th>fold_change</th>
+      <th>pvals_adj</th>
+      <th>target_dmain</th>
+      <th>neighbors</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>CAMK2N1</td>
+      <td>1.000000</td>
+      <td>0.944964</td>
+      <td>1.058242</td>
+      <td>2.333675</td>
+      <td>1.578288</td>
+      <td>2.128434</td>
+      <td>1.656040e-11</td>
+      <td>0</td>
+      <td>[3, 2]</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>ENC1</td>
+      <td>0.998638</td>
+      <td>0.941848</td>
+      <td>1.060295</td>
+      <td>2.457791</td>
+      <td>1.696083</td>
+      <td>2.141931</td>
+      <td>1.552131e-03</td>
+      <td>0</td>
+      <td>[3, 2]</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>GPM6A</td>
+      <td>0.997275</td>
+      <td>0.922118</td>
+      <td>1.081505</td>
+      <td>2.224006</td>
+      <td>1.561187</td>
+      <td>1.940255</td>
+      <td>8.602227e-03</td>
+      <td>0</td>
+      <td>[3, 2]</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>ARPP19</td>
+      <td>0.982289</td>
+      <td>0.853583</td>
+      <td>1.150784</td>
+      <td>1.889256</td>
+      <td>1.272106</td>
+      <td>1.853637</td>
+      <td>4.823349e-02</td>
+      <td>0</td>
+      <td>[3, 2]</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>HPCAL1</td>
+      <td>0.851499</td>
+      <td>0.465213</td>
+      <td>1.830342</td>
+      <td>1.141321</td>
+      <td>0.406338</td>
+      <td>2.085448</td>
+      <td>9.706465e-05</td>
+      <td>0</td>
+      <td>[3, 2]</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+#Plot refinedspatial domains
 color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
-#Plot some SVGs
-for g in SVG:
-    fig=spg.plot_relative_exp(raw, g, "x5", "x4", use_raw=False,color=color_self,spot_size=120000)
-    fig.set_aspect('equal', 'box')
-    fig.figure.savefig("../tutorial/"+g+"_raw_relative.png", dpi=300)
+for g in filtered_info["genes"].tolist():
+    raw.obs["exp"]=raw.X[:,raw.var.index==g]
+    ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=g,color_map=color_self,show=False,size=100000/raw.shape[0])
+    ax.set_aspect('equal', 'box')
+    ax.axes.invert_yaxis()
+    plt.savefig("./sample_results/"+g+".png", dpi=600)
+    plt.close()
 
 ```
 
+**CAMK2N1**![](./sample_results/CAMK2N1.png) **ENC1**![](./sample_results/ENC1.png) **GPM6A**![](./sample_results/GPM6A.png) **ARPP19**![](./sample_results/ARPP19.png) **HPCAL1**![](./sample_results/HPCAL1.png)
 
-    radius= 2 average number of neighbors for each spot is 8.991853360488799
-    Cluster 5 has neighbors:
-    Dmain  1 :  685
-    Dmain  3 :  280
-    Domain 5 : ['TMSB10', 'PCP4']
-    
-![png](TMSB10_raw_relative.png)
-![png](PCP4_raw_relative.png)
-
-
-### 6. Identify Meta Gene (Use domain 0 as an example)
+### 6. Identify Meta Gene
 
 
 ```python
-adata=sc.read("../tutorial/results.h5ad")
-pred=adata.obs["pred"].astype('category')
-raw=sc.read("./data/sample_data.h5ad")
-raw.var_names_make_unique()
-raw.obs["pred"]=pred
-#Convert sparse matrix to non-sparse
-raw.X=(raw.X.A if issparse(raw.X) else raw.X)
-#set adata.raw
-raw.raw=raw
-sc.pp.log1p(raw)
-```
-
-```python
-#Use domain 0 as an example
-target=0
+#Use domain 2 as an example
+target=2
 meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
                     pred=raw.obs["pred"].tolist(),
                     target_domain=target,
-                    start_gene="KRT8",
+                    start_gene="GFAP",
                     mean_diff=0,
                     early_stop=True,
-                    max_iter=5,
+                    max_iter=3,
                     use_raw=False)
 
 raw.obs["meta"]=meta_exp
 ```
-    Add gene:  MYL9
-    Minus gene:  FTH1
-    Absolute mean change: 0.8869066
-    Number of non-target spots reduced to: 1091
-    ===========================================================================
-    Meta gene is:  KRT8+MYL9-FTH1
-    ===========================================================================
-    
+
+    Trying to set attribute `.obs` of view, copying.
+    Trying to set attribute `.obs` of view, copying.
+
+
     Add gene:  MGP
+    Minus gene:  FTH1
+    Absolute mean change: 0.8913243
+    Number of non-target spots reduced to: 1888
+    ===========================================================================
+    Meta gene is:  GFAP+MGP-FTH1
+    ===========================================================================
+
+
+    Trying to set attribute `.obs` of view, copying.
+
+
+    Add gene:  MYL9
     Minus gene:  MBP
-    Absolute mean change: 2.1050348
-    Number of non-target spots reduced to: 286
+    Absolute mean change: 2.175557
+    Number of non-target spots reduced to: 563
     ===========================================================================
-    Meta gene is:  KRT8+MYL9-FTH1+MGP-MBP
+    Meta gene is:  GFAP+MGP-FTH1+MYL9-MBP
     ===========================================================================
-    
-    Add gene:  GFAP
-    Minus gene:  SNAP25
-    Absolute mean change: 2.6333575
-    Number of non-target spots reduced to: 181
+    Add gene:  KRT8
+    Minus gene:  MT-ATP6
+    Absolute mean change: 2.8935516
+    Number of non-target spots reduced to: 111
     ===========================================================================
-    Meta gene is:  KRT8+MYL9-FTH1+MGP-MBP+GFAP-SNAP25
-    ===========================================================================
-
-    Add gene:  SLC1A2
-    Minus gene:  PLP1
-    Absolute mean change: 3.3762903
-    Number of non-target spots reduced to: 87
-    ===========================================================================
-    Meta gene is:  KRT8+MYL9-FTH1+MGP-MBP+GFAP-SNAP25+SLC1A2-PLP1
-    ===========================================================================
-    
-    Add gene:  PLP1
-    Minus gene:  CALM2
-    Stopped! Previous Number of non-target spots 87 110 3.3762903 3.1888924
-    Previous Number of non-target spots 87 110 3.3762903 3.1888924
-    Previous Number of non-target spots 87
-    Current Number of non-target spots 110
-    Absolute mean change 3.3762903
-    ===========================================================================
-    Meta gene:  KRT8+MYL9-FTH1+MGP-MBP+GFAP-SNAP25+SLC1A2-PLP1
+    Meta gene is:  GFAP+MGP-FTH1+MYL9-MBP+KRT8-MT-ATP6
     ===========================================================================
 
-```python
-#Plot meta gene relative expression 
-raw.obs["meta_relative"]=(raw.obs["meta"]-np.min(raw.obs["meta"]))/(np.max(raw.obs["meta"])-np.min(raw.obs["meta"]))
-color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
-fig=sc.pl.scatter(raw, x="x5", y="x4", color="meta_relative",title=meta_name,color_map=color_self,show=False,size=100000/raw.shape[0])
-fig.set_aspect('equal', 'box')
-fig
-fig.figure.savefig("../tutorial/"+meta_name+"_raw_relative.png", dpi=300)
-```
-
-
-    
-![png](KRT8+MYL9-FTH1+MGP-MBP+GFAP-SNAP25+SLC1A2-PLP1_raw_relative.png)
-    
-
-
-### 7. Identify Subdomain (Use domain 5 as an example)
 
 
 ```python
-#Use domain 5 as an example since it is located in the centre
-adata=sc.read("../tutorial/results.h5ad")
-pred=adata.obs["pred"].astype('category')
-raw=sc.read("./data/sample_data.h5ad")
-raw.var_names_make_unique()
-raw.obs["pred"]=pred
-target=5
-raw.obs["sub_cluster"]=spg.detect_subclusters(cell_id=raw.obs.index.tolist(), 
-                               x=raw.obs["x2"].tolist(), 
-                               y=raw.obs["x3"].tolist(), 
-                               pred=raw.obs["pred"].tolist(), 
-                               target_cluster=target, 
-                               radius=3, 
-                               res=0.1)
+#Plot meta gene
+g="GFAP"
+raw.obs["exp"]=raw.X[:,raw.var.index==g]
+ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=g,color_map=color_self,show=False,size=100000/raw.shape[0])
+ax.set_aspect('equal', 'box')
+ax.axes.invert_yaxis()
+plt.savefig("./sample_results/"+g+".png", dpi=600)
+plt.close()
+
+raw.obs["exp"]=raw.obs["meta"]
+ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=meta_name,color_map=color_self,show=False,size=100000/raw.shape[0])
+ax.set_aspect('equal', 'box')
+ax.axes.invert_yaxis()
+plt.savefig("./sample_results/meta_gene.png", dpi=600)
+plt.close()
 
 ```
+
+**start**![](./sample_results/GFAP.png) **meta gene**![](./sample_results/meta_gene.png)
+
 
 ```python
-colors_use=['#FFFF00', '#4a6fe3', '#bb7784', '#2ca02c', '#ff9896', "#C1CEFA",'#98df8a', '#ffbb78', '#ff7f0e', '#1f77b4', '#800080', '#959595', '#ffff00', '#014d01', '#0000ff', '#ff0000', '#000000']
-num_celltype=len(raw.obs["sub_cluster"].unique())
-raw.uns["sub_cluster_colors"]=list(colors_use[:num_celltype])
-fig=sc.pl.scatter(raw,alpha=1,x="x5",y="x4",color="sub_cluster",show=False,size=100000/raw.shape[0])
-fig.set_aspect('equal', 'box')
-fig
-fig.figure.savefig("../tutorial/Domain2_subdomains.png", dpi=300)```
-        
+
 ```
-![png](Domain2_subdomains.png)
-
-
