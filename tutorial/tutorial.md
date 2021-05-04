@@ -313,7 +313,7 @@ ax.axes.invert_yaxis()
 plt.savefig("./sample_results/pred.png", dpi=600)
 plt.close()
 
-#Plot refinedspatial domains
+#Plot refined spatial domains
 domains="refined_pred"
 num_celltype=len(adata.obs[domains].unique())
 adata.uns[domains+"_colors"]=list(plot_color[:num_celltype])
