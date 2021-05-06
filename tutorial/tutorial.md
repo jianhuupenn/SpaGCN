@@ -81,10 +81,12 @@ import warnings
 warnings.filterwarnings("ignore")
 import matplotlib.colors as clr
 import matplotlib.pyplot as plt
-#Use opencv to read in image data
+import SpaGCN as spg
+
+#In order to read in image data, we need to install some package. Here we recommend package "opencv"
+#inatll opencv in python
 #!pip3 install opencv-python
 import cv2
-import SpaGCN as spg
 ```
 
 
@@ -100,9 +102,13 @@ spg.__version__
 
 ### 2. Read in data
 The current version of SpaGCN requres three input data: 
-- The gene expression matrix(n by k); 
-- Spatial coordinateds of samples; 
-- Histology image(optional).
+<br>
+1. The gene expression matrix(n by k): expression_matrix.h5;
+<br>
+2. Spatial coordinateds of samplespositions.txt;
+<br>
+3. Histology image(optional): histology.tif, can be tif or png or jepg.
+<br>
 The gene expreesion data can be stored as an AnnData object. AnnData stores a data matrix .X together with annotations of observations .obs, variables .var and unstructured annotations .uns. 
 
 
@@ -112,6 +118,7 @@ The gene expreesion data can be stored as an AnnData object. AnnData stores a da
 from scanpy import read_10x_h5
 adata = read_10x_h5("../tutorial/data/expression_matrix.h5")
 spatial=pd.read_csv("../tutorial/data/positions.txt",sep=",",header=None,na_filter=False,index_col=0) 
+
 adata.obs["x1"]=spatial[1]
 adata.obs["x2"]=spatial[2]
 adata.obs["x3"]=spatial[3]
@@ -156,6 +163,8 @@ cv2.imwrite('./sample_results/151673_map.jpg', img_new)
 b=49
 a=1
 adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=image, beta=b, alpha=a, histology=True)
+#If histlogy image is not available, SoaGCN can calculate the adjacent matrix using the fnction below
+#adj=calculate_adj_matrix(x=x_pixel,y=y_pixel, histology=False)
 np.savetxt('./data/adj.csv', adj, delimiter=',')
 ```
 
