@@ -26,7 +26,7 @@ For tutorial, please refer to: https://github.com/jianhuupenn/SpaGCN/blob/master
 <br>
 A Jupyter notebook of the tutorial is accessible from : https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.ipynb
 <br>
-Please install jupyter in your python in order to open this notebook.
+Please install jupyter in order to open this notebook.
 <br>
 Toy data and results can be downloaded at: https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
 
