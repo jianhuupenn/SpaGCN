@@ -52,3 +52,14 @@ Total number of SVGs:  25
 d_g={0: ['Camk2n1', 'Elmo1', 'Nrgn', 'Hpcal4', 'Zfp637', 'Pcsk2', 'Lamp5', 'Fkbp1a'], 1: ['Hpcal4', 'Nrgn', 'Slc17a7', 'Pcsk2', 'Pgm2l1', 'Arc'], 2: ['Cplx1'], 3: ['Mbp', 'Mobp', 'Plp1', 'Plekhb1'], 4: ['Nrsn1', 'Egr1'], 5: ['Glul', 'Bcl6', 'Atp1a2'], 6: ['Bsg']}
 
 
+
+#-------------------------------- MOB ----------------------------------------------------------------
+Domain 0 : 22
+Domain 1 : 33
+Domain 2 : 40
+Domain 3 : 6
+Domain 4 : 7
+Total number of SVGs:  108
+d_g={0: ['CCK', 'HLF', 'AQP4', 'SLC1A3', 'PLA2G7', 'DOC2G', 'NCAN', 'MT2', 'NRSN1', 'SLC6A11', 'CDHR1', 'MLC1', 'PPAP2B', 'SHISA9', 'IGFBP2', 'S1PR1', 'SOX2', 'EOMES', 'NTSR2', 'ISLR', 'AI593442', 'LCAT'], 1: ['OMP', 'NUDT4', 'VIM', 'VTN', 'MEST', 'GSN', 'FRZB', 'IFI27L1', 'ATF5', 'NR2F2', 'FMO1', 'PMEPA1', 'LPAR1', 'NNAT', 'FYCO1', 'RGCC', 'IGFBP7', 'PTN', 'AHNAK', 'SOX10', 'TMEM132B', 'IGFBP4', 'IFITM3', 'SH3PXD2A', 'HMGCS2', 'WLS', 'ASPA', 'BGN', 'TSPAN15', 'DCN', 'FOXD3', 'HEY2', 'CCND2'], 2: ['BAIAP2', 'FAM163B', 'PTPRO', 'PSD', 'SYN1', 'CHCHD10', 'MEIS2', 'DESI1', 'GDA', 'ICAM5', 'BIN1', 'GNAI1', 'STXBP6', 'HIVEP2', 'RBFOX3', 'KCNJ4', 'UBE2QL1', 'SLC8A1', 'ANKS1B', 'GPSM1', 'CACNB3', 'HPCAL4', 'NCDN', '2010300C02RIK', 'MAP2K1', 'EGR1', 'TIAM1', 'SNN', 'ANO3', 'FAM131B', 'YPEL5', 'DLC1', 'PHYHIPL', 'RAB40B', 'GRIA3', 'ETL4', 'PLCB1', 'DNAJB5', 'SMARCD1', 'GCNT1'], 3: ['NTNG1', 'SLC17A7', 'RELN', 'SV2B', 'SCUBE1', 'SHISA3'], 4: ['NRGN', 'NNAT', 'CAMK4', 'LRP8', 'DLX1AS', 'NECAB2', 'SOX11']}
+
+
