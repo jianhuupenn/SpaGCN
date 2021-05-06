@@ -57,7 +57,7 @@ If you do not have Python3.5 or Python3.6 installed, consider installing Anacond
 #create an environment called SpaGCN
 conda create -n SpaGCN python=3.7.9
 #activate your environment 
-conda activate ItClust
+conda activate SpaGCN
 git clone https://github.com/jianhuupenn/SpaGCN
 cd SpaGCN/SpaGCN_package/
 python3 setup.py build
