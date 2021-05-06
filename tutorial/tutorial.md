@@ -103,7 +103,8 @@ spg.__version__
 ### 2. Read in data
 The current version of SpaGCN requres three input data.
 <br>
-1. The gene expression matrix(n by k): expression_matrix.h5;
+<br>
+1.The gene expression matrix(n by k): expression_matrix.h5;
 <br>
 2. Spatial coordinateds of samplespositions.txt;
 <br>
