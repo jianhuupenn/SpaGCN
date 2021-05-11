@@ -54,9 +54,10 @@ Environment 3:
 
 Souce code: [Github](https://github.com/jianhuupenn/SpaGCN)  
 
-We are continuing adding new features. Bug reports or feature requests are welcome. Last update: 05/11/2021
+We are continuing adding new features. Bug reports or feature requests are welcome. 
 
-<br>
+Last update: 05/11/2021
+
 
 
 ## References
