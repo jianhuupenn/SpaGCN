@@ -216,7 +216,7 @@ l is  1000 Percentage of total expression contributed by neighborhoods: 153.8820
 l=spg.find_l(p=p,adj=adj,start=100, end=500,sep=1, tol=0.01)
 
 #res: resolution in the initial Louvain's Clustering methods.
-#If the number of clusters known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
+#If the number of clusters is known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
 #For this toy data, we set the number of clusters=7 since this tissue has 7 layers
 n_clusters=7
 #Set seed
