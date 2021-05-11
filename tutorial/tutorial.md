@@ -212,7 +212,7 @@ l is  100 Percentage of total expression contributed by neighborhoods: 0.2383109
 l is  500 Percentage of total expression contributed by neighborhoods: 28.014718550027993
 l is  1000 Percentage of total expression contributed by neighborhoods: 153.8820492650696
 """
-#Search l from 100 to 1000
+#Search l from 100 to 500
 l=spg.find_l(p=p,adj=adj,start=100, end=500,sep=1, tol=0.01)
 
 #res: resolution in the initial Louvain's Clustering methods.
