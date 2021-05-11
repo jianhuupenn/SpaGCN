@@ -158,11 +158,16 @@ for i in range(len(x_pixel)):
     img_new[int(x-20):int(x+20), int(y-20):int(y+20),:]=0
 
 cv2.imwrite('./sample_results/151673_map.jpg', img_new)
+```
 
+The ‘s’ parameter determines the weight given to histology when calculating Euclidean distance between every two spots. ‘s = 1’ means that the histology pixel intensity value has the same scale variance as the (x,y) coordinates, whereas higher value of ‘s’ indicates higher scale variance, hence, higher weight to histology, when calculating the Euclidean distance. 
+
+
+```python
 #Calculate adjacent matrix
+s=1
 b=49
-a=1
-adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=image, beta=b, alpha=a, histology=True)
+adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=image, beta=b, alpha=s, histology=True)
 #If histlogy image is not available, SoaGCN can calculate the adjacent matrix using the fnction below
 #adj=calculate_adj_matrix(x=x_pixel,y=y_pixel, histology=False)
 np.savetxt('./data/adj.csv', adj, delimiter=',')
@@ -171,6 +176,7 @@ np.savetxt('./data/adj.csv', adj, delimiter=',')
     Calculateing adj matrix using histology image...
     Var of c0,c1,c2 =  33.30687202862215 174.55510595352243 46.84205750749746
     Var of x,y,z =  5606737.526317932 4468793.817921193 5606737.526317932
+
 
 
 ### 4. Spatial domain detection using SpaGCN
