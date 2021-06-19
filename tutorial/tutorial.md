@@ -115,6 +115,7 @@ The current version of SpaGCN requres three input data.
 1. The gene expression matrix(n by k): expression_matrix.h5;
 2. Spatial coordinateds of samplespositions.txt;
 3. Histology image(optional): histology.tif, can be tif or png or jepg.
+
 The gene expreesion data can be stored as an AnnData object. AnnData stores a data matrix .X together with annotations of observations .obs, variables .var and unstructured annotations .uns. 
 
 
