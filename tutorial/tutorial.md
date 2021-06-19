@@ -4,9 +4,9 @@
 <center>Author: Jian Hu*, Xiangjie Li, Kyle Coleman, Amelia Schroeder, Nan Ma, David J. Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
 
 ## Outline
+<br>
 0. Installation
 1. Import modules
-<br>
 2. Read in data
 <br>
 
