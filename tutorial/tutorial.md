@@ -224,7 +224,7 @@ l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
     recommended l =  124.032197265625
 
 - n_clusters: Number of spatial domains wanted.
-- res: Resolution in the initial Louvain's Clustering methods. If the number of clusters is known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
+- res: Resolution in the initial Louvain's Clustering methods. If the number of clusters is known, we can use the spg.search_res() fnction to search for suitable resolution(optional).
 
 ```python
 #For this toy data, we set the number of clusters=7 since this tissue has 7 layers
