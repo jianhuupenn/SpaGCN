@@ -82,7 +82,6 @@ warnings.filterwarnings("ignore")
 import matplotlib.colors as clr
 import matplotlib.pyplot as plt
 import SpaGCN as spg
-
 #In order to read in image data, we need to install some package. Here we recommend package "opencv"
 #inatll opencv in python
 #!pip3 install opencv-python
@@ -97,7 +96,7 @@ spg.__version__
 
 
 
-    '1.0.0'
+    '1.1.0'
 
 
 ### 2. Read in data
@@ -204,16 +203,20 @@ p=0.5
 
 #l: parameter to control p.
 #Find the l value given p, first use spg.test_l() function to get a rough estimate of the range l falls in
-spg.test_l(adj,[1, 10, 100, 500, 1000])
+l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
 """
-l is  1 Percentage of total expression contributed by neighborhoods: 0.0
-l is  10 Percentage of total expression contributed by neighborhoods: 0.0
-l is  100 Percentage of total expression contributed by neighborhoods: 0.23831094397316965
-l is  500 Percentage of total expression contributed by neighborhoods: 28.014718550027993
-l is  1000 Percentage of total expression contributed by neighborhoods: 153.8820492650696
+Run 1: l [0.01, 1000], p [0.0, 153.882049263866]
+Run 2: l [0.01, 500.005], p [0.0, 28.01544761657715]
+Run 3: l [0.01, 250.0075], p [0.0, 4.240330219268799]
+Run 4: l [0.01, 125.00874999999999], p [0.0, 0.5157277584075928]
+Run 5: l [62.509375, 125.00874999999999], p [0.028496861457824707, 0.5157277584075928]
+Run 6: l [93.7590625, 125.00874999999999], p [0.18753135204315186, 0.5157277584075928]
+Run 7: l [109.38390625, 125.00874999999999], p [0.32801353931427, 0.5157277584075928]
+Run 8: l [117.196328125, 125.00874999999999], p [0.41564691066741943, 0.5157277584075928]
+Run 9: l [121.1025390625, 125.00874999999999], p [0.4640926122665405, 0.5157277584075928]
+Run 10: l [123.05564453125, 125.00874999999999], p [0.4895068407058716, 0.5157277584075928]
+recommended l =  124.032197265625
 """
-#Search l from 100 to 500
-l=spg.find_l(p=p,adj=adj,start=100, end=500,sep=1, tol=0.01)
 
 #res: resolution in the initial Louvain's Clustering methods.
 #If the number of clusters is known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
@@ -224,37 +227,6 @@ r_seed=t_seed=n_seed=100
 #Seaech for suitable resolution
 res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed)
 ```
-
-    l is  1 Percentage of total expression contributed by neighborhoods: 0.0
-    l is  10 Percentage of total expression contributed by neighborhoods: 0.0
-    l is  100 Percentage of total expression contributed by neighborhoods: 0.23831094397316965
-    l is  500 Percentage of total expression contributed by neighborhoods: 28.014718550027993
-    l is  1000 Percentage of total expression contributed by neighborhoods: 153.8820492650696
-    L= 100 P= 0.23831
-    L= 101 P= 0.24709
-    L= 102 P= 0.25606
-    L= 103 P= 0.2652
-    L= 104 P= 0.27454
-    L= 105 P= 0.28405
-    L= 106 P= 0.29376
-    L= 107 P= 0.30365
-    L= 108 P= 0.31374
-    L= 109 P= 0.32402
-    L= 110 P= 0.33449
-    L= 111 P= 0.34515
-    L= 112 P= 0.35601
-    L= 113 P= 0.36707
-    L= 114 P= 0.37832
-    L= 115 P= 0.38978
-    L= 116 P= 0.40144
-    L= 117 P= 0.41329
-    L= 118 P= 0.42536
-    L= 119 P= 0.43763
-    L= 120 P= 0.4501
-    L= 121 P= 0.46278
-    L= 122 P= 0.47567
-    L= 123 P= 0.48877
-    L= 124 P= 0.50208
     Start at res =  0.7 step =  0.1
     Initializing cluster centers with louvain, resolution =  0.7
     Epoch  0
