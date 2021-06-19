@@ -5,9 +5,7 @@
 
 ## Outline
 0. Installation
-<br>
 1. Import modules
-<br>
 2. Read in data
 <br>
 
