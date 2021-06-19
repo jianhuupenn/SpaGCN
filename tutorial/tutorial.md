@@ -200,7 +200,6 @@ sc.pp.log1p(adata)
 ```python
 #p: percentage of total expression contributed by neighborhoods.
 p=0.5 
-
 #l: parameter to control p.
 #Find the l value given p, first use spg.test_l() function to get a rough estimate of the range l falls in
 l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
@@ -225,7 +224,7 @@ l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
 n_clusters=7
 #Set seed
 r_seed=t_seed=n_seed=100
-#Seaech for suitable resolution
+#Search for suitable resolution
 res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed)
 ```
     Start at res =  0.7 step =  0.1
