@@ -336,7 +336,14 @@ raw.obs["y_pixel"]=raw.obs["x5"]
 raw.X=(raw.X.A if issparse(raw.X) else raw.X)
 raw.raw=raw
 sc.pp.log1p(raw)
+```
+- target: Target domain to identify SVGs.
+- min_in_group_fraction: Minium in-group expression fraction.
+- min_in_out_group_ratio: Miniumn (in-group expression fraction) / (out-group expression fraction).
+- min_fold_change: Miniumn (in-group expression) / (out-group expression).
+- r: Radius to detect a spot's neighboring spots.
 
+```python
 #Use domain 0 as an example
 target=0
 #Set filtering criterials
