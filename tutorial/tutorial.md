@@ -7,6 +7,11 @@
 0. Installation
 1. Import modules
 2. Read in data
+3. Integrate gene expression and histology into a Graph
+4. Spatial domain detection using SpaGCN
+5. Identify SVGs
+6. Identify Meta Gene
+7. Multiple tissue sections analysis
 <br>
 
 
