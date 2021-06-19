@@ -60,7 +60,7 @@ python3 setup.py install --user
 ```
 
 #### 0.3 Anaconda
-If you do not have Python3.5 or Python3.6 installed, consider installing Anaconda (see Installing Anaconda). After installing Anaconda, you can create a new environment, for example, SpaGCN (you can change to any name you like).
+If you do not have Python3.5 or Python3.6 installed, consider installing Anaconda. After installing Anaconda, you can create a new environment, for example, SpaGCN (you can change to any name you like).
 
 
 ```python
