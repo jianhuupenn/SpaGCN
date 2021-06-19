@@ -223,10 +223,9 @@ l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
     Run 10: l [123.05564453125, 125.00874999999999], p [0.4895068407058716, 0.5157277584075928]
     recommended l =  124.032197265625
 
+- res: resolution in the initial Louvain's Clustering methods. If the number of clusters is known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
 
 ```python
-#res: resolution in the initial Louvain's Clustering methods.
-#If the number of clusters is known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
 #For this toy data, we set the number of clusters=7 since this tissue has 7 layers
 n_clusters=7
 #Set seed
