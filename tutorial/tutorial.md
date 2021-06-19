@@ -39,24 +39,20 @@ Now you can install the current release of SpaGCN by the following three ways:
 
 
 ```python
-"""
 pip3 install SpaGCN
 #Note: you need to make sure that the pip is for python3，or you can install SpaGCN by
 python3 -m pip install SpaGCN
 #If you do not have permission (when you get a permission denied error), you can install SpaGCN by
 pip3 install --user SpaGCN
-"""
 ```
 #### 0.2 Github
 Download the package from Github and install it locally:
 
 
 ```python
-"""
 git clone https://github.com/jianhuupenn/SpaGCN
 cd SpaGCN/SpaGCN_package/
 python3 setup.py install --user
-"""
 ```
 
 #### 0.3 Anaconda
@@ -64,7 +60,6 @@ If you do not have Python3.5 or Python3.6 installed, consider installing Anacond
 
 
 ```python
-"""
 #create an environment called SpaGCN
 conda create -n SpaGCN python=3.7.9
 #activate your environment 
@@ -74,7 +69,6 @@ cd SpaGCN/SpaGCN_package/
 python3 setup.py build
 python3 setup.py install
 conda deactivate
-"""
 ```
 
 ### 1. Import modules
@@ -103,12 +97,8 @@ import cv2
 ```python
 spg.__version__
 ```
-
-
-
-
+    
     '1.1.0'
-
 
 ### 2. Read in data
 The current version of SpaGCN requres three input data.
@@ -120,7 +110,6 @@ The gene expreesion data can be stored as an AnnData object. AnnData stores a da
 
 
 ```python
-"""
 #Read original data and save it to h5ad
 from scanpy import read_10x_h5
 adata = read_10x_h5("../tutorial/data/expression_matrix.h5")
@@ -135,7 +124,7 @@ adata=adata[adata.obs["x1"]==1]
 adata.var_names=[i.upper() for i in list(adata.var_names)]
 adata.var["genename"]=adata.var.index.astype("str")
 adata.write_h5ad("../tutorial/data/sample_data.h5ad")
-"""
+    
 #Read in gene expression and spatial location
 adata=sc.read("../tutorial/data/sample_data.h5ad")
 #Read in hitology image
@@ -167,7 +156,7 @@ cv2.imwrite('./sample_results/151673_map.jpg', img_new)
 ```
 
 - The ‘s’ parameter determines the weight given to histology when calculating Euclidean distance between every two spots. ‘s = 1’ means that the histology pixel intensity value has the same scale variance as the (x,y) coordinates, whereas higher value of ‘s’ indicates higher scale variance, hence, higher weight to histology, when calculating the Euclidean distance. 
-
+- The "b"parameter determines the area of each spot when extracting color intensity.
 
 ```python
 #Calculate adjacent matrix
