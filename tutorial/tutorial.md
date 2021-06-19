@@ -202,13 +202,13 @@ sc.pp.log1p(adata)
 ```
 
 #### 4.2 Set hyper-parameters
+- p: percentage of total expression contributed by neighborhoods.
+- l: parameter to control p.
 
 
 ```python
-#p: percentage of total expression contributed by neighborhoods.
 p=0.5 
-#l: parameter to control p.
-#Find the l value given p, first use spg.test_l() function to get a rough estimate of the range l falls in
+#Find the l value given p
 l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
 ```
     Run 1: l [0.01, 1000], p [0.0, 153.882049263866]
