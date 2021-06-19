@@ -117,7 +117,6 @@ The gene expreesion data can be stored as an AnnData object. AnnData stores a da
 from scanpy import read_10x_h5
 adata = read_10x_h5("../tutorial/data/expression_matrix.h5")
 spatial=pd.read_csv("../tutorial/data/positions.txt",sep=",",header=None,na_filter=False,index_col=0) 
-
 adata.obs["x1"]=spatial[1]
 adata.obs["x2"]=spatial[2]
 adata.obs["x3"]=spatial[3]
@@ -135,7 +134,7 @@ adata=sc.read("../tutorial/data/sample_data.h5ad")
 img=cv2.imread("../tutorial/data/histology.tif")
 ```
 
-### 3. Calculate adjacent matrix
+### 3. Integrate gene expression and histology into a Graph
 
 
 ```python
