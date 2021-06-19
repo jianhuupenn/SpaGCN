@@ -4,8 +4,8 @@
 <center>Author: Jian Hu*, Xiangjie Li, Kyle Coleman, Amelia Schroeder, Nan Ma, David J. Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
 
 ## Outline
-    0. Installation
-    1. Import modules
+#### 0. Installation
+#### 1. Import modules
 
 ### 0. Installation
 The installation should take a few minutes on a normal computer. To install SpaGCN package you must make sure that your python version is over 3.5. If you don’t know the version of python you can check it by:
@@ -27,7 +27,7 @@ platform.python_version()
 Note: Because SpaGCN pends on pytorch, you should make sure torch is correctly installed.
 <br>
 Now you can install the current release of SpaGCN by the following three ways:
-- PyPI: Directly install the package from PyPI.
+#### 0.1 PyPI: Directly install the package from PyPI.
 
 
 ```python
@@ -39,8 +39,7 @@ python3 -m pip install SpaGCN
 pip3 install --user SpaGCN
 """
 ```
-
-- Github
+#### 0.2 Github
 Download the package from Github and install it locally:
 
 
@@ -52,7 +51,7 @@ python3 setup.py install --user
 """
 ```
 
-- Anaconda
+#### 0.3 Anaconda
 If you do not have Python3.5 or Python3.6 installed, consider installing Anaconda (see Installing Anaconda). After installing Anaconda, you can create a new environment, for example, SpaGCN (you can change to any name you like).
 
 
