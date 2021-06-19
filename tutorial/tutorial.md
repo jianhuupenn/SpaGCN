@@ -252,7 +252,7 @@ refined_pred=spg.refine(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred
 adata.obs["refined_pred"]=refined_pred
 adata.obs["refined_pred"]=adata.obs["refined_pred"].astype('category')
 #Save results
-#adata.write_h5ad("./sample_results/results.h5ad")
+adata.write_h5ad("./sample_results/results.h5ad")
 ```
 
     Initializing cluster centers with louvain, resolution =  0.7
