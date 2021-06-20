@@ -566,7 +566,9 @@ plt.close()
 ### 7. Multiple tissue sections analysis
 In this section, we show an example on how to analysis multiple adjacent tissue sections using SpaGCN.
 
-**Mouse brain anterior**![](./sample_results/MA1_lowres.png) **Mouse brain posterior**![](./sample_results/MP1_lowres.png)
+**Mouse brain anterior**![](./sample_results/MA1_lowres.png) 
+
+**Mouse brain posterior**![](./sample_results/MP1_lowres.png)
 
 #### 7.1 Read in data
 
@@ -577,10 +579,6 @@ adata2=sc.read("./data/Mouse_brain/MP1.h5ad")
 img1=cv2.imread("./data/Mouse_brain/MA1_histology.tif")
 img2=cv2.imread("./data/Mouse_brain/MP1_histology.tif")
 ```
-
-    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
-    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
-
 
 #### 7.2 Extract color intensity
 
@@ -593,7 +591,6 @@ y_pixel1=adata1.obs["x5"].tolist()
 adata1.obs["color"]=spg.extract_color(x_pixel=x_pixel1, y_pixel=y_pixel1, image=img1, beta=b)
 z_scale=np.max([np.std(x_pixel1), np.std(y_pixel1)])*s
 adata1.obs["z"]=(adata1.obs["color"]-np.mean(adata1.obs["color"]))/np.std(adata1.obs["color"])*z_scale
-
 x_pixel2=adata2.obs["x4"].tolist()
 y_pixel2=adata2.obs["x5"].tolist()
 adata2.obs["color"]=spg.extract_color(x_pixel=x_pixel2, y_pixel=y_pixel2, image=img2, beta=b)
