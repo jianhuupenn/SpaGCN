@@ -113,8 +113,8 @@ The gene expreesion data can be stored as an AnnData object. AnnData stores a da
 """
 #Read original data and save it to h5ad
 from scanpy import read_10x_h5
-adata = read_10x_h5("../tutorial/data/expression_matrix.h5")
-spatial=pd.read_csv("../tutorial/data/positions.txt",sep=",",header=None,na_filter=False,index_col=0) 
+adata = read_10x_h5("../tutorial/data/151673/expression_matrix.h5")
+spatial=pd.read_csv("../tutorial/data/151673/positions.txt",sep=",",header=None,na_filter=False,index_col=0) 
 adata.obs["x1"]=spatial[1]
 adata.obs["x2"]=spatial[2]
 adata.obs["x3"]=spatial[3]
@@ -124,12 +124,12 @@ adata.obs["x5"]=spatial[5]
 adata=adata[adata.obs["x1"]==1]
 adata.var_names=[i.upper() for i in list(adata.var_names)]
 adata.var["genename"]=adata.var.index.astype("str")
-adata.write_h5ad("../tutorial/data/sample_data.h5ad")
+adata.write_h5ad("../tutorial/data/151673/sample_data.h5ad")
 """
 #Read in gene expression and spatial location
-adata=sc.read("../tutorial/data/sample_data.h5ad")
+adata=sc.read("../tutorial/data/151673/sample_data.h5ad")
 #Read in hitology image
-img=cv2.imread("../tutorial/data/histology.tif")
+img=cv2.imread("../tutorial/data/151673/histology.tif")
 ```
 
 ### 4. Integrate gene expression and histology into a Graph
