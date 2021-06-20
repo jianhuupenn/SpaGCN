@@ -563,7 +563,128 @@ plt.close()
 
 **start**![](./sample_results/GFAP.png) **meta gene**![](./sample_results/meta_gene.png)
 
+### 7. Multiple tissue sections analysis
+In this section, we show an example on how to analysis multiple adjacent tissue sections using SpaGCN.
+
+**Mouse brain anterior**![](./sample_results/MA1_lowres.png) **Mouse brain posterior**![](./sample_results/MP1_lowres.png)
+
+#### 7.1 Read in data
+
 
 ```python
-
+adata1=sc.read("./data/Mouse_brain/MA1.h5ad")
+adata2=sc.read("./data/Mouse_brain/MP1.h5ad")
+img1=cv2.imread("./data/Mouse_brain/MA1_histology.tif")
+img2=cv2.imread("./data/Mouse_brain/MP1_histology.tif")
 ```
+
+    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+    Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+
+
+#### 7.2 Extract color intensity
+
+
+```python
+b=49
+s=1
+x_pixel1=adata1.obs["x4"].tolist()
+y_pixel1=adata1.obs["x5"].tolist()
+adata1.obs["color"]=spg.extract_color(x_pixel=x_pixel1, y_pixel=y_pixel1, image=img1, beta=b)
+z_scale=np.max([np.std(x_pixel1), np.std(y_pixel1)])*s
+adata1.obs["z"]=(adata1.obs["color"]-np.mean(adata1.obs["color"]))/np.std(adata1.obs["color"])*z_scale
+
+x_pixel2=adata2.obs["x4"].tolist()
+y_pixel2=adata2.obs["x5"].tolist()
+adata2.obs["color"]=spg.extract_color(x_pixel=x_pixel2, y_pixel=y_pixel2, image=img2, beta=b)
+z_scale=np.max([np.std(x_pixel2), np.std(y_pixel2)])*s
+adata2.obs["z"]=(adata2.obs["color"]-np.mean(adata2.obs["color"]))/np.std(adata2.obs["color"])*z_scale
+del img1, img2
+```
+
+#### 7.3 Modify coordinates to combine 2 sections
+
+
+```python
+from anndata import AnnData
+adata1.obs["x_pixel"]=x_pixel1
+adata1.obs["y_pixel"]=y_pixel1
+adata2.obs["x_pixel"]=x_pixel2-np.min(x_pixel2)+np.min(x_pixel1)
+adata2.obs["y_pixel"]=y_pixel2-np.min(y_pixel2)+np.max(y_pixel1)
+adata1.var_names_make_unique()
+adata2.var_names_make_unique()
+adata_all=AnnData.concatenate(adata1, adata2,join='inner',batch_key="dataset_batch",batch_categories=["0","1"])
+```
+
+#### 7.4 Integrate gene expression and histology into a Graph
+
+
+```python
+X=np.array([adata_all.obs["x_pixel"], adata_all.obs["y_pixel"], adata_all.obs["z"]]).T.astype(np.float32)
+adj=spg.pairwise_distance(X)
+```
+
+#### 7.5 Spatial domain detection using SpaGCN
+
+
+```python
+sc.pp.normalize_per_cell(adata_all, min_counts=0)
+sc.pp.log1p(adata_all)
+p=0.5 
+#Find the l value given p
+l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
+```
+
+    Run 1: l [0.01, 1000], p [0.0, 144.17116893743565]
+    Run 2: l [0.01, 500.005], p [0.0, 24.78992462158203]
+    Run 3: l [0.01, 250.0075], p [0.0, 3.649960994720459]
+    Run 4: l [125.00874999999999, 250.0075], p [0.4487175941467285, 3.649960994720459]
+    Run 5: l [125.00874999999999, 187.508125], p [0.4487175941467285, 1.5741894245147705]
+    Run 6: l [125.00874999999999, 156.2584375], p [0.4487175941467285, 0.9070142507553101]
+    Run 7: l [125.00874999999999, 140.63359375], p [0.4487175941467285, 0.6537595987319946]
+    Run 8: l [125.00874999999999, 132.821171875], p [0.4487175941467285, 0.5454769134521484]
+    recommended l =  128.91496093749998
+
+
+
+```python
+res=1.0
+seed=100
+random.seed(seed)
+torch.manual_seed(seed)
+np.random.seed(seed)
+clf=spg.SpaGCN()
+clf.set_l(l)
+clf.train(adata_all,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
+y_pred, prob=clf.predict()
+adata_all.obs["pred"]= y_pred
+adata_all.obs["pred"]=adata_all.obs["pred"].astype('category')
+```
+
+    Initializing cluster centers with louvain, resolution =  1.0
+    Epoch  0
+    Epoch  10
+    Epoch  20
+    Epoch  30
+    delta_label  0.004794180856339891 < tol  0.005
+    Reach tolerance threshold. Stopping training.
+    Total epoch: 37
+
+
+
+```python
+colors_use=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#bcbd22', '#17becf', '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#bec1d4', '#bb7784', '#0000ff', '#111010', '#FFFF00',   '#1f77b4', '#800080', '#959595', 
+ '#7d87b9', '#bec1d4', '#d6bcc0', '#bb7784', '#8e063b', '#4a6fe3', '#8595e1', '#b5bbe3', '#e6afb9', '#e07b91', '#d33f6a', '#11c638', '#8dd593', '#c6dec7', '#ead3c6', '#f0b98d', '#ef9708', '#0fcfc0', '#9cded6', '#d5eae7', '#f3e1eb', '#f6c4e1', '#f79cd4']
+num_celltype=len(adata_all.obs["pred"].unique())
+adata_all.uns["pred_colors"]=list(colors_use[:num_celltype])
+ax=sc.pl.scatter(adata_all,alpha=1,x="y_pixel",y="x_pixel",color="pred",show=False,size=150000/adata_all.shape[0])
+ax.set_aspect('equal', 'box')
+ax.axes.invert_yaxis()
+plt.savefig("./sample_results/mouse_barin_muti_sections_domains.png", dpi=600)
+plt.close()
+```
+
+**SpaGCN mouse brain combines**![](./sample_results/mouse_barin_muti_sections_domains.png)
+
+
+
