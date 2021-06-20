@@ -248,6 +248,7 @@ y_pred, prob=clf.predict()
 adata.obs["pred"]= y_pred
 adata.obs["pred"]=adata.obs["pred"].astype('category')
 #Do cluster refinement(optional)
+#shape="hexagon" for Visium data, "square" for ST data.
 adj_2d=spg.calculate_adj_matrix(x=x_array,y=y_array, histology=False)
 refined_pred=spg.refine(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred"].tolist(), dis=adj_2d, shape="hexagon")
 adata.obs["refined_pred"]=refined_pred
