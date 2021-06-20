@@ -30,7 +30,7 @@ Please install jupyter in order to open this notebook.
 <br>
 Toy data and results can be downloaded at: https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
 
-#### New Features!
+#### New Features! EZ Mode SpaGCN now available.
 For users who are new to Python, we provide an Easy Mode SpaGCN. The parameter setting and intermedium steps are simplified.
 <br>
 Important Notes: This easy mode ONLY have basic features and is ONLY for analysis purpose.
