@@ -310,7 +310,7 @@ plt.close()
 
 **Spatial Domains**![](./sample_results/pred.png) **Refined Spatial Domains**![](./sample_results/refined_pred.png)
 
-### .6 Identify SVGs
+### 6. Identify SVGs
 
 
 ```python
