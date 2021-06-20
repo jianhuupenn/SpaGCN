@@ -42,6 +42,7 @@ Easy Mode SpaGCN tutorial: https://github.com/jianhuupenn/SpaGCN/blob/master/tut
 <br>
 Easy Mode SpaGCN Jupyter Notebook: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.ipynb
 <br>
+
 ## System Requirements
 Python support packages: igraph, torch, pandas, numpy, scipy, scanpy > 1.5, anndata, louvain, sklearn.
 
