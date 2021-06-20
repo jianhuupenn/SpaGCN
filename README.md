@@ -38,7 +38,6 @@ For users who are new to Python, we provide an Easy Mode SpaGCN. The parameter s
 Important Notes: This easy mode ONLY have basic functions and is ONLY for analysis purpose.
 <br>
 For method comparison, debugging, customizing parameters, and checking intermedium outputs, please refer to the detailed tutorial above.
-
 <br>
 Easy Mode SpaGCN tutorial: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md
 <br>
