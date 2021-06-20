@@ -110,6 +110,7 @@ The gene expreesion data can be stored as an AnnData object. AnnData stores a da
 
 
 ```python
+"""
 #Read original data and save it to h5ad
 from scanpy import read_10x_h5
 adata = read_10x_h5("../tutorial/data/expression_matrix.h5")
@@ -124,7 +125,7 @@ adata=adata[adata.obs["x1"]==1]
 adata.var_names=[i.upper() for i in list(adata.var_names)]
 adata.var["genename"]=adata.var.index.astype("str")
 adata.write_h5ad("../tutorial/data/sample_data.h5ad")
-    
+"""
 #Read in gene expression and spatial location
 adata=sc.read("../tutorial/data/sample_data.h5ad")
 #Read in hitology image
