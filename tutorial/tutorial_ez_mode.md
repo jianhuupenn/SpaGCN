@@ -124,7 +124,7 @@ adata.obs["x5"]=spatial[5]
 adata=adata[adata.obs["x1"]==1]
 adata.var_names=[i.upper() for i in list(adata.var_names)]
 adata.var["genename"]=adata.var.index.astype("str")
-adata.write_h5ad("../tutorial/data/sample_data.h5ad")
+adata.write_h5ad("../tutorial/data/151673/sample_data.h5ad")
 """
 #Read in gene expression and spatial location
 adata=sc.read("../tutorial/data/151673/sample_data.h5ad")
