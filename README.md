@@ -24,11 +24,20 @@ The [**SpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementa
 <br>
 For tutorial, please refer to: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md
 <br>
-A Jupyter notebook of the tutorial is accessible from : https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.ipynb
+A Jupyter Notebook of the tutorial is accessible from : https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.ipynb
 <br>
 Please install jupyter in order to open this notebook.
 <br>
 Toy data and results can be downloaded at: https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
+#### New Features!
+<br>
+For users who are new to Python, we provide an Easy Mode SpaGCN! The parameter setting and intermedium steps are simplified.
+<br>
+Easy Mode SpaGCN tutorial: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md
+<br>
+Easy Mode SpaGCN Jupyter Notebook: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.ipynb
+<br>
+#### Important: this easy mode only have basic features. For method comparasion, debugging, customizing parameters, and checking intermedium outputs, please refer to the detailed tutorial above!
 
 ## System Requirements
 Python support packages: igraph, torch, pandas, numpy, scipy, scanpy > 1.5, anndata, louvain, sklearn.
