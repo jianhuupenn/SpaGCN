@@ -315,7 +315,7 @@ plt.close()
 
 ```python
 #Read in raw data
-raw=sc.read("../tutorial/data/sample_data.h5ad")
+raw=sc.read("../tutorial/data/151673/sample_data.h5ad")
 raw.var_names_make_unique()
 raw.obs["pred"]=adata.obs["pred"].astype('category')
 raw.obs["x_array"]=raw.obs["x2"]
