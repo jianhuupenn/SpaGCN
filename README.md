@@ -29,6 +29,7 @@ A Jupyter Notebook of the tutorial is accessible from : https://github.com/jianh
 Please install jupyter in order to open this notebook.
 <br>
 Toy data and results can be downloaded at: https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
+
 #### New Features!
 <br>
 For users who are new to Python, we provide an Easy Mode SpaGCN! The parameter setting and intermedium steps are simplified.
@@ -37,7 +38,7 @@ Easy Mode SpaGCN tutorial: https://github.com/jianhuupenn/SpaGCN/blob/master/tut
 <br>
 Easy Mode SpaGCN Jupyter Notebook: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.ipynb
 <br>
-#### Important: this easy mode only have basic features. For method comparasion, debugging, customizing parameters, and checking intermedium outputs, please refer to the detailed tutorial above!
+Important! This easy mode only have basic features. For method comparasion, debugging, customizing parameters, and checking intermedium outputs, please refer to the detailed tutorial above!
 
 ## System Requirements
 Python support packages: igraph, torch, pandas, numpy, scipy, scanpy > 1.5, anndata, louvain, sklearn.
