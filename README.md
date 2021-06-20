@@ -22,6 +22,9 @@ The [**SpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementa
 - Create mete genes to mark each spatial domains
 
 <br>
+
+## Tutorial
+
 For tutorial, please refer to: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md
 <br>
 A Jupyter Notebook of the tutorial is accessible from : https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.ipynb
