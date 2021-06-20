@@ -33,7 +33,9 @@ Toy data and results can be downloaded at: https://drive.google.com/drive/folder
 #### New Features!
 For users who are new to Python, we provide an Easy Mode SpaGCN! The parameter setting and intermedium steps are simplified.
 <br>
-Important! This easy mode only have basic features is is ONLY for analysis purpose! For method comparasion, debugging, customizing parameters, and checking intermedium outputs, please refer to the detailed tutorial above!
+Important Notes: This easy mode ONLY have basic features is is ONLY for analysis purpose! 
+<br>
+For method comparasion, debugging, customizing parameters, and checking intermedium outputs, please refer to the detailed tutorial above!
 
 <br>
 Easy Mode SpaGCN tutorial: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md
