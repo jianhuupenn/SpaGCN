@@ -1,4 +1,4 @@
-<h1><center>SpaGCN Tutorial</center></h1>
+<h1><center>SpaGCN Easy Mode Tutorial</center></h1>
 
 
 <center>Author: Jian Hu*, Xiangjie Li, Kyle Coleman, Amelia Schroeder, Nan Ma, David J. Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
