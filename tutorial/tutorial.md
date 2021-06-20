@@ -4,18 +4,18 @@
 <center>Author: Jian Hu*, Xiangjie Li, Kyle Coleman, Amelia Schroeder, Nan Ma, David J. Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
 
 ## Outline
-0. Installation
-1. Import modules
-2. Read in data
-3. Integrate gene expression and histology into a Graph
-4. Spatial domain detection using SpaGCN
-5. Identify SVGs
-6. Identify Meta Gene
-7. Multiple tissue sections analysis
+1. Installation
+2. Import modules
+3. Read in data
+4. Integrate gene expression and histology into a Graph
+5. Spatial domain detection using SpaGCN
+6. Identify SVGs
+7. Identify Meta Gene
+8. Multiple tissue sections analysis
 <br>
 
 
-### 0. Installation
+### 1. Installation
 The installation should take a few minutes on a normal computer. To install SpaGCN package you must make sure that your python version is over 3.5. If you don’t know the version of python you can check it by:
 
 
@@ -35,7 +35,7 @@ platform.python_version()
 Note: Because SpaGCN pends on pytorch, you should make sure torch is correctly installed.
 <br>
 Now you can install the current release of SpaGCN by the following three ways:
-#### 0.1 PyPI: Directly install the package from PyPI.
+#### 1.1 PyPI: Directly install the package from PyPI.
 
 
 ```python
@@ -45,7 +45,7 @@ python3 -m pip install SpaGCN
 #If you do not have permission (when you get a permission denied error), you can install SpaGCN by
 pip3 install --user SpaGCN
 ```
-#### 0.2 Github
+#### 1.2 Github
 Download the package from Github and install it locally:
 
 
@@ -55,7 +55,7 @@ cd SpaGCN/SpaGCN_package/
 python3 setup.py install --user
 ```
 
-#### 0.3 Anaconda
+#### 1.3 Anaconda
 If you do not have Python3.5 or Python3.6 installed, consider installing Anaconda. After installing Anaconda, you can create a new environment, for example, SpaGCN (you can change to any name you like).
 
 
@@ -71,7 +71,7 @@ python3 setup.py install
 conda deactivate
 ```
 
-### 1. Import modules
+### 2. Import modules
 
 ```python
 import os,csv,re
@@ -100,7 +100,7 @@ spg.__version__
     
     '1.1.0'
 
-### 2. Read in data
+### 3. Read in data
 The current version of SpaGCN requres three input data.
 1. The gene expression matrix(n by k): expression_matrix.h5;
 2. Spatial coordinateds of samplespositions.txt;
@@ -132,7 +132,7 @@ adata=sc.read("../tutorial/data/sample_data.h5ad")
 img=cv2.imread("../tutorial/data/histology.tif")
 ```
 
-### 3. Integrate gene expression and histology into a Graph
+### 4. Integrate gene expression and histology into a Graph
 
 
 ```python
@@ -175,9 +175,9 @@ np.savetxt('./data/adj.csv', adj, delimiter=',')
 
 
 
-### 4. Spatial domain detection using SpaGCN
+### 5. Spatial domain detection using SpaGCN
 
-#### 4.1 Expression data preprocessing
+#### 5.1 Expression data preprocessing
 
 
 ```python
@@ -191,7 +191,7 @@ sc.pp.normalize_per_cell(adata)
 sc.pp.log1p(adata)
 ```
 
-#### 4.2 Set hyper-parameters
+#### 5.2 Set hyper-parameters
 - p: Percentage of total expression contributed by neighborhoods.
 - l: Parameter to control p.
 
@@ -232,7 +232,7 @@ res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=
     recommended res =  0.7
 
 
-#### 4.3 Run SpaGCN
+#### 5.3 Run SpaGCN
 
 
 ```python
@@ -280,7 +280,7 @@ adata.write_h5ad("./sample_results/results.h5ad")
     Calculateing adj matrix using xy only...
 
 
-#### 4.4 Plot spatial domains
+#### 5.4 Plot spatial domains
 
 
 ```python
@@ -310,7 +310,7 @@ plt.close()
 
 **Spatial Domains**![](./sample_results/pred.png) **Refined Spatial Domains**![](./sample_results/refined_pred.png)
 
-### 5. Identify SVGs
+### .6 Identify SVGs
 
 
 ```python
@@ -500,7 +500,7 @@ for g in filtered_info["genes"].tolist():
 
 **CAMK2N1**![](./sample_results/CAMK2N1.png) **ENC1**![](./sample_results/ENC1.png) **GPM6A**![](./sample_results/GPM6A.png) **ARPP19**![](./sample_results/ARPP19.png) **HPCAL1**![](./sample_results/HPCAL1.png)
 
-### 6. Identify Meta Gene
+### 7. Identify Meta Gene
 
 
 ```python
@@ -564,14 +564,14 @@ plt.close()
 
 **start**![](./sample_results/GFAP.png) **meta gene**![](./sample_results/meta_gene.png)
 
-### 7. Multiple tissue sections analysis
+### 8. Multiple tissue sections analysis
 In this section, we show an example on how to analysis multiple adjacent tissue sections using SpaGCN.
 
 **Mouse brain anterior**![](./sample_results/MA1_lowres.png) 
 
 **Mouse brain posterior**![](./sample_results/MP1_lowres.png)
 
-#### 7.1 Read in data
+#### 8.1 Read in data
 
 
 ```python
@@ -581,7 +581,7 @@ img1=cv2.imread("./data/Mouse_brain/MA1_histology.tif")
 img2=cv2.imread("./data/Mouse_brain/MP1_histology.tif")
 ```
 
-#### 7.2 Extract color intensity
+#### 8.2 Extract color intensity
 
 
 ```python
@@ -600,7 +600,7 @@ adata2.obs["z"]=(adata2.obs["color"]-np.mean(adata2.obs["color"]))/np.std(adata2
 del img1, img2
 ```
 
-#### 7.3 Modify coordinates to combine 2 sections
+#### 8.3 Modify coordinates to combine 2 sections
 
 
 ```python
@@ -614,7 +614,7 @@ adata2.var_names_make_unique()
 adata_all=AnnData.concatenate(adata1, adata2,join='inner',batch_key="dataset_batch",batch_categories=["0","1"])
 ```
 
-#### 7.4 Integrate gene expression and histology into a Graph
+#### 8.4 Integrate gene expression and histology into a Graph
 
 
 ```python
@@ -622,7 +622,7 @@ X=np.array([adata_all.obs["x_pixel"], adata_all.obs["y_pixel"], adata_all.obs["z
 adj=spg.pairwise_distance(X)
 ```
 
-#### 7.5 Spatial domain detection using SpaGCN
+#### 8.5 Spatial domain detection using SpaGCN
 
 
 ```python
