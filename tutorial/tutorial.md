@@ -98,7 +98,7 @@ import cv2
 spg.__version__
 ```
     
-    '1.1.0'
+    '1.2.0'
 
 ### 3. Read in data
 The current version of SpaGCN requres three input data.
