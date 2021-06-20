@@ -20,7 +20,6 @@ The [**SpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementa
 - Build a graph convolutional network with deep iterative clustering algorithm to identify spatial domains
 - identify spatially variable genes for each spatial domain.
 - Create mete genes to mark each spatial domains
-
 <br>
 
 ## Tutorial
