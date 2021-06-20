@@ -28,9 +28,9 @@ For tutorial, please refer to: https://github.com/jianhuupenn/SpaGCN/blob/master
 <br>
 A Jupyter Notebook of the tutorial is accessible from : https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.ipynb
 <br>
-Please install jupyter in order to open this notebook.
-<br>
 Toy data and results can be downloaded at: https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
+<br>
+Please install jupyter in order to open this notebook.
 
 #### New Features! EZ Mode SpaGCN now available.
 For users who are new to Python, we provide an Easy Mode SpaGCN. The parameter setting and intermedium steps are simplified.
