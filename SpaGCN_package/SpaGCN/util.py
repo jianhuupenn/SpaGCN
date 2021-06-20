@@ -7,8 +7,8 @@ from anndata import AnnData,read_csv,read_text,read_mtx
 from scipy.sparse import issparse
 import random
 import torch
-from SpaGCN import SpaGCN
-
+from . SpaGCN import SpaGCN
+from . calculate_adj import calculate_adj_matrix
 def prefilter_cells(adata,min_counts=None,max_counts=None,min_genes=200,max_genes=None):
     if min_genes is None and min_counts is None and max_genes is None and max_counts is None:
         raise ValueError('Provide one of min_counts, min_genes, max_counts or max_genes.')
@@ -40,20 +40,105 @@ def prefilter_specialgenes(adata,Gene1Pattern="ERCC",Gene2Pattern="MT-"):
     adata._inplace_subset_var(id_tmp)
 
 
+def calculate_p(adj, l):
+    adj_exp=np.exp(-1*(adj**2)/(2*(l**2)))
+    return np.mean(np.sum(adj_exp,1))-1
+
 def test_l(adj, list_l):
     for l in list_l:
-        adj_exp=np.exp(-1*(adj**2)/(2*(l**2)))
-        print("l is ",str(l),"Percentage of total expression contributed by neighborhoods:",np.mean(np.sum(adj_exp,1))-1)
+        print("l is ",str(l),"Percentage of total expression contributed by neighborhoods:",calculate_p(adj, l))
 
 def find_l(p, adj, start=0.5, end=2,sep=0.01, tol=0.01):
-    for i in np.arange(start, end, sep):
-        adj_exp=np.exp(-1*(adj**2)/(2*(i**2)))
-        q=np.mean(np.sum(adj_exp,1))-1
-        print("L=", str(i), "P=", str(round(q,5)))
-        if np.abs(p-q)<tol:
-            return i
+    for l in np.arange(start, end, sep):
+        q=calculate_p(adj, l)
+        print("L=", str(l), "P=", str(round(q,5)))
+        if np.abs(p-q)<=tol:
+            return l
     print("l not found, try bigger range or smaller sep!")
 
+def search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100):
+    run=0
+    p_low=calculate_p(adj, start)
+    p_high=calculate_p(adj, end)
+    if p_low>p+tol:
+        print("l not found, try smaller start point.")
+        return None
+    elif p_high<p-tol:
+        print("l not found, try bigger end point.")
+        return None
+    elif  np.abs(p_low-p) <=tol:
+        print("recommended l = ", str(start))
+        return start
+    elif  np.abs(p_high-p) <=tol:
+        print("recommended l = ", str(end))
+        return end
+    while (p_low+tol)<p<(p_high-tol):
+        run+=1
+        print("Run "+str(run)+": l ["+str(start)+", "+str(end)+"], p ["+str(p_low)+", "+str(p_high)+"]")
+        if run >max_run:
+            print("Exact l not found, closest values are:\n"+"l="+str(start)+": "+"p="+str(p_low)+"\nl="+str(end)+": "+"p="+str(p_high))
+            return None
+        mid=(start+end)/2
+        p_mid=calculate_p(adj, mid)
+        if np.abs(p_mid-p)<=tol:
+            print("recommended l = ", str(mid))
+            return mid
+        if p_mid<=p:
+            start=mid
+            p_low=p_mid
+        else:
+            end=mid
+            p_high=p_mid
+
+def count_nbr(target_cluster,cell_id, x, y, pred, radius):
+    adj_2d=calculate_adj_matrix(x=x,y=y, histology=False)
+    cluster_num = dict()
+    df = {'cell_id': cell_id, 'x': x, "y":y, "pred":pred}
+    df = pd.DataFrame(data=df)
+    df.index=df['cell_id']
+    target_df=df[df["pred"]==target_cluster]
+    row_index=0
+    num_nbr=[]
+    for index, row in target_df.iterrows():
+        x=row["x"]
+        y=row["y"]
+        tmp_nbr=df[((df["x"]-x)**2+(df["y"]-y)**2)<=(radius**2)]
+        num_nbr.append(tmp_nbr.shape[0])
+    return np.mean(num_nbr)
+
+def search_radius(target_cluster,cell_id, x, y, pred, start, end, num_min=8, num_max=15,  max_run=100):
+    run=0
+    num_low=count_nbr(target_cluster,cell_id, x, y, pred, start)
+    num_high=count_nbr(target_cluster,cell_id, x, y, pred, end)
+    if num_min<=num_low<=num_max:
+        print("recommended radius = ", str(start))
+        return start
+    elif num_min<=num_high<=num_max:
+        print("recommended radius = ", str(end))
+        return end
+    elif num_low>num_max:
+        print("Try smaller start.")
+        return None
+    elif num_high<num_min:
+        print("Try bigger end.")
+        return None
+    while (num_low<num_min) and (num_high>num_min):
+        run+=1
+        print("Run "+str(run)+": radius ["+str(start)+", "+str(end)+"], num_nbr ["+str(num_low)+", "+str(num_high)+"]")
+        if run >max_run:
+            print("Exact radius not found, closest values are:\n"+"radius="+str(start)+": "+"num_nbr="+str(num_low)+"\nradius="+str(end)+": "+"num_nbr="+str(num_high))
+            return None
+        mid=(start+end)/2
+        num_mid=count_nbr(target_cluster,cell_id, x, y, pred, mid)
+        if num_min<=num_mid<=num_max:
+            print("recommended radius = ", str(mid), "num_nbr="+str(num_mid))
+            return mid
+        if num_mid<num_min:
+            start=mid
+            num_low=num_mid
+        elif num_mid>num_max:
+            end=mid
+            num_high=num_mid
 
 def find_neighbor_clusters(target_cluster,cell_id, x, y, pred,radius, ratio=1/2):
     cluster_num = dict()
@@ -83,7 +168,7 @@ def find_neighbor_clusters(target_cluster,cell_id, x, y, pred,radius, ratio=1/2)
         print("Dmain ", t[0], ": ",t[1])
     ret=[t[0] for t in nbr_num]
     if len(ret)==0:
-        print("No neighbor domain found, try bigger radius or smaller ratio")
+        print("No neighbor domain found, try bigger radius or smaller ratio.")
     else:
         return ret
 
@@ -287,7 +372,7 @@ def search_res(adata, adj, l, target_num, start=0.4, step=0.1, tol=5e-3, lr=0.05
             step=step/2
             print("Step changed to", step)
         if run >max_run:
-            print("Exact resoljution not found")
+            print("Exact resolution not found")
             print("Recommended res = ", str(res))
             return res
         run+=1
