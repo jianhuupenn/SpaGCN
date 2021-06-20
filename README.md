@@ -56,7 +56,7 @@ Souce code: [Github](https://github.com/jianhuupenn/SpaGCN)
 
 We are continuing adding new features. Bug reports or feature requests are welcome. 
 
-Last update: 05/11/2021
+Last update: 06/19/2021, version 1.2.0
 
 
 
