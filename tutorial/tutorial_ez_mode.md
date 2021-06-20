@@ -155,6 +155,7 @@ y_pixel=adata.obs["y_pixel"].tolist()
 adata.obs["pred"]= spg.detect_spatial_domains_ez_mode(adata, img, x_array, y_array, x_pixel, y_pixel, n_clusters=7, histology=True, s=1, b=49, p=0.5, r_seed=100, t_seed=100, n_seed=100)
 adata.obs["pred"]=adata.obs["pred"].astype('category')
 #Refine domains (optional)
+#shape="hexagon" for Visium data, "square" for ST data.
 adata.obs["refined_pred"]=spg.spatial_domains_refinement_ez_mode(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred"].tolist(), x_array=x_array, y_array=y_array, shape="hexagon")
 adata.obs["refined_pred"]=adata.obs["refined_pred"].astype('category')
 ```
