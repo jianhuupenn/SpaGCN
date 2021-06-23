@@ -4,12 +4,12 @@
 <center>Author: Jian Hu*, Xiangjie Li, Kyle Coleman, Amelia Schroeder, Nan Ma, David J. Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
 
 ## Outline
-1. Installation
-2. Import modules
-3. Read in data
-4. Spatial domain detection using SpaGCN
-5. Identify SVGs
-6. Identify Meta Gene
+1. [Installation](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md#1-installation)
+2. [Import modules](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md#2-import-modules)
+3. [Read in data](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md#3-read-in-data)
+4. [Spatial domain detection using SpaGCN](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md#4-spatial-domain-detection-using-spagcn)
+5. [Identify SVGs](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md#5-identify-svgs)
+6. [Identify Meta Gene](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md#6-identify-meta-gene)
 <br>
 
 
