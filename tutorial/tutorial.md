@@ -4,7 +4,7 @@
 <center>Jian Hu*, Xiangjie Li, Kyle Coleman, Amelia Schroeder, Nan Ma, David J. Irwin, Edward B. Lee, Russell T. Shinohara, Mingyao Li*
 
 ## Outline
-1. Installation
+1. Installation []https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#1-installation
 2. Import modules
 3. Read in data
 4. Integrate gene expression and histology into a Graph
