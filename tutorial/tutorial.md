@@ -5,13 +5,13 @@
 
 ## Outline
 1. [Installation](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#1-installation)
-2. Import modules
-3. Read in data
-4. Integrate gene expression and histology into a Graph
-5. Spatial domain detection using SpaGCN
-6. Identify SVGs
-7. Identify Meta Gene
-8. Multiple tissue sections analysis
+2. [Import modules](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#2-import-modules)
+3. [Read in data](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#3-read-in-data)
+4. [Integrate gene expression and histology into a Graph](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#4-integrate-gene-expression-and-histology-into-a-graph)
+5. [Spatial domain detection using SpaGCN](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#5-spatial-domain-detection-using-spagcn)
+6. [Identify SVGs](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#6-identify-svgs)
+7. [Identify Meta Gene](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#7-identify-meta-gene)
+8. [Multiple tissue sections analysis](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#8-multiple-tissue-sections-analysis)
 <br>
 
 
