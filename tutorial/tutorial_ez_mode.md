@@ -11,7 +11,6 @@
 5. Spatial domain detection using SpaGCN
 6. Identify SVGs
 7. Identify Meta Gene
-8. Multiple tissue sections analysis
 <br>
 
 
