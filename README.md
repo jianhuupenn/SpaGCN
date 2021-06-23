@@ -24,11 +24,17 @@ The [**SpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementa
 
 ## Tutorial
 
-For the step-by-step tutorial, please refer to: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md
+For the step-by-step tutorial, please refer to: 
 <br>
-A Jupyter Notebook of the tutorial is accessible from : https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.ipynb
+https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md
 <br>
-Toy data and results can be downloaded at: https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
+A Jupyter Notebook of the tutorial is accessible from : 
+<br>
+https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.ipynb
+<br>
+Toy data and results can be downloaded at: 
+<br>
+https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sharing
 <br>
 Please install Jupyter in order to open this notebook.
 
