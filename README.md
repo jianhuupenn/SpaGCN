@@ -39,9 +39,11 @@ Important Notes: This easy mode ONLY have basic functions and is ONLY for analys
 <br>
 For method comparison, debugging, customizing parameters, and checking intermedium outputs, please refer to the detailed tutorial above.
 <br>
-Easy Mode SpaGCN tutorial: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md
+Easy Mode SpaGCN tutorial: 
+https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.md
 <br>
-Easy Mode SpaGCN Jupyter Notebook: https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.ipynb
+Easy Mode SpaGCN Jupyter Notebook: 
+https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.ipynb
 <br>
 
 ## System Requirements
