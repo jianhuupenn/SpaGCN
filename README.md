@@ -61,7 +61,7 @@ Python support packages: igraph, torch, pandas, numpy, scipy, scanpy > 1.5, annd
 Environment 1:
 - System: Mac OS 10.13.6
 - Python: 3.7.0
-- Python packages: pandas = 1.1.3, numpy = 1.18.1, python-igraph=0.7.1,torch=1.5.1,louvain=0.6.1,scipy = 1.4.1, scanpy = 1.5.1, anndata = 0.6.22.post1, natsort = 7.0.1, sklearn = 0.22.1
+- Python packages: pandas = 1.1.3, numpy = 1.18.1,numba=0.53.1 python-igraph=0.7.1,torch=1.5.1,louvain=0.6.1,scipy = 1.4.1, scanpy = 1.5.1, anndata = 0.6.22.post1, natsort = 7.0.1, sklearn = 0.22.1
 
 Environment 2:
 - System: Anaconda
