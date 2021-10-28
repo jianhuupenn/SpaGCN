@@ -88,6 +88,6 @@ Last update: 06/19/2021, version 1.2.0
 
 Please consider citing the following reference:
 
-- https://www.biorxiv.org/content/10.1101/2020.11.30.405118v1
+- https://www.nature.com/articles/s41592-021-01255-8
 
 <br>
