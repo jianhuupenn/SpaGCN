@@ -298,7 +298,7 @@ def find_meta_gene(input_adata,
         #Select cells
         tmp=adata[((adata.obs["meta"]>np.mean(adata.obs[adata.obs["pred"]==target_domain]["meta"]))|(adata.obs["pred"]==target_domain))]
         tmp.obs["target"]=((tmp.obs["pred"]==target_domain)*1).astype('category').copy()
-        if len(set(tmp.obs["target"])<2):
+        if len(set(tmp.obs["target"]))<2:
             print("Meta gene is: ", meta_name)
             return meta_name, adata.obs["meta"].tolist()
         #DE
