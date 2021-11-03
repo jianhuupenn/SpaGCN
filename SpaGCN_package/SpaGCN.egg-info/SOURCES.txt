@@ -1,0 +1,15 @@
+README.md
+setup.py
+SpaGCN/SpaGCN.py
+SpaGCN/__init__.py
+SpaGCN/calculate_adj.py
+SpaGCN/calculate_moran_I.py
+SpaGCN/ez_mode.py
+SpaGCN/layers.py
+SpaGCN/models.py
+SpaGCN/util.py
+SpaGCN.egg-info/PKG-INFO
+SpaGCN.egg-info/SOURCES.txt
+SpaGCN.egg-info/dependency_links.txt
+SpaGCN.egg-info/requires.txt
+SpaGCN.egg-info/top_level.txt
