@@ -182,6 +182,8 @@ np.savetxt('./data/adj.csv', adj, delimiter=',')
 
 ```python
 adata=sc.read("./data/sample_data.h5ad")
+adata.obs["x_pixel"]=adata.obs["x4"]
+adata.obs["y_pixel"]=adata.obs["x5"]
 adj=np.loadtxt('./data/adj.csv', delimiter=',')
 adata.var_names_make_unique()
 spg.prefilter_genes(adata,min_cells=3) # avoiding all genes are zeros
