@@ -120,6 +120,11 @@ adata.obs["x2"]=spatial[2]
 adata.obs["x3"]=spatial[3]
 adata.obs["x4"]=spatial[4]
 adata.obs["x5"]=spatial[5]
+adata.obs["x_array"]=adata.obs["x2"]
+adata.obs["y_array"]=adata.obs["x3"]
+adata.obs["x_pixel"]=adata.obs["x4"]
+adata.obs["y_pixel"]=adata.obs["x5"]
+
 #Select captured samples
 adata=adata[adata.obs["x1"]==1]
 adata.var_names=[i.upper() for i in list(adata.var_names)]
@@ -137,10 +142,6 @@ img=cv2.imread("../tutorial/data/151673/histology.tif")
 
 ```python
 #Set coordinates
-adata.obs["x_array"]=adata.obs["x2"]
-adata.obs["y_array"]=adata.obs["x3"]
-adata.obs["x_pixel"]=adata.obs["x4"]
-adata.obs["y_pixel"]=adata.obs["x5"]
 x_array=adata.obs["x_array"].tolist()
 y_array=adata.obs["y_array"].tolist()
 x_pixel=adata.obs["x_pixel"].tolist()
@@ -182,8 +183,6 @@ np.savetxt('./data/adj.csv', adj, delimiter=',')
 
 ```python
 adata=sc.read("./data/sample_data.h5ad")
-adata.obs["x_pixel"]=adata.obs["x4"]
-adata.obs["y_pixel"]=adata.obs["x5"]
 adj=np.loadtxt('./data/adj.csv', delimiter=',')
 adata.var_names_make_unique()
 spg.prefilter_genes(adata,min_cells=3) # avoiding all genes are zeros
