@@ -165,7 +165,7 @@ cv2.imwrite('./sample_results/151673_map.jpg', img_new)
 s=1
 b=49
 adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=img, beta=b, alpha=s, histology=True)
-#If histlogy image is not available, SoaGCN can calculate the adjacent matrix using the fnction below
+#If histlogy image is not available, SpaGCN can calculate the adjacent matrix using the fnction below
 #adj=calculate_adj_matrix(x=x_pixel,y=y_pixel, histology=False)
 np.savetxt('./data/adj.csv', adj, delimiter=',')
 ```
