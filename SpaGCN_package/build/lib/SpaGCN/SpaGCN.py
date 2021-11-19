@@ -55,7 +55,7 @@ class SpaGCN(object):
             embed=pca.transform(adata.X)
         ###------------------------------------------###
         if self.l is None:
-            raise ValueError('l should not be set before fitting the model!')
+            raise ValueError('l should be set before fitting the model!')
         adj_exp=np.exp(-1*(adj**2)/(2*(self.l**2)))
         #----------Train model----------
         self.model=simple_GC_DEC(embed.shape[1],embed.shape[1])
