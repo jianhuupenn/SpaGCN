@@ -326,7 +326,7 @@ raw.obs["x_pixel"]=raw.obs["x4"]
 raw.obs["y_pixel"]=raw.obs["x5"]
 #Convert sparse matrix to non-sparse
 raw.X=(raw.X.A if issparse(raw.X) else raw.X)
-raw.raw=raw
+#raw.raw=raw
 sc.pp.log1p(raw)
 ```
 - target: Target domain to identify SVGs.
