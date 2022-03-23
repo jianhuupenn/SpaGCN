@@ -287,6 +287,7 @@ adata.write_h5ad("./sample_results/results.h5ad")
 
 ```python
 adata=sc.read("./sample_results/results.h5ad")
+#adata.obs should contain two columns for x_pixel and y_pixel
 #Set colors used
 plot_color=["#F56867","#FEB915","#C798EE","#59BE86","#7495D3","#D1D1D1","#6D1A9C","#15821E","#3A84E6","#997273","#787878","#DB4C6C","#9E7A7A","#554236","#AF5F3C","#93796C","#F9BD3F","#DAB370","#877F6C","#268785"]
 #Plot spatial domains
