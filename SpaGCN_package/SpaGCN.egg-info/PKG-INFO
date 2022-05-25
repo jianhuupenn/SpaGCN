@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: SpaGCN
-Version: 1.2.0
+Version: 1.2.4
 Summary: SpaGCN: Integrating gene expression and histology to identify spatial domains and spatially variable genes using graph convolutional networks
 Home-page: https://github.com/jianhuupenn/SpaGCN
 Author: Jian Hu
