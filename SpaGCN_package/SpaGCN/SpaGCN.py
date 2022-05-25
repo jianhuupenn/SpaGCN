@@ -111,7 +111,7 @@ class multiSpaGCN(object):
             adj=adj_list[i]
             adj_exp=np.exp(-1*(adj**2)/(2*(l**2)))
             adj_exp_all[start:start+adj_exp.shape[0],start:start+adj_exp.shape[0]]=adj_exp
-            start+=start+adj_exp.shape[0]
+            start+=adj_exp.shape[0]
         self.adata_all=AnnData.concatenate(*adata_list,join='inner',batch_key="dataset_batch",batch_categories=["0","1"])
         pca = PCA(n_components=self.num_pcs)
         if issparse(self.adata_all.X):
