@@ -692,3 +692,46 @@ plt.close()
 #### 9. Integrating consecutive slides 
 
 Please refer to https://github.com/jianhuupenn/SpaGCN/issues/14#issuecomment-986894448
+For slides that are continuously cut from the same section(e.g, 2 posterior slides from the same tissue), you can either:
+1. Run SpaGCN on each separately, which should result in similar spatial domains. Then you can map them together by location and SVGs.
+or
+2. Run the multi-section version SpaGCN. I haven't got a chance to add that part into the tutorial because usually step 1 can already generate very clear results. Sample codes:
+```
+#Section 1
+adata1.var_names_make_unique()
+adata1.raw=adata1
+sc.pp.normalize_per_cell(adata1, min_counts=0)
+sc.pp.log1p(adata1)
+
+#Section 2, you can add more sections
+adata2.var_names_make_unique()
+adata2.raw=adata2
+sc.pp.normalize_per_cell(adata2, min_counts=0)
+sc.pp.log1p(adata2)
+
+#Set parameters
+p=0.5 
+l1=spg.search_l(p, adj1, start=0.01, end=1000, tol=0.01, max_run=100)
+l2=spg.search_l(p, adj2, start=0.01, end=1000, tol=0.01, max_run=100)
+l_list=[l1, l2]
+res=0.6
+adata_list=[adata1, adata2]
+adj_list=[adj1, adj2]
+#Set seed
+r_seed=t_seed=n_seed=100
+
+#Multi-section SpaGCN
+clf=spg.multiSpaGCN()
+clf.train(adata_list,adj_list,l_list,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
+
+#Get results
+y_pred, prob=clf.predict()
+adata_all=clf.adata_all
+adata_all.obs["pred"]= y_pred
+adata_all.obs["pred"]=adata_all.obs["pred"].astype('category')
+ref_id=adata_all.obs["dataset_batch"]=="0"
+a0=adata_all[ref_id,:].copy()
+a1=adata_all[~ref_id,:].copy()
+#a0 contains results for section 1, a1 for section 2.
+```
+
