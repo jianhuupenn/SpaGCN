@@ -715,7 +715,7 @@ p=0.5
 l1=spg.search_l(p, adj1, start=0.01, end=1000, tol=0.01, max_run=100)
 l2=spg.search_l(p, adj2, start=0.01, end=1000, tol=0.01, max_run=100)
 l_list=[l1, l2]
-res=0.6
+res=0.2
 adata_list=[adata1, adata2]
 adj_list=[adj1, adj2]
 #Set seed
