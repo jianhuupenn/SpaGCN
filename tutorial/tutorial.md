@@ -692,6 +692,7 @@ plt.close()
 #### 9. Integrating consecutive slides 
 
 Please refer to https://github.com/jianhuupenn/SpaGCN/issues/14#issuecomment-986894448
+<br>
 For slides that are continuously cut from the same section(e.g, 2 posterior slides from the same tissue), you can either:
 1. Run SpaGCN on each separately, which should result in similar spatial domains. Then you can map them together by location and SVGs.
 or
