@@ -1,4 +1,4 @@
-# SpaGCN  v1.2.4
+# SpaGCN  v1.2.5
 
 ## SpaGCN: Integrating gene expression, spatial location and histology to identify spatial domains and spatially variable genes by graph convolutional network
 
@@ -53,6 +53,7 @@ Easy Mode SpaGCN Jupyter Notebook:
 <br>
 https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial_ez_mode.ipynb
 <br>
+
 
 ## System Requirements
 Python support packages: igraph, torch, pandas, numpy, scipy, scanpy > 1.5, anndata, louvain, sklearn.
