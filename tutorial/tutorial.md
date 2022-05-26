@@ -12,6 +12,7 @@
 6. [Identify SVGs](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#6-identify-svgs)
 7. [Identify Meta Gene](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#7-identify-meta-gene)
 8. [Multiple tissue sections analysis](https://github.com/jianhuupenn/SpaGCN/blob/master/tutorial/tutorial.md#8-multiple-tissue-sections-analysis)
+9. Integrating consecutive slides 
 <br>
 
 
@@ -688,4 +689,6 @@ plt.close()
 **SpaGCN mouse brain combines**![](./sample_results/mouse_barin_muti_sections_domains.png)
 
 
+#### 9. Integrating consecutive slides 
 
+Please refer to https://github.com/jianhuupenn/SpaGCN/issues/14#issuecomment-986894448
