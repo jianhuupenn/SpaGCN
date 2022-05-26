@@ -112,7 +112,8 @@ class multiSpaGCN(object):
             adj_exp=np.exp(-1*(adj**2)/(2*(l**2)))
             adj_exp_all[start:start+adj_exp.shape[0],start:start+adj_exp.shape[0]]=adj_exp
             start+=adj_exp.shape[0]
-        self.adata_all=AnnData.concatenate(*adata_list,join='inner',batch_key="dataset_batch",batch_categories=["0","1"])
+        batch_cat=[str(i) for i in range(len(l_list))]
+        self.adata_all=AnnData.concatenate(*adata_list,join='inner',batch_key="dataset_batch",batch_categories=batch_cat)
         pca = PCA(n_components=self.num_pcs)
         if issparse(self.adata_all.X):
             pca.fit(self.adata_all.X.A)
