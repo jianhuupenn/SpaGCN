@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/jianhuupenn/SpaGCN",
     packages=setuptools.find_packages(),
-    install_requires=["python-igraph","torch","pandas","numpy","scipy","scanpy","anndata","louvain","sklearn", "numba"],
+    install_requires=["python-igraph","torch","pandas","numpy","scipy","scanpy","anndata","louvain","scikit-learn", "numba"],
     #install_requires=[],
     classifiers=[
         "Programming Language :: Python :: 3",
