@@ -160,6 +160,7 @@ def find_neighbor_clusters(target_cluster,cell_id, x, y, pred,radius, ratio=1/2)
         for p in tmp_nbr["pred"]:
             nbr_num[p]=nbr_num.get(p,0)+1
     del nbr_num[target_cluster]
+    nbr_num_back=nbr_num.copy() #Backup
     nbr_num=[(k, v)  for k, v in nbr_num.items() if v>(ratio*cluster_num[k])]
     nbr_num.sort(key=lambda x: -x[1])
     print("radius=", radius, "average number of neighbors for each spot is", np.mean(num_nbr))
@@ -168,9 +169,12 @@ def find_neighbor_clusters(target_cluster,cell_id, x, y, pred,radius, ratio=1/2)
         print("Dmain ", t[0], ": ",t[1])
     ret=[t[0] for t in nbr_num]
     if len(ret)==0:
-        print("No neighbor domain found, try bigger radius or smaller ratio.")
-    else:
-        return ret
+        nbr_num_back=[(k, v)  for k, v in nbr_num_back.items()]
+        nbr_num_back.sort(key=lambda x: -x[1])
+        ret=[nbr_num_back[0][0]]
+        print("No neighbor domain found, only return one potential neighbor domain:",ret)
+        print("Try bigger radius or smaller ratio.")
+    return ret
 
 
 def rank_genes_groups(input_adata, target_cluster,nbr_list, label_col, adj_nbr=True, log=False):

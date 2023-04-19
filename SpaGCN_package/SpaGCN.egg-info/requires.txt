@@ -6,5 +6,5 @@ scipy
 scanpy
 anndata
 louvain
-sklearn
+scikit-learn
 numba

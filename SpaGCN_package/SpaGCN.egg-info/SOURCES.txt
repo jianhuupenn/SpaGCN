@@ -1,3 +1,4 @@
+License
 README.md
 setup.py
 SpaGCN/SpaGCN.py

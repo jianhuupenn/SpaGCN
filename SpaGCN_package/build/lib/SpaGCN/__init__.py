@@ -1,4 +1,4 @@
-__version__ = '1.2.5'
+__version__ = '1.2.7'
 from . SpaGCN import *
 from . util import *
 from . calculate_moran_I import *

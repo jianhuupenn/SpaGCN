@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="SpaGCN", 
-    version="1.2.5",
+    version="1.2.7",
     author="Jian Hu",
     author_email="jianhu@pennmedicine.upenn.edu",
     description="SpaGCN: Integrating gene expression and histology to identify spatial domains and spatially variable genes using graph convolutional networks",
