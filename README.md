@@ -1,4 +1,4 @@
-# SpaGCN  v1.2.5
+# SpaGCN  v1.2.7
 
 ## SpaGCN: Integrating gene expression, spatial location and histology to identify spatial domains and spatially variable genes by graph convolutional network
 
