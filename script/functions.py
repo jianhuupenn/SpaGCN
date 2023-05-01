@@ -15,10 +15,18 @@ import cv2
 from anndata import AnnData
 from scanpy import read_10x_h5
 
+def CheckFolder(name):
+    if not os.path.exists(name):
+        os.makedirs(name)
+
 def ConvertH5File(matrix, positions):
-    #Read original 10x_h5 data and save it to h5ad
+    # Read the input 10x_h5 data and save it to h5ad
     adata = read_10x_h5(matrix)
+    
+    # Read the positions file as a pandas dataframe
     spatial=pd.read_csv(positions,sep=",",header=None,na_filter=False,index_col=0) 
+    
+    # Add the spatial information to the h5ad object
     adata.obs["x1"]=spatial[1]
     adata.obs["x2"]=spatial[2]
     adata.obs["x3"]=spatial[3]
@@ -28,65 +36,98 @@ def ConvertH5File(matrix, positions):
     adata.obs["y_array"]=adata.obs["x3"]
     adata.obs["x_pixel"]=adata.obs["x4"]
     adata.obs["y_pixel"]=adata.obs["x5"]
-    #Select captured samples
+    
+    # Select captured samples
     adata=adata[adata.obs["x1"]==1]
+    
+    # Convert the gene names to uppercase
     adata.var_names=[i.upper() for i in list(adata.var_names)]
+    
+    # Add a "genename" column to the var dataframe
     adata.var["genename"]=adata.var.index.astype("str")
+    
+    # Get the filename from the input path
     split = matrix.split("/")
     name = split[len(split)-1].split(".")
+    
+    # Check if the "data" folder exists, if not create it
+    CheckFolder("data")
+    
+    # Set the output path
     pathName = "./data/" + name[0] + ".h5ad"
+    
+    # Save the h5ad object to a file
     adata.write_h5ad(pathName)
+
     return pathName
 
 def IntegrateIntoGraphHistology(gene, histology):
+    # Read the gene expression data from the gene file using Scanpy
     adata=sc.read(gene)
+    
+    # Read the histology image using OpenCV
     img=cv2.imread(histology)
 
+    # Set the x_pixel and y_pixel values in the gene expression data based on the x4 and x5 values in the obs dataframe
     adata.obs["x_pixel"]=adata.obs["x4"]
     adata.obs["y_pixel"]=adata.obs["x5"]
     x_pixel=adata.obs["x_pixel"].tolist()
     y_pixel=adata.obs["y_pixel"].tolist()
 
-    #Test coordinates on the image
+    # Set a window around each coordinate on the image to test if the coordinates are accurate
     img_new=img.copy()
     for i in range(len(x_pixel)):
         x=x_pixel[i]
         y=y_pixel[i]
         img_new[int(x-20):int(x+20), int(y-20):int(y+20),:]=0
 
+    # Save the image with the marked coordinates to a folder
     split = gene.split("/")
     name = split[len(split)-1].split(".")
+    # Check if the "data" folder exists, if not create it
+    CheckFolder("sample_results")
     pathName = "./sample_results/" + name[0] + ".jpg"
     cv2.imwrite(pathName, img_new)
 
     s=1
     b=49
     adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=img, beta=b, alpha=s, histology=True)
+    
+    # Save the adjacency matrix to a CSV file in a folder
     split = gene.split("/")
     name = split[len(split)-1].split(".")
     pathName = "./data/" + name[0] + ".csv"
     np.savetxt(pathName, adj, delimiter=',')
+
     return pathName
 
 def IntegrateIntoGraph(gene):
+    # Read the gene expression data from the gene file using Scanpy
     adata=sc.read(gene)
 
+    # Extract x and y coordinates from the gene data
     adata.obs["x_pixel"]=adata.obs["x4"]
     adata.obs["y_pixel"]=adata.obs["x5"]
     x_pixel=adata.obs["x_pixel"].tolist()
     y_pixel=adata.obs["y_pixel"].tolist()
 
+    # Calculate adjacency matrix using x and y coordinates
     adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, histology=False)
-
+    
+    # Save the adjacency matrix to the output file
     split = gene.split("/")
     name = split[len(split)-1].split(".")
+    CheckFolder("data")
     pathName = "./data/" + name[0] + ".csv"
     np.savetxt(pathName, adj, delimiter=',')
+
     return pathName
 
-def SpatialDomainsDetectionSpaGCN(gene, adjCsv):
+def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7):
+    # Read the gene expression data
     adata=sc.read(gene)
 
+    # Add spatial information to the data
     adata.obs["x_array"]=adata.obs["x2"]
     adata.obs["y_array"]=adata.obs["x3"]
     adata.obs["x_pixel"]=adata.obs["x4"]
@@ -96,9 +137,16 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv):
     x_array=adata.obs["x_array"].tolist()
     y_array=adata.obs["y_array"].tolist()
 
+    # Load the adjacency matrix
     adj=np.loadtxt(adjCsv, delimiter=',')
+    
+    # Make sure gene names are unique
     adata.var_names_make_unique()
+
+    # Perform gene filtering
     spg.prefilter_genes(adata,min_cells=3)
+
+    # Perform filtering of special genes
     spg.prefilter_specialgenes(adata)
     sc.pp.normalize_per_cell(adata)
     sc.pp.log1p(adata)
@@ -107,18 +155,26 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv):
     
     #If the number of clusters known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
     #For this toy data, we set the number of clusters=7 since this tissue has 7 layers
-    n_clusters=7
+    n_clusters=clusters
     #Set seed
     r_seed=t_seed=n_seed=100
+    
+    # Search for optimal value of the resolution parameter
     res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed)
 
+    # Train the model
     clf=spg.SpaGCN()
     clf.set_l(l)
-    #Set seed
+
+    # Set random seeds for reproducibility
     random.seed(r_seed)
     torch.manual_seed(t_seed)
     np.random.seed(n_seed)
+
+    # Train the model with the given parameters
     clf.train(adata,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
+
+    # Make predictions and add to the data
     y_pred, prob=clf.predict()
     adata.obs["pred"]= y_pred
     adata.obs["pred"]=adata.obs["pred"].astype('category')
@@ -131,6 +187,7 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv):
     
     split = gene.split("/")
     name = split[len(split)-1].split(".")
+    CheckFolder("sample_results")
     pathNameResult = "./sample_results/" + name[0] + "_results.h5ad"
     #Save results
     adata.write_h5ad(pathNameResult)
@@ -160,17 +217,20 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv):
     pathNameRefPred = "./sample_results/" + name[0] + "_refined_pred.png"
     plt.savefig(pathNameRefPred, dpi=600)
     plt.close()
+
     return pathNameResult + " " + pathNamePred + " " + pathNameRefPred
 
 def IdentifyCSV(gene, results):
     #Read in raw data
     adata=sc.read(results)
 
+    # Assign x and y values to the adata object
     adata.obs["x_array"]=adata.obs["x2"]
     adata.obs["y_array"]=adata.obs["x3"]
     x_array=adata.obs["x_array"].tolist()
     y_array=adata.obs["y_array"].tolist()
 
+    # Read in gene data and assign x, y, x_pixel, and y_pixel values to the gene data
     raw=sc.read(gene)
     raw.var_names_make_unique()
     raw.obs["pred"]=adata.obs["pred"].astype('category')
@@ -224,6 +284,7 @@ def IdentifyCSV(gene, results):
     filtered_info
 
     pathNameList = ""
+    CheckFolder("sample_results")
 
     #Plot refinedspatial domains
     color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
@@ -236,7 +297,8 @@ def IdentifyCSV(gene, results):
         pathNameList += pathName + " "
         plt.savefig(pathName, dpi=600)
         plt.close()
-        return pathNameList
+    
+    return pathNameList
     
 def IdentifyMetaGene(gene, results):
     #Read in raw data
@@ -247,6 +309,7 @@ def IdentifyMetaGene(gene, results):
     adata.obs["x_pixel"]=adata.obs["x4"]
     adata.obs["y_pixel"]=adata.obs["x5"]
 
+    # Read in gene expression data
     raw=sc.read(gene)
     raw.var_names_make_unique()
     raw.obs["pred"]=adata.obs["pred"].astype('category')
@@ -254,12 +317,16 @@ def IdentifyMetaGene(gene, results):
     raw.obs["y_array"]=raw.obs["x3"]
     raw.obs["x_pixel"]=raw.obs["x4"]
     raw.obs["y_pixel"]=raw.obs["x5"]
+    
     #Convert sparse matrix to non-sparse
     raw.X=(raw.X.A if issparse(raw.X) else raw.X)
     raw.raw=raw
     sc.pp.log1p(raw)
+    
     #Use domain 2 as an example
     target=2
+
+    # Find meta gene
     meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
                         pred=raw.obs["pred"].tolist(),
                         target_domain=target,
@@ -269,6 +336,7 @@ def IdentifyMetaGene(gene, results):
                         max_iter=3,
                         use_raw=False)
 
+    # Add meta gene expression to raw data
     raw.obs["meta"]=meta_exp
 
     color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
@@ -279,10 +347,12 @@ def IdentifyMetaGene(gene, results):
     ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=g,color_map=color_self,show=False,size=100000/raw.shape[0])
     ax.set_aspect('equal', 'box')
     ax.axes.invert_yaxis()
+    CheckFolder("sample_results")
     pathNameFirst = "./sample_results/identify_meta_"+g+".png"
     plt.savefig(pathNameFirst, dpi=600)
     plt.close()
 
+    # Plot meta gene expression
     raw.obs["exp"]=raw.obs["meta"]
     ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=meta_name,color_map=color_self,show=False,size=100000/raw.shape[0])
     ax.set_aspect('equal', 'box')
@@ -290,14 +360,19 @@ def IdentifyMetaGene(gene, results):
     pathNameSecond = "./sample_results/meta_finally_gene.png"
     plt.savefig(pathNameSecond, dpi=600)
     plt.close()
+
     return pathNameFirst + " " + pathNameSecond
 
 def MultipleTissue(firstTissue, secondTissue, firstHistology, secondHistology):
+    # Load the first and second tissue datasets
     adata1=sc.read(firstTissue)
     adata2=sc.read(secondTissue)
+
+    # Load the first and second histology images
     img1=cv2.imread(firstHistology)
     img2=cv2.imread(secondHistology)
 
+    # Define beta and scale factors for extracting color and z values from histology images and extract color and z values for cells in the first tissue dataset
     b=49
     s=1
     x_pixel1=adata1.obs["x4"].tolist()
@@ -306,24 +381,34 @@ def MultipleTissue(firstTissue, secondTissue, firstHistology, secondHistology):
     z_scale=np.max([np.std(x_pixel1), np.std(y_pixel1)])*s
     adata1.obs["z"]=(adata1.obs["color"]-np.mean(adata1.obs["color"]))/np.std(adata1.obs["color"])*z_scale
 
+    # Extract color and z values for cells in the second tissue dataset
     x_pixel2=adata2.obs["x4"].tolist()
     y_pixel2=adata2.obs["x5"].tolist()
     adata2.obs["color"]=spg.extract_color(x_pixel=x_pixel2, y_pixel=y_pixel2, image=img2, beta=b)
     z_scale=np.max([np.std(x_pixel2), np.std(y_pixel2)])*s
     adata2.obs["z"]=(adata2.obs["color"]-np.mean(adata2.obs["color"]))/np.std(adata2.obs["color"])*z_scale
+    
+    # Delete the histology images to free up memory
     del img1, img2
 
+    # Add x and y pixel coordinates to the first and second tissue datasets
     adata1.obs["x_pixel"]=x_pixel1
     adata1.obs["y_pixel"]=y_pixel1
     adata2.obs["x_pixel"]=x_pixel2-np.min(x_pixel2)+np.min(x_pixel1)
     adata2.obs["y_pixel"]=y_pixel2-np.min(y_pixel2)+np.max(y_pixel1)
+
+    # Make variable names unique in both tissue datasets
     adata1.var_names_make_unique()
     adata2.var_names_make_unique()
+
+    # Concatenate the two tissue datasets into a single AnnData object
     adata_all=AnnData.concatenate(adata1, adata2,join='inner',batch_key="dataset_batch",batch_categories=["0","1"])
 
+    # Calculate pairwise distance between cells using their x, y, and z coordinates
     X=np.array([adata_all.obs["x_pixel"], adata_all.obs["y_pixel"], adata_all.obs["z"]]).T.astype(np.float32)
     adj=spg.pairwise_distance(X)
 
+    # Normalize gene expression values by total counts and log-transform
     sc.pp.normalize_per_cell(adata_all, min_counts=0)
     sc.pp.log1p(adata_all)
     p=0.5 
@@ -335,6 +420,8 @@ def MultipleTissue(firstTissue, secondTissue, firstHistology, secondHistology):
     random.seed(seed)
     torch.manual_seed(seed)
     np.random.seed(seed)
+
+    # train SpaGCN model with given parameters
     clf=spg.SpaGCN()
     clf.set_l(l)
     clf.train(adata_all,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
@@ -346,10 +433,18 @@ def MultipleTissue(firstTissue, secondTissue, firstHistology, secondHistology):
     '#7d87b9', '#bec1d4', '#d6bcc0', '#bb7784', '#8e063b', '#4a6fe3', '#8595e1', '#b5bbe3', '#e6afb9', '#e07b91', '#d33f6a', '#11c638', '#8dd593', '#c6dec7', '#ead3c6', '#f0b98d', '#ef9708', '#0fcfc0', '#9cded6', '#d5eae7', '#f3e1eb', '#f6c4e1', '#f79cd4']
     num_celltype=len(adata_all.obs["pred"].unique())
     adata_all.uns["pred_colors"]=list(colors_use[:num_celltype])
+    
+    # create scatter plot of predicted cell types
     ax=sc.pl.scatter(adata_all,alpha=1,x="y_pixel",y="x_pixel",color="pred",show=False,size=150000/adata_all.shape[0])
     ax.set_aspect('equal', 'box')
     ax.axes.invert_yaxis()
-    pathName = "./sample_results/mouse_barin_muti_sections_domains.png"
+    
+    # save scatter plot to file
+    CheckFolder("sample_results")
+    split = firstTissue.split("/")
+    name = split[len(split)-1].split(".")
+    pathName = "./sample_results/muti_sections_domains_" + name + ".png"
     plt.savefig(pathName, dpi=600)
     plt.close()
+
     return pathName
