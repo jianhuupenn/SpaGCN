@@ -1,4 +1,3 @@
-tutorial/data/**
-tutorial/sample_results/**
-data/**
-sample_results/**
+script/data
+script/sample_results
+script/__pycache__
