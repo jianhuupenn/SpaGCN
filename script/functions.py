@@ -61,7 +61,13 @@ def ConvertH5File(matrix, positions):
 
     return pathName
 
-def IntegrateIntoGraphHistology(gene, histology):
+def RandomKeys(keys_list):
+    random_key_x = random.choice(keys_list)
+    random_key_y = random.choice(keys_list)
+    print("random_key_x -> " + random_key_x + ", random_key_y -> " + random_key_y)
+    return random_key_x, random_key_y
+
+def IntegrateIntoGraphHistology(gene, histology, xpixel = "null", ypixel = "null"):
     # Read the gene expression data from the gene file using Scanpy
     adata=sc.read(gene)
     
@@ -69,10 +75,14 @@ def IntegrateIntoGraphHistology(gene, histology):
     img=cv2.imread(histology)
 
     # Set the x_pixel and y_pixel values in the gene expression data based on the x4 and x5 values in the obs dataframe
-    adata.obs["x_pixel"]=adata.obs["x4"]
-    adata.obs["y_pixel"]=adata.obs["x5"]
-    x_pixel=adata.obs["x_pixel"].tolist()
-    y_pixel=adata.obs["y_pixel"].tolist()
+    if xpixel == "null" and ypixel == "null":
+        keys_list = list(adata.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        x_pixel=adata.obs[random_key_x].tolist()
+        y_pixel=adata.obs[random_key_y].tolist()
+    else:
+        x_pixel=adata.obs[xpixel].tolist()
+        y_pixel=adata.obs[ypixel].tolist()
 
     # Set a window around each coordinate on the image to test if the coordinates are accurate
     img_new=img.copy()
@@ -101,15 +111,28 @@ def IntegrateIntoGraphHistology(gene, histology):
 
     return pathName
 
-def IntegrateIntoGraph(gene):
+def ReadKeys(gene):
+    adata=sc.read(gene)
+    print(f"All keys > {str(adata.obs.keys())}")
+
+def ReadSpecificKeys(gene, search_str):
+    adata = sc.read(gene)
+    keys_with_str = [key for key in adata.obs.keys() if search_str in key]
+    print(f"Keys with '{search_str}' > {keys_with_str}")
+
+def IntegrateIntoGraph(gene, xpixel = "null", ypixel = "null"):
     # Read the gene expression data from the gene file using Scanpy
     adata=sc.read(gene)
 
     # Extract x and y coordinates from the gene data
-    adata.obs["x_pixel"]=adata.obs["x4"]
-    adata.obs["y_pixel"]=adata.obs["x5"]
-    x_pixel=adata.obs["x_pixel"].tolist()
-    y_pixel=adata.obs["y_pixel"].tolist()
+    if xpixel == "null" and ypixel == "null":
+        keys_list = list(adata.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        x_pixel=adata.obs[random_key_x].tolist()
+        y_pixel=adata.obs[random_key_y].tolist()
+    else:
+        x_pixel=adata.obs[xpixel].tolist()
+        y_pixel=adata.obs[ypixel].tolist()
 
     # Calculate adjacency matrix using x and y coordinates
     adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, histology=False)
@@ -123,23 +146,38 @@ def IntegrateIntoGraph(gene):
 
     return pathName
 
-def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7):
+def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7, xpixel = "null", ypixel = "null", xarray = "null", yarray = "null", startL=0.01):
     # Read the gene expression data
     adata=sc.read(gene)
 
     # Add spatial information to the data
-    adata.obs["x_array"]=adata.obs["x2"]
-    adata.obs["y_array"]=adata.obs["x3"]
-    adata.obs["x_pixel"]=adata.obs["x4"]
-    adata.obs["y_pixel"]=adata.obs["x5"]
+    if xpixel == "null" and ypixel == "null":
+        keys_list = list(adata.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        adata.obs["x_pixel"]=adata.obs[random_key_x]
+        adata.obs["y_pixel"]=adata.obs[random_key_y]
+    else:
+        adata.obs["x_pixel"]=adata.obs[xpixel]
+        adata.obs["y_pixel"]=adata.obs[ypixel]
+
     x_pixel=adata.obs["x_pixel"].tolist()
     y_pixel=adata.obs["y_pixel"].tolist()
+
+    if xarray == "null" and yarray == "null":
+        keys_list = list(adata.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        adata.obs["x_array"]=adata.obs[random_key_x]
+        adata.obs["y_array"]=adata.obs[random_key_y]
+    else:
+        adata.obs["x_array"]=adata.obs[xarray]
+        adata.obs["y_array"]=adata.obs[yarray]
+
     x_array=adata.obs["x_array"].tolist()
     y_array=adata.obs["y_array"].tolist()
 
     # Load the adjacency matrix
     adj=np.loadtxt(adjCsv, delimiter=',')
-    
+
     # Make sure gene names are unique
     adata.var_names_make_unique()
 
@@ -150,17 +188,19 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7):
     spg.prefilter_specialgenes(adata)
     sc.pp.normalize_per_cell(adata)
     sc.pp.log1p(adata)
-    p=0.5 
-    l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
-    
+    p=0.5
+    # TODO: find better way for these parameters
+    l=spg.search_l(p, adj, start=startL, end=1000, tol=0.01, max_run=100)
+
     #If the number of clusters known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
     #For this toy data, we set the number of clusters=7 since this tissue has 7 layers
     n_clusters=clusters
     #Set seed
     r_seed=t_seed=n_seed=100
-    
+
     # Search for optimal value of the resolution parameter
-    res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed)
+    # TODO: find better way for these parameters
+    res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed) 
 
     # Train the model
     clf=spg.SpaGCN()
@@ -184,7 +224,7 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7):
     refined_pred=spg.refine(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred"].tolist(), dis=adj_2d, shape="hexagon")
     adata.obs["refined_pred"]=refined_pred
     adata.obs["refined_pred"]=adata.obs["refined_pred"].astype('category')
-    
+
     split = gene.split("/")
     name = split[len(split)-1].split(".")
     CheckFolder("sample_results")
@@ -199,7 +239,7 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7):
     #Plot spatial domains
     domains="pred"
     num_celltype=len(adata.obs[domains].unique())
-    adata.uns[domains+"_colors"]=list(plot_color[:num_celltype])
+    adata.uns[f"{domains}_colors"] = list(plot_color[:num_celltype])
     ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domains,color_map=plot_color,show=False,size=100000/adata.shape[0])
     ax.set_aspect('equal', 'box')
     ax.axes.invert_yaxis()
@@ -210,7 +250,7 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7):
     #Plot refined spatial domains
     domains="refined_pred"
     num_celltype=len(adata.obs[domains].unique())
-    adata.uns[domains+"_colors"]=list(plot_color[:num_celltype])
+    adata.uns[f"{domains}_colors"] = list(plot_color[:num_celltype])
     ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domains,color_map=plot_color,show=False,size=100000/adata.shape[0])
     ax.set_aspect('equal', 'box')
     ax.axes.invert_yaxis()
@@ -220,24 +260,43 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7):
 
     return pathNameResult + " " + pathNamePred + " " + pathNameRefPred
 
-def IdentifyCSV(gene, results):
+def IdentifyCSV(gene, results, xarray = "null", yarray = "null", rawxpixel = "null", rawypixel = "null", rawxarray = "null", rawyarray = "null"):
     #Read in raw data
     adata=sc.read(results)
 
     # Assign x and y values to the adata object
-    adata.obs["x_array"]=adata.obs["x2"]
-    adata.obs["y_array"]=adata.obs["x3"]
-    x_array=adata.obs["x_array"].tolist()
-    y_array=adata.obs["y_array"].tolist()
+    if xarray == "null" and yarray == "null":
+        keys_list = list(adata.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        x_array=adata.obs[random_key_x].tolist()
+        y_array=adata.obs[random_key_y].tolist()
+    else:
+        x_array=adata.obs[xarray].tolist()
+        y_array=adata.obs[yarray].tolist()
 
     # Read in gene data and assign x, y, x_pixel, and y_pixel values to the gene data
     raw=sc.read(gene)
     raw.var_names_make_unique()
     raw.obs["pred"]=adata.obs["pred"].astype('category')
-    raw.obs["x_array"]=raw.obs["x2"]
-    raw.obs["y_array"]=raw.obs["x3"]
-    raw.obs["x_pixel"]=raw.obs["x4"]
-    raw.obs["y_pixel"]=raw.obs["x5"]
+
+    if rawxpixel == "null" and rawypixel == "null":
+        keys_list = list(raw.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        raw.obs["x_pixel"]=raw.obs[random_key_x]
+        raw.obs["y_pixel"]=raw.obs[random_key_y]
+    else:
+        raw.obs["x_pixel"]=raw.obs[rawxpixel]
+        raw.obs["y_pixel"]=raw.obs[rawypixel]
+
+    if rawxarray == "null" and rawyarray == "null":
+        keys_list = list(raw.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        raw.obs["x_array"]=raw.obs[random_key_x]
+        raw.obs["y_array"]=raw.obs[random_key_y]
+    else:
+        raw.obs["x_array"]=raw.obs[rawxarray]
+        raw.obs["y_array"]=raw.obs[rawyarray]
+    
     #Convert sparse matrix to non-sparse
     raw.X=(raw.X.A if issparse(raw.X) else raw.X)
     raw.raw=raw
@@ -300,29 +359,56 @@ def IdentifyCSV(gene, results):
     
     return pathNameList
     
-def IdentifyMetaGene(gene, results):
+def IdentifyMetaGene(gene, results, xpixel = "null", ypixel = "null", xarray = "null", yarray = "null", rawxpixel = "null", rawypixel = "null", rawxarray = "null", rawyarray = "null"):
     #Read in raw data
     adata=sc.read(results)
 
-    adata.obs["x_array"]=adata.obs["x2"]
-    adata.obs["y_array"]=adata.obs["x3"]
-    adata.obs["x_pixel"]=adata.obs["x4"]
-    adata.obs["y_pixel"]=adata.obs["x5"]
+    if xpixel == "null" and ypixel == "null":
+        keys_list = list(adata.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        adata.obs["x_pixel"]=adata.obs[random_key_x]
+        adata.obs["y_pixel"]=adata.obs[random_key_y]
+    else:
+        adata.obs["x_pixel"]=adata.obs[ypixel]
+        adata.obs["y_pixel"]=adata.obs[xpixel]
+
+    if xarray == "null" and yarray == "null":
+        keys_list = list(adata.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        adata.obs["x_array"]=adata.obs[random_key_x]
+        adata.obs["y_array"]=adata.obs[random_key_y]
+    else:
+        adata.obs["x_array"]=adata.obs[xarray]
+        adata.obs["y_array"]=adata.obs[yarray]
 
     # Read in gene expression data
     raw=sc.read(gene)
     raw.var_names_make_unique()
     raw.obs["pred"]=adata.obs["pred"].astype('category')
-    raw.obs["x_array"]=raw.obs["x2"]
-    raw.obs["y_array"]=raw.obs["x3"]
-    raw.obs["x_pixel"]=raw.obs["x4"]
-    raw.obs["y_pixel"]=raw.obs["x5"]
-    
+
+    if rawxpixel == "null" and rawypixel == "null":
+        keys_list = list(raw.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        raw.obs["x_pixel"]=raw.obs[random_key_x]
+        raw.obs["y_pixel"]=raw.obs[random_key_y]
+    else:
+        raw.obs["x_pixel"]=raw.obs[rawxpixel]
+        raw.obs["y_pixel"]=raw.obs[rawypixel]
+
+    if rawxarray == "null" and rawyarray == "null":
+        keys_list = list(raw.obs.keys())
+        random_key_x, random_key_y = RandomKeys(keys_list)
+        raw.obs["x_array"]=raw.obs[random_key_x]
+        raw.obs["y_array"]=raw.obs[random_key_y]
+    else:
+        raw.obs["x_array"]=raw.obs[rawxarray]
+        raw.obs["y_array"]=raw.obs[rawyarray]
+
     #Convert sparse matrix to non-sparse
     raw.X=(raw.X.A if issparse(raw.X) else raw.X)
     raw.raw=raw
     sc.pp.log1p(raw)
-    
+
     #Use domain 2 as an example
     target=2
 
@@ -348,7 +434,7 @@ def IdentifyMetaGene(gene, results):
     ax.set_aspect('equal', 'box')
     ax.axes.invert_yaxis()
     CheckFolder("sample_results")
-    pathNameFirst = "./sample_results/identify_meta_"+g+".png"
+    pathNameFirst = f"./sample_results/identify_meta_{g}.png"
     plt.savefig(pathNameFirst, dpi=600)
     plt.close()
 
