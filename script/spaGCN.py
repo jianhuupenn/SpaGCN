@@ -150,7 +150,7 @@ elif parsed_args.identify_meta:
 
 elif parsed_args.multiple_tissue:
     # check if arguments are an existing h5ad files and tif/jpeg/jpg files
-    if len(parsed_args.multiple_tissue) == 4 and os.path.exists(parsed_args.multiple_tissue[0]) and ".h5ad" in parsed_args.multiple_tissue[0] and os.path.exists(parsed_args.multiple_tissue[1]) and ".h5ad" in parsed_args.multiple_tissue[1] and os.path.exists(parsed_args.multiple_tissue[2]) and (".tif" in parsed_args.parsed_args.multiple_tissue[2] or ".png" in parsed_args.parsed_args.multiple_tissue[2] or ".jpeg" in parsed_args.parsed_args.multiple_tissue[2]) and os.path.exists(parsed_args.multiple_tissue[3]) and (".tif" in parsed_args.parsed_args.multiple_tissue[3] or ".png" in parsed_args.parsed_args.multiple_tissue[3] or ".jpeg" in parsed_args.parsed_args.multiple_tissue[3]):
+    if len(parsed_args.multiple_tissue) == 4 and os.path.exists(parsed_args.multiple_tissue[0]) and ".h5ad" in parsed_args.multiple_tissue[0] and os.path.exists(parsed_args.multiple_tissue[1]) and ".h5ad" in parsed_args.multiple_tissue[1] and os.path.exists(parsed_args.multiple_tissue[2]) and (".tif" in parsed_args.multiple_tissue[2] or ".png" in parsed_args.multiple_tissue[2] or ".jpeg" in parsed_args.multiple_tissue[2]) and os.path.exists(parsed_args.multiple_tissue[3]) and (".tif" in parsed_args.multiple_tissue[3] or ".png" in parsed_args.multiple_tissue[3] or ".jpeg" in parsed_args.multiple_tissue[3]):
         pathName = MultipleTissue(parsed_args.multiple_tissue[0], parsed_args.multiple_tissue[1], parsed_args.multiple_tissue[2], parsed_args.multiple_tissue[3])
         print(f"Done, your picture are located here -> {pathName}")
     else:
