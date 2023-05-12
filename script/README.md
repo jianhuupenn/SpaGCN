@@ -1,12 +1,27 @@
 # Computational-Genomics-SpaGCN
 
-**Table of Contents**
+## Table of Contents
 
-[TOCM]
+- [Computational-Genomics-SpaGCN](#computational-genomics-spagcn)
+  - [Short intro about SpaGCN](#short-intro-about-Spagcn)
+  - [SpaGCN presentation](#spagcn-presentation)
+  - [SpaGCN script](#spagcn-script)
+    - [Introduction](#introduction)
+    - [Commands](#commands)
+      - [-convert_h5](#-convert_h5)
+      - [-integrate_gene](#-integrate_gene)
+        - [-histology](#-histology)
+        - [-pixels](#-pixels)
+      - [-spatial_domains](#-spatial_domains)
+        - [-arrays](#-arrays)
+        - [-clusters](#-clusters)
+      - [-identify_csv](#-identify_csv)
+        - [-raws](#-raws)
+      - [-identify_meta](#-identify_meta)
+      - [-multiple_tissue](#-multiple_tissue)
+  - [Dockerfile](#dockerfile)
 
-[TOC]
-
- Short intro about SpaGCN
+### Short intro about SpaGCN
 
 SpaGCN is a graph convolutional network to integrate gene expression and histology to identify spatial domains and spatially variable genes. To jointly model all spots in a tissue slide, SpaGCN integrates information from gene expression, spatial locations, and histological pixel intensities across spots into an undirected weighted graph.
 
