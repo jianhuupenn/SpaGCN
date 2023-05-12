@@ -3,7 +3,7 @@
 ## Table of Contents
 
 - [Computational-Genomics-SpaGCN](#computational-genomics-spagcn)
-  - [Short intro about SpaGCN](#short-intro-about-Spagcn)
+  - [Short intro about SpaGCN](#short-intro-about-spagcn)
   - [SpaGCN presentation](#spagcn-presentation)
   - [SpaGCN script](#spagcn-script)
     - [Introduction](#introduction)
@@ -238,6 +238,7 @@ As a result we get pictures:
 ![multiple_tissue](https://media.discordapp.net/attachments/962669952362496003/1106658992442327052/image.png?width=1101&height=285 "multiple_tissue")
 
 Results:
+
 ![multiple_tissue_img](https://media.discordapp.net/attachments/962669952362496003/1106659149338661025/image.png?width=911&height=533 "multiple_tissue_img")
 
 ------------
