@@ -187,6 +187,7 @@ As a result, the result.h5ad file and images of Spatial Domains and Refined Spat
 ![spatial_domains](https://media.discordapp.net/attachments/962669952362496003/1106645677271949353/image.png?width=966&height=535 "spatial_domains")
 
 Results:
+
 ![spatial_domains_img](https://media.discordapp.net/attachments/962669952362496003/1106646230433546250/image.png?width=926&height=535 "spatial_domains_img")
 
 ------------
