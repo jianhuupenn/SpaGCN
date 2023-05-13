@@ -23,7 +23,7 @@
       - [-read_keys](#-read_keys)
       - [-read_specific_keys](#-read_specific_keys)
   - [Dockerfile](#dockerfile)
-  - [File-E9.5_E1S1.MOSTA.h5ad](#file-e9.5_e1s1.mosta.h5ad)
+  - [File-E9.5_E1S1.MOSTA.h5ad](#File-E9.5_E1S1.MOSTA.h5ad)
   - [File-Dorsal_midbrain_cell_bin.h5ad](#file-dorsal_midbrain_cell_bin.h5ad)
 
 ### Short intro about SpaGCN
