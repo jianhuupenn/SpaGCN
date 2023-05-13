@@ -5,6 +5,7 @@ LABEL maintainer="Ksenija Mladenovic<mk223336m@student.etf.bg.ac.rs>"
 LABEL maintainer="Emilija Nikic<ne223077m@student.etf.bg.ac.rs>"
 LABEL maintainer="Aleksa Bogdanovic<ba223333m@student.etf.bg.ac.rs>"
 
+# -y git && apt-get install -y libgl1-mesa-glx && apt-get install -y libglib2.0-0 -> these are here because opencv-python cannot run/work without them
 RUN apt-get update && apt-get install -y python3-pip && apt-get install -y git && apt-get install -y libgl1-mesa-glx && apt-get install -y libglib2.0-0
 
 COPY requirements.txt .

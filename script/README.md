@@ -15,11 +15,16 @@
       - [-spatial_domains](#-spatial_domains)
         - [-arrays](#-arrays)
         - [-clusters](#-clusters)
+        - [-start](#-start)
       - [-identify_csv](#-identify_csv)
         - [-raws](#-raws)
       - [-identify_meta](#-identify_meta)
       - [-multiple_tissue](#-multiple_tissue)
+      - [-read_keys](#-read_keys)
+      - [-read_specific_keys](#-read_specific_keys)
   - [Dockerfile](#dockerfile)
+  - [File-E9.5_E1S1.MOSTA.h5ad](#file-e9.5_e1s1.mosta.h5ad)
+  - [File-Dorsal_midbrain_cell_bin.h5ad](#file-dorsal_midbrain_cell_bin.h5ad)
 
 ### Short intro about SpaGCN
 
@@ -164,7 +169,12 @@ This command is only used in combination with commands: spatial_domains, identif
 ###### -clusters
 If you know how many clusters are needed for your file then this command is also used, it accepts one parameter of type int(number). The default value is 7.
 `python3 spaGCN.py -spatial_domains ./path/to/file/h5ad ./path/to/file/csv` + 
-`-pixels x y` + `-arrays x y` + `-clusters 10`
+`-pixels x y` + `-arrays x y` + `-clusters 10
+
+###### -start
+An int type value is added here, where we determine the starting point for determining the value of l. The default value is 0.01.
+`python3 spaGCN.py -spatial_domains ./path/to/file/h5ad ./path/to/file/csv` + 
+`-pixels x y` + `-arrays x y` + `-clusters 10` + `-start 0.01`
 
 Example:
 `python3 spaGCN.py -spatial_domains ./data/151673/sample_data.h5ad ./data/sample_data.csv -pixels x4 x5 -arrays x2 x3 -clusters 7`
@@ -243,6 +253,17 @@ Results:
 
 ------------
 
+##### -read_keys
+If you don't know the keys that are in your h5ad file, you can see them using this command. It accepts one parameter, which is a file of type h5ad. That way you can choose coordinates for pixels, arrays and raws.
+
+
+------------
+
+##### -read_specific_keys
+It does the same as the previous command except that here goes another parameter which is of type string where we try to narrow down the selection of keys to select.
+
+------------
+
 ### Dockerfile
 
 Dockerfiles with requirement.txt can be found in Docker folder: [Docker & requirements](https://github.com/Master-Computational-Genomics-SpaGCN/SpaGCN/tree/master/script/Docker "Docker & requirements") 
@@ -256,5 +277,25 @@ add h5ad file/files to your docker container
 `docker cp -r /path/to/my-folder/my-file my-container:/app/my-folder`
 ![docker](https://media.discordapp.net/attachments/962669952362496003/1106664137032994968/image.png?width=853&height=535 "docker")
 
+The link to the DockerHub image is here ->[DockerHub SpaGCN](https://hub.docker.com/r/aleksa1902/spagcn/tags "DockerHub SpaGCN")
+
 ------------
 
+###  File-E9.5_E1S1.MOSTA.h5ad
+
+> The problem is the lack of information that I have on the site of those files and tutorials, I don't know in detail what each of the parameters means and what the values should be, mostly spagcn is adapted to their files, all parameters are adapted to their spample_data(start, step, tol, lr...) and that's why I don't get the expected results, but I get these.
+
+![e95_fist](https://media.discordapp.net/attachments/962669952362496003/1106683839948001290/image.png?width=881&height=296 "e95_fist")
+![E95_second](https://media.discordapp.net/attachments/962669952362496003/1106684132379066509/image.png?width=751&height=428 "E95_second")
+![E95_third](https://media.discordapp.net/attachments/962669952362496003/1106684540434530324/image.png?width=881&height=365 "E95_third")
+![E95_results](https://media.discordapp.net/attachments/962669952362496003/1106684667576451223/image.png?width=770&height=428 "E95_results")
+
+Second chance with different keys
+![E95_secondChance](https://media.discordapp.net/attachments/962669952362496003/1106728156636917800/image.png?width=765&height=428 "E95_secondChance")
+![E95_secondChance_results](https://media.discordapp.net/attachments/962669952362496003/1106728356856221796/image.png?width=768&height=428 "E95_secondChance_results")
+![E95_secondChance_csv](https://media.discordapp.net/attachments/962669952362496003/1106729815144411226/image.png?width=881&height=289 "E95_secondChance_csv")
+![E95_secondChance_csv_results](https://media.discordapp.net/attachments/962669952362496003/1106730026323431474/image.png?width=688&height=428 "E95_secondChance_csv_results")
+
+### File-Dorsal_midbrain_cell_bin.h5ad
+
+> The file is huge, which leads to a much longer execution time, the command integrate_gene succeeds after a few minutes but the spatial_domains break, the error is MemoryError.
