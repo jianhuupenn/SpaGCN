@@ -65,19 +65,21 @@ After that you can install the necessary libraries:
 #### Commands
 
 By typing the following command, we get a list of commands that we can use
-`python3 spaGCN.py -h`
+```
+python3 spaGCN.py -h
 
-> Computational Genomics Project SpaGCN [-h] [-convert_h5 CONVERT_H5 CONVERT_H5] [-integrate_gene INTEGRATE_GENE] [-histology HISTOLOGY]
+Computational Genomics Project SpaGCN [-h] [-convert_h5 CONVERT_H5 CONVERT_H5] [-integrate_gene INTEGRATE_GENE] [-histology HISTOLOGY]
                                              [-spatial_domains SPATIAL_DOMAINS SPATIAL_DOMAINS] [-clusters CLUSTERS] [-start START]
                                              [-identify_csv IDENTIFY_CSV IDENTIFY_CSV] [-identify_meta IDENTIFY_META IDENTIFY_META]
                                              [-multiple_tissue MULTIPLE_TISSUE MULTIPLE_TISSUE MULTIPLE_TISSUE MULTIPLE_TISSUE] [-pixels PIXELS PIXELS]
                                              [-arrays ARRAYS ARRAYS] [-raws RAWS RAWS RAWS RAWS] [-read_keys READ_KEYS]
                                              [-read_specific_keys READ_SPECIFIC_KEYS READ_SPECIFIC_KEYS] [--version]
 
-> This program does multiple things, it can convert h5 file to h5ad. It does Integrate gene expression and histology into a Graph, Spatial domain detection using
+
+This program does multiple things, it can convert h5 file to h5ad. It does Integrate gene expression and histology into a Graph, Spatial domain detection using
 SpaGCN, Identify SVGs, Identify Meta Gene and Multiple tissue sections analysis.
 
-> options:
+options:
   -h, --help            show this help message and exit
   -convert_h5 CONVERT_H5 CONVERT_H5
                         Read original 10x_h5 data and save it to h5ad. The path to the h5 file is required.
@@ -106,7 +108,8 @@ SpaGCN, Identify SVGs, Identify Meta Gene and Multiple tissue sections analysis.
   -read_specific_keys READ_SPECIFIC_KEYS READ_SPECIFIC_KEYS
                         Print all specific keys found in your file.
   --version             show program's version number and exit
-
+```
+  
 ------------
 
 
