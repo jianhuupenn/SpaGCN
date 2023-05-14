@@ -137,6 +137,8 @@ As a response we get the path to the csv file.
 
 ![-integrate_gene](https://media.discordapp.net/attachments/962669952362496003/1106640045449957498/image.png?width=1101&height=85 "-integrate_gene")
 
+If we have a histology, we get the result and a picture like in this location -> [PHOTO](https://github.com/Master-Computational-Genomics-SpaGCN/SpaGCN/blob/master/results/sample_data.jpg "PHOTO")
+
 ###### -histology
 This command is only used in combination with -integrate_gene and accepts one parameter, parameter must be a file of type .tif or .png or .jpg.
 `python3 spaGCN.py -integrate_gene ./path/to/file/h5ad -histology ./path/to/histology/file`
