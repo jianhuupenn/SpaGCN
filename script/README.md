@@ -16,7 +16,7 @@
         - [-arrays](#-arrays)
         - [-clusters](#-clusters)
         - [-start](#-start)
-      - [-identify_csv](#-identify_csv)
+      - [-identify_cvg](#-identify_cvg)
         - [-raws](#-raws)
       - [-identify_meta](#-identify_meta)
       - [-multiple_tissue](#-multiple_tissue)
@@ -68,9 +68,9 @@ By typing the following command, we get a list of commands that we can use
 ```
 python3 spaGCN.py -h
 
-Computational Genomics Project SpaGCN [-h] [-convert_h5 CONVERT_H5 CONVERT_H5] [-integrate_gene INTEGRATE_GENE] [-histology HISTOLOGY]
+usage: Computational Genomics Project SpaGCN [-h] [-convert_h5 CONVERT_H5 CONVERT_H5] [-integrate_gene INTEGRATE_GENE] [-histology HISTOLOGY]
                                              [-spatial_domains SPATIAL_DOMAINS SPATIAL_DOMAINS] [-clusters CLUSTERS] [-start START]
-                                             [-identify_csv IDENTIFY_CSV IDENTIFY_CSV] [-identify_meta IDENTIFY_META IDENTIFY_META]
+                                             [-identify_svg IDENTIFY_SVG IDENTIFY_SVG] [-identify_meta IDENTIFY_META IDENTIFY_META]
                                              [-multiple_tissue MULTIPLE_TISSUE MULTIPLE_TISSUE MULTIPLE_TISSUE MULTIPLE_TISSUE] [-pixels PIXELS PIXELS]
                                              [-arrays ARRAYS ARRAYS] [-raws RAWS RAWS RAWS RAWS] [-read_keys READ_KEYS]
                                              [-read_specific_keys READ_SPECIFIC_KEYS READ_SPECIFIC_KEYS] [--version]
@@ -90,19 +90,18 @@ options:
                         Spatial domain detection using SpaGCN. Paths to h5ad and csv files are required.
   -clusters CLUSTERS    Number of clusters for spatial domains. It is used in combination with command: spatial_domains.
   -start START          Start value for search l. It is used in combination with command: spatial_domains.
-  -identify_csv IDENTIFY_CSV IDENTIFY_CSV
+  -identify_svg IDENTIFY_SVG IDENTIFY_SVG
                         Identify SVGs. Paths to h5ad gene matrix and h5ad results files are required.
   -identify_meta IDENTIFY_META IDENTIFY_META
                         Identify Meta Gene. Paths to h5ad gene matrix and h5ad results files are required.
   -multiple_tissue MULTIPLE_TISSUE MULTIPLE_TISSUE MULTIPLE_TISSUE MULTIPLE_TISSUE
-                        Multiple tissue sections analysis.Paths to h5ad first tissue, h5ad second tissue, tif first tissue and tif second tissue files are
-                        required.
+                        Multiple tissue sections analysis.Paths to h5ad first tissue, h5ad second tissue, tif first tissue and tif second tissue files are required.
   -pixels PIXELS PIXELS
                         The x and y coordinates for pixels are typed here. It is used in combination with commands: integrate_gene, spatial_domains, identify_meta.
   -arrays ARRAYS ARRAYS
-                        The x and y coordinates for arrays are typed here. It is used in combination with commands: spatial_domains, identify_csv, identify_meta.
+                        The x and y coordinates for arrays are typed here. It is used in combination with commands: spatial_domains, identify_svg, identify_meta.
   -raws RAWS RAWS RAWS RAWS
-                        The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: identify_csv,
+                        The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: identify_svg,
                         identify_meta.
   -read_keys READ_KEYS  Print all keys found in your file.
   -read_specific_keys READ_SPECIFIC_KEYS READ_SPECIFIC_KEYS
@@ -166,7 +165,7 @@ This command detects the spatial domain using SpaGCN. And accepts two parameters
 `python3 spaGCN.py -spatial_domains ./path/to/file/h5ad ./path/to/file/csv` + 
 `-pixels x y`
 ###### -arrays
-This command is only used in combination with commands: spatial_domains, identify_csv, identify_meta. And they accept two parameters representing the coordinates. If this command is not used, then the program randomly selects the coordinates and informs the user (you can see it in the first two pictures).
+This command is only used in combination with commands: spatial_domains, identify_cvg, identify_meta. And they accept two parameters representing the coordinates. If this command is not used, then the program randomly selects the coordinates and informs the user (you can see it in the first two pictures).
 `python3 spaGCN.py -spatial_domains ./path/to/file/h5ad ./path/to/file/csv` + 
 `-pixels x y` + `-arrays x y`
 ###### -clusters
@@ -192,20 +191,20 @@ Results:
 
 ------------
 
-##### -identify_csv
-This command identifies csv based on results from -spatial_domains. And accepts two parameters, the first parameter must be a original file of type .h5ad and the second parameter must be a file of type .h5ad(The file we got as a result of executing the -spatial_domains command).
-`python3 spaGCN.py -identify_csv ./path/to/file/h5ad ./path/to/file/h5ad` + `-arrays x y`
+##### -identify_cvg
+This command identifies cvg based on results from -spatial_domains. And accepts two parameters, the first parameter must be a original file of type .h5ad and the second parameter must be a file of type .h5ad(The file we got as a result of executing the -spatial_domains command).
+`python3 spaGCN.py -identify_cvg ./path/to/file/h5ad ./path/to/file/h5ad` + `-arrays x y`
 
 ###### -raws
-The x array, y array, x pixel and y pixel coordinates for rows are typed here for result.h5ad. It is used in combination with commands: identify_csv, identify_meta.
-`python3 spaGCN.py -identify_csv ./path/to/file/h5ad ./path/to/file/h5ad` + `-arrays x y` + `-raws x1 y1 x2 y2`
+The x array, y array, x pixel and y pixel coordinates for rows are typed here for result.h5ad. It is used in combination with commands: identify_cvg, identify_meta.
+`python3 spaGCN.py -identify_cvg ./path/to/file/h5ad ./path/to/file/h5ad` + `-arrays x y` + `-raws x1 y1 x2 y2`
 Example:
-`python3 spaGCN.py -identify_csv ./data/151673/sample_data.h5ad ./sample_results/sample_data_results.h5ad -arrays x2 x3 -raws x2 x3 x4 x5`
+`python3 spaGCN.py -identify_cvg ./data/151673/sample_data.h5ad ./sample_results/sample_data_results.h5ad -arrays x2 x3 -raws x2 x3 x4 x5`
 
 As a result we get svg images:
 > Done, your pictures are located here -> ./sample_results/TMSB10.png ./sample_results/PCP4.png 
 
-![identify_csv](https://media.discordapp.net/attachments/962669952362496003/1106648046932066344/image.png?width=1101&height=313 "identify_csv")
+![identify_csv](https://media.discordapp.net/attachments/962669952362496003/1107260180682518599/image.png?width=1102&height=325 "identify_csv")
 
 Results:
 ![identify_csv_img](https://media.discordapp.net/attachments/962669952362496003/1106648702174634044/image.png?width=1005&height=535 "identify_csv_img")

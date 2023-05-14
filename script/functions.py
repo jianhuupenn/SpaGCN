@@ -260,7 +260,7 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7, xpixel = "null", ypi
 
     return pathNameResult + " " + pathNamePred + " " + pathNameRefPred
 
-def IdentifyCSV(gene, results, xarray = "null", yarray = "null", rawxpixel = "null", rawypixel = "null", rawxarray = "null", rawyarray = "null"):
+def IdentifySVG(gene, results, xarray = "null", yarray = "null", rawxpixel = "null", rawypixel = "null", rawxarray = "null", rawyarray = "null"):
     #Read in raw data
     adata=sc.read(results)
 

@@ -16,12 +16,12 @@ parser.add_argument("-histology", help="Integrate and histology into a Graph. Th
 parser.add_argument("-spatial_domains", nargs=2, help="Spatial domain detection using SpaGCN. Paths to h5ad and csv files are required.", default='')
 parser.add_argument("-clusters", help="Number of clusters for spatial domains. It is used in combination with command: spatial_domains.", type=int, default=None)
 parser.add_argument("-start", help="Start value for search l. It is used in combination with command: spatial_domains.", type=float, default=None)
-parser.add_argument("-identify_csv", nargs=2, help="Identify SVGs. Paths to h5ad gene matrix and h5ad results files are required.", default='')
+parser.add_argument("-identify_svg", nargs=2, help="Identify SVGs. Paths to h5ad gene matrix and h5ad results files are required.", default='')
 parser.add_argument("-identify_meta", nargs=2, help="Identify Meta Gene. Paths to h5ad gene matrix and h5ad results files are required.", default='')
 parser.add_argument("-multiple_tissue", nargs=4, help="Multiple tissue sections analysis.Paths to h5ad first tissue, h5ad second tissue, tif first tissue and tif second tissue files are required.", default='')
 parser.add_argument("-pixels", nargs=2, help="The x and y coordinates for pixels are typed here. It is used in combination with commands: integrate_gene, spatial_domains, identify_meta.", default='')
-parser.add_argument("-arrays", nargs=2, help="The x and y coordinates for arrays are typed here. It is used in combination with commands: spatial_domains, identify_csv, identify_meta.", default='')
-parser.add_argument("-raws", nargs=4, help="The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: identify_csv, identify_meta.", default='')
+parser.add_argument("-arrays", nargs=2, help="The x and y coordinates for arrays are typed here. It is used in combination with commands: spatial_domains, identify_svg, identify_meta.", default='')
+parser.add_argument("-raws", nargs=4, help="The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: identify_svg, identify_meta.", default='')
 parser.add_argument("-read_keys", help="Print all keys found in your file.", default='')
 parser.add_argument("-read_specific_keys", nargs=2, help="Print all specific keys found in your file.", default='')
 parser.add_argument('--version', action='version', version='%(prog)s v1.0')
@@ -106,18 +106,18 @@ elif parsed_args.spatial_domains:
         # print error message and help if arguments are incorrect
         PrintError(parser)
 
-elif parsed_args.identify_csv:
+elif parsed_args.identify_svg:
     # check if arguments are an existing h5ad files
-    if len(parsed_args.identify_csv) == 2 and os.path.exists(parsed_args.identify_csv[0]) and ".h5ad" in parsed_args.identify_csv[0] and os.path.exists(parsed_args.identify_csv[1]) and ".h5ad" in parsed_args.identify_csv[1]:
-        # Identify csv and print a message with the resulting png file location
+    if len(parsed_args.identify_svg) == 2 and os.path.exists(parsed_args.identify_svg[0]) and ".h5ad" in parsed_args.identify_svg[0] and os.path.exists(parsed_args.identify_svg[1]) and ".h5ad" in parsed_args.identify_svg[1]:
+        # Identify cvg and print a message with the resulting png file location
         if parsed_args.arrays and parsed_args.raws:
-            pathName = IdentifyCSV(gene=parsed_args.identify_csv[0], results=parsed_args.identify_csv[1], xarray=parsed_args.arrays[0], yarray=parsed_args.arrays[1], rawxarray=parsed_args.raws[0], rawyarray=parsed_args.raws[1], rawxpixel=parsed_args.raws[2], rawypixel=parsed_args.raws[3])
+            pathName = IdentifySVG(gene=parsed_args.identify_svg[0], results=parsed_args.identify_svg[1], xarray=parsed_args.arrays[0], yarray=parsed_args.arrays[1], rawxarray=parsed_args.raws[0], rawyarray=parsed_args.raws[1], rawxpixel=parsed_args.raws[2], rawypixel=parsed_args.raws[3])
         elif parsed_args.arrays:
-            pathName = IdentifyCSV(gene=parsed_args.identify_csv[0], results=parsed_args.identify_csv[1], xarray=parsed_args.arrays[0], yarray=parsed_args.arrays[1])
+            pathName = IdentifySVG(gene=parsed_args.identify_svg[0], results=parsed_args.identify_svg[1], xarray=parsed_args.arrays[0], yarray=parsed_args.arrays[1])
         elif parsed_args.raws:
-            pathName = IdentifyCSV(gene=parsed_args.identify_csv[0], results=parsed_args.identify_csv[1], rawxarray=parsed_args.raws[0], rawyarray=parsed_args.raws[1], rawxpixel=parsed_args.raws[2], rawypixel=parsed_args.raws[3])
+            pathName = IdentifySVG(gene=parsed_args.identify_svg[0], results=parsed_args.identify_svg[1], rawxarray=parsed_args.raws[0], rawyarray=parsed_args.raws[1], rawxpixel=parsed_args.raws[2], rawypixel=parsed_args.raws[3])
         else:    
-            pathName = IdentifyCSV(parsed_args.identify_csv[0], parsed_args.identify_csv[1])
+            pathName = IdentifySVG(parsed_args.identify_svg[0], parsed_args.identify_svg[1])
         print(f"Done, your pictures are located here -> {pathName}")
     else:
         # print error message and help if arguments are incorrect
