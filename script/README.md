@@ -25,6 +25,7 @@
   - [Dockerfile](#dockerfile)
   - [File-E9.5_E1S1.MOSTA.h5ad](#file-e95_e1s1mostah5ad)
   - [File-Dorsal_midbrain_cell_bin.h5ad](#file-dorsal_midbrain_cell_binh5ad)
+  - [Presentation-and-youtube](#presentation-and-youtube)
 
 ### Short intro about SpaGCN
 
@@ -305,3 +306,11 @@ Second chance with different keys
 ### File-Dorsal_midbrain_cell_bin.h5ad
 
 > The file is huge, which leads to a much longer execution time, the command integrate_gene succeeds after a few minutes but the spatial_domains break, the error is MemoryError.
+
+------------
+
+### Presentation-and-youtube
+
+Link to final presentation(in Serbian): [FINAL PRESENTATION](https://github.com/Master-Computational-Genomics-SpaGCN/SpaGCN/blob/master/script/finalPresentation/SpaGCN_rezultati.pptx "FINAL PRESENTATION")
+
+Link to youtube video: [YOUTUBE LINK](https://youtu.be/e4Ofv_IijKw "YOUTUBE LINK")
