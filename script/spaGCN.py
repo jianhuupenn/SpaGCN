@@ -10,20 +10,20 @@ def PrintError(parser):
 parser = argparse.ArgumentParser(prog='Computational Genomics Project SpaGCN', description='This program does multiple things, it can convert h5 file to h5ad. It does Integrate gene expression and histology into a Graph, Spatial domain detection using SpaGCN, Identify SVGs, Identify Meta Gene and Multiple tissue sections analysis.')
 
 # add arguments to parser
-parser.add_argument("-convert_h5", nargs=2, help="Read original 10x_h5 data and save it to h5ad. The path to the h5 file is required.", default='')
-parser.add_argument("-integrate_gene", help="Integrate gene expression into a Graph. The path to the h5ad file is required", default='')
-parser.add_argument("-histology", help="Integrate and histology into a Graph. The path to the .tif file is required. It is used in combination with command: integrate_gene.", default='')
-parser.add_argument("-spatial_domains", nargs=2, help="Spatial domain detection using SpaGCN. Paths to h5ad and csv files are required.", default='')
-parser.add_argument("-clusters", help="Number of clusters for spatial domains. It is used in combination with command: spatial_domains.", type=int, default=None)
-parser.add_argument("-start", help="Start value for search l. It is used in combination with command: spatial_domains.", type=float, default=None)
-parser.add_argument("-identify_svg", nargs=2, help="Identify SVGs. Paths to h5ad gene matrix and h5ad results files are required.", default='')
-parser.add_argument("-identify_meta", nargs=2, help="Identify Meta Gene. Paths to h5ad gene matrix and h5ad results files are required.", default='')
-parser.add_argument("-multiple_tissue", nargs=4, help="Multiple tissue sections analysis.Paths to h5ad first tissue, h5ad second tissue, tif first tissue and tif second tissue files are required.", default='')
-parser.add_argument("-pixels", nargs=2, help="The x and y coordinates for pixels are typed here. It is used in combination with commands: integrate_gene, spatial_domains, identify_meta.", default='')
-parser.add_argument("-arrays", nargs=2, help="The x and y coordinates for arrays are typed here. It is used in combination with commands: spatial_domains, identify_svg, identify_meta.", default='')
-parser.add_argument("-raws", nargs=4, help="The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: identify_svg, identify_meta.", default='')
-parser.add_argument("-read_keys", help="Print all keys found in your file.", default='')
-parser.add_argument("-read_specific_keys", nargs=2, help="Print all specific keys found in your file.", default='')
+parser.add_argument("--convert_h5", nargs=2, help="Read original 10x_h5 data and save it to h5ad. The path to the h5 file is required.", default='')
+parser.add_argument("--integrate_gene", help="Integrate gene expression into a Graph. The path to the h5ad file is required", default='')
+parser.add_argument("--histology_image", help="Integrate and histology into a Graph. The path to the .tif file is required. It is used in combination with command: integrate_gene.", default='')
+parser.add_argument("--spatial_domains", nargs=2, help="Spatial domain detection using SpaGCN. Paths to h5ad and csv files are required.", default='')
+parser.add_argument("--clusters", help="Number of clusters for spatial domains. It is used in combination with command: spatial_domains.", type=int, default=None)
+parser.add_argument("--start", help="Start value for search l. It is used in combination with command: spatial_domains.", type=float, default=None)
+parser.add_argument("--identify_svg", nargs=2, help="Identify SVGs. Paths to h5ad gene matrix and h5ad results files are required.", default='')
+parser.add_argument("--identify_meta", nargs=2, help="Identify Meta Gene. Paths to h5ad gene matrix and h5ad results files are required.", default='')
+parser.add_argument("--multiple_tissue", nargs=4, help="Multiple tissue sections analysis.Paths to h5ad first tissue, h5ad second tissue, tif first tissue and tif second tissue files are required.", default='')
+parser.add_argument("--pixels", nargs=2, help="The x and y coordinates for pixels are typed here. It is used in combination with commands: integrate_gene, spatial_domains, identify_meta.", default='')
+parser.add_argument("--arrays", nargs=2, help="The x and y coordinates for arrays are typed here. It is used in combination with commands: spatial_domains, identify_svg, identify_meta.", default='')
+parser.add_argument("--raws", nargs=4, help="The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: identify_svg, identify_meta.", default='')
+parser.add_argument("--read_keys", help="Print all keys found in your file.", default='')
+parser.add_argument("--read_specific_keys", nargs=2, help="Print all specific keys found in your file.", default='')
 parser.add_argument('--version', action='version', version='%(prog)s v1.0')
 
 
@@ -153,6 +153,28 @@ elif parsed_args.multiple_tissue:
     if len(parsed_args.multiple_tissue) == 4 and os.path.exists(parsed_args.multiple_tissue[0]) and ".h5ad" in parsed_args.multiple_tissue[0] and os.path.exists(parsed_args.multiple_tissue[1]) and ".h5ad" in parsed_args.multiple_tissue[1] and os.path.exists(parsed_args.multiple_tissue[2]) and (".tif" in parsed_args.multiple_tissue[2] or ".png" in parsed_args.multiple_tissue[2] or ".jpeg" in parsed_args.multiple_tissue[2]) and os.path.exists(parsed_args.multiple_tissue[3]) and (".tif" in parsed_args.multiple_tissue[3] or ".png" in parsed_args.multiple_tissue[3] or ".jpeg" in parsed_args.multiple_tissue[3]):
         pathName = MultipleTissue(parsed_args.multiple_tissue[0], parsed_args.multiple_tissue[1], parsed_args.multiple_tissue[2], parsed_args.multiple_tissue[3])
         print(f"Done, your picture are located here -> {pathName}")
+    elif len(parsed_args.multiple_tissue) > 4:
+        given_tissues = int(len(parsed_args.multiple_tissue)/2)
+        num_tissue = 0
+        num_histology = 0
+        tissues = []
+        histology = []
+        for i in range(0, given_tissues): #tissues
+            if os.path.exists(parsed_args.multiple_tissue[i]) and ".h5ad" in parsed_args.multiple_tissue[i]:
+                tissues.append(parsed_args.multiple_tissue[i])
+                num_tissue=num_tissue+1
+        
+        for j in range(given_tissues, len(parsed_args.multiple_tissue)): #histology_images
+            if os.path.exists(parsed_args.multiple_tissue[j]) and (".tif" in parsed_args.multiple_tissue[j] or ".png" in parsed_args.multiple_tissue[j] or ".jpeg" in parsed_args.multiple_tissue[j]):
+                histology.append(parsed_args.multiple_tissue[j])
+                num_histology = num_histology + 1
+        
+        if num_histology==num_tissue and num_tissue==given_tissues and num_histology==given_tissues:
+            pathName = MultipleTissueMore(tissues, histology)
+            print(f"Done, your picture are located here -> {pathName}")
+        else:
+            # print error message and help if arguments are incorrect
+            PrintError(parser)
     else:
         # print error message and help if arguments are incorrect
         PrintError(parser)
