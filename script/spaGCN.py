@@ -24,7 +24,6 @@ parser.add_argument("--arrays", nargs=2, help="The x and y coordinates for array
 parser.add_argument("--raws", nargs=4, help="The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: identify_svg, identify_meta.", default='')
 parser.add_argument("--read_keys", help="Print all keys found in your file.", default='')
 parser.add_argument("--read_specific_keys", nargs=2, help="Print all specific keys found in your file.", default='')
-parser.add_argument('--version', action='version', version='%(prog)s v1.0')
 
 
 # parse command line arguments
