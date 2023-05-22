@@ -5,7 +5,8 @@ from functions import *
 
 
 def PrintError(parser):
-    print("Your files do not exist or are of the wrong type.")
+    logging.error("Your files do not exist or are of the wrong type.")
+    #print("Your files do not exist or are of the wrong type.")
     parser.print_help()
 
 # create parser object with program name and description
