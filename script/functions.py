@@ -113,9 +113,9 @@ def IntegrateIntoGraphHistology(gene, histology, xpixel = "null", ypixel = "null
 
 def ReadKeys(gene):
     adata=sc.read(gene)
-    print(f"All keys > {str(adata.obs.keys())}")
+    print(f"All keys > {str(adata.obs.keys())}") #preimenovati u spatial
 
-def ReadSpecificKeys(gene, search_str):
+def ReadSpecificKeys(gene, search_str): #preimenovati u spatial
     adata = sc.read(gene)
     keys_with_str = [key for key in adata.obs.keys() if search_str in key]
     print(f"Keys with '{search_str}' > {keys_with_str}")
