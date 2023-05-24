@@ -146,7 +146,7 @@ def IntegrateIntoGraph(gene, xpixel = "null", ypixel = "null"):
 
     return pathName
 
-def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7, xpixel = "null", ypixel = "null", xarray = "null", yarray = "null", startL=0.01):
+def SpatialDomainsDetectionSpaGCN(gene, adjCsv, xpixel = "null", ypixel = "null", xarray = "null", yarray = "null", startL=0.01):
     # Read the gene expression data
     adata=sc.read(gene)
 
@@ -194,7 +194,7 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7, xpixel = "null", ypi
 
     #If the number of clusters known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
     #For this toy data, we set the number of clusters=7 since this tissue has 7 layers
-    n_clusters=clusters
+    n_clusters=7
     #Set seed
     r_seed=t_seed=n_seed=100
 
