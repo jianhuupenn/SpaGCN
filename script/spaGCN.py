@@ -41,7 +41,6 @@ if __name__ == '__main__':
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
     if parsed_args.mode:
-        print(parsed_args.mode)
         if parsed_args.mode[0] == '1' and os.path.exists(parsed_args.mode[1]) and ".h5ad" in parsed_args.mode[1] and os.path.exists(parsed_args.mode[2]) and ".csv" in parsed_args.mode[2]:
             if len(parsed_args.mode) == 8:
                 pathName = SpatialDomainsDetectionSpaGCN(parsed_args.mode[1], parsed_args.mode[2], xarray=parsed_args.mode[3], yarray=parsed_args.mode[4], xpixel=parsed_args.mode[5], ypixel=parsed_args.mode[6], startL=parsed_args.mode[7])
@@ -54,9 +53,9 @@ if __name__ == '__main__':
             split_string = pathName.split(" ")
             pathName = IdentifySVG(gene=parsed_args.mode[1], results=split_string[0], xarray=parsed_args.mode[3], yarray=parsed_args.mode[4], rawxarray=parsed_args.mode[3], rawyarray=parsed_args.mode[4], rawxpixel=parsed_args.mode[5], rawypixel=parsed_args.mode[6])
             logging.info(f"Done, your pictures are located here -> {pathName}")
-        elif parsed_args.mode[0] == '2' and os.path.exists(parsed_args.mode[1]) and ".h5ad" in parsed_args.mode[1] and os.path.exists(parsed_args.spatial_domains[2]) and ".h5ad" in parsed_args.spatial_domains[2]:
+        elif parsed_args.mode[0] == '2' and os.path.exists(parsed_args.mode[1]) and ".h5ad" in parsed_args.mode[1] and os.path.exists(parsed_args.mode[2]) and ".h5ad" in parsed_args.mode[2]:
             if len(parsed_args.mode) == 7:
-                pathName = IdentifyMetaGene(gene=parsed_args.mode[1], results=parsed_args.mode[2], xpixel=parsed_args.mode[3], ypixel=parsed_args.mode[4], xarray=parsed_args.mode[5], yarray=parsed_args.mode[6], rawxarray=parsed_args.raws[4], rawyarray=parsed_args.raws[5], rawxpixel=parsed_args.raws[6], rawypixel=parsed_args.raws[7])
+                pathName = IdentifyMetaGene(gene=parsed_args.mode[1], results=parsed_args.mode[2], xpixel=parsed_args.mode[3], ypixel=parsed_args.mode[4], xarray=parsed_args.mode[5], yarray=parsed_args.mode[6], rawxarray=parsed_args.mode[3], rawyarray=parsed_args.mode[4], rawxpixel=parsed_args.mode[5], rawypixel=parsed_args.mode[6])
             else:
                 pathName = IdentifyMetaGene(gene=parsed_args.mode[1], results=parsed_args.mode[2])
             logging.info(f"Done, your pictures are located here -> {pathName}")
@@ -83,8 +82,21 @@ if __name__ == '__main__':
                 # print error message and help if arguments are incorrect
                 PrintError(parser)
         else:
-            # print error message and help if arguments are incorrect
-            PrintError(parser)
+            if os.path.exists(parsed_args.mode[0]) and ".h5ad" in parsed_args.mode[0] and os.path.exists(parsed_args.mode[1]) and ".csv" in parsed_args.mode[1]:
+                if len(parsed_args.mode) == 7:
+                    pathName = SpatialDomainsDetectionSpaGCN(parsed_args.mode[0], parsed_args.mode[1], xarray=parsed_args.mode[2], yarray=parsed_args.mode[3], xpixel=parsed_args.mode[4], ypixel=parsed_args.mode[5], startL=parsed_args.mode[6])
+                elif len(parsed_args.mode) == 6:
+                    pathName = SpatialDomainsDetectionSpaGCN(parsed_args.mode[0], parsed_args.mode[1], xarray=parsed_args.mode[2], yarray=parsed_args.mode[3], xpixel=parsed_args.mode[4], ypixel=parsed_args.mode[5])
+                else:
+                    pathName = SpatialDomainsDetectionSpaGCN(parsed_args.mode[0], parsed_args.mode[1])
+
+                logging.info(f"Done, your result file and pictures are located here -> {pathName}")
+                split_string = pathName.split(" ")
+                pathName = IdentifySVG(gene=parsed_args.mode[0], results=split_string[0], xarray=parsed_args.mode[2], yarray=parsed_args.mode[3], rawxarray=parsed_args.mode[2], rawyarray=parsed_args.mode[3], rawxpixel=parsed_args.mode[4], rawypixel=parsed_args.mode[5])
+                logging.info(f"Done, your pictures are located here -> {pathName}")
+            else:
+                # print error message and help if arguments are incorrect
+                PrintError(parser)
 
     # check which argument was specified and perform corresponding function
     elif parsed_args.convert_h5:

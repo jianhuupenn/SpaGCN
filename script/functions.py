@@ -189,7 +189,6 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, xpixel = "null", ypixel = "null"
     sc.pp.normalize_per_cell(adata)
     sc.pp.log1p(adata)
     p=0.5
-    # TODO: find better way for these parameters
     l=spg.search_l(p, adj, start=startL, end=1000, tol=0.01, max_run=100)
 
     #If the number of clusters known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
@@ -199,7 +198,6 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, xpixel = "null", ypixel = "null"
     r_seed=t_seed=n_seed=100
 
     # Search for optimal value of the resolution parameter
-    # TODO: find better way for these parameters
     res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed) 
 
     # Train the model
