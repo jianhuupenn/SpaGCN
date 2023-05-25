@@ -20,6 +20,8 @@
         - [--raws](#--raws)
       - [--identify_meta](#--identify_meta)
       - [--multiple_tissue](#--multiple_tissue)
+      - [--mode](#--mode)
+      - [--verbose](#--verbose)
       - [--read_keys](#--read_keys)
       - [--read_specific_keys](#--read_specific_keys)
   - [Dockerfile](#dockerfile)
@@ -256,6 +258,25 @@ As a result we get pictures:
 Results:
 
 ![multiple_tissue_img](https://media.discordapp.net/attachments/962669952362496003/1106659149338661025/image.png?width=911&height=533 "multiple_tissue_img")
+
+------------
+
+##### --mode
+
+This command represents the modes of our project, we have 3 modes:
+mode 1 - spatial domains and identify svg are executed (this mode is also the default, if no mode number is defined)
+`python3 spaGCN.py -mode 1 ./path/to/file/h5ad ./path/to/file/csv` + `xarray yarray` + `xpixel ypixel` + `start` or
+`python3 spaGCN.py -mode ./path/to/file/h5ad ./path/to/file/csv` + `xarray yarray` + `xpixel ypixel` + `start`
+mode 2 - identify meta is executed
+`python3 spaGCN.py -mode 2 ./path/to/file/h5ad ./path/to/file/csv` + `xarray yarray` + `xpixel ypixel`
+mode 3 - multiple tissue are executed
+`python3 spaGCN.py -mode 3 ./paths/to/files/h5ad ./paths/to/files/tif`
+
+------------
+
+##### --verbose
+
+The --verbose command is to provide a command-line option for setting the logging level of the application, allowing the user to control the verbosity of log messages. The --verbose argument is expected to have one of the following choices: 'DEBUG', 'INFO', 'WARNING', 'ERROR', or 'CRITICAL'. It is used to set the logging level of the application. If --verbose is not provided, the default logging level is used. The log messages are printed to the standard output (sys.stdout).
 
 ------------
 
