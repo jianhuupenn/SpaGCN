@@ -113,9 +113,9 @@ def IntegrateIntoGraphHistology(gene, histology, xpixel = "null", ypixel = "null
 
 def ReadKeys(gene):
     adata=sc.read(gene)
-    print(f"All keys > {str(adata.obs.keys())}")
+    print(f"All keys > {str(adata.obs.keys())}") #preimenovati u spatial
 
-def ReadSpecificKeys(gene, search_str):
+def ReadSpecificKeys(gene, search_str): #preimenovati u spatial
     adata = sc.read(gene)
     keys_with_str = [key for key in adata.obs.keys() if search_str in key]
     print(f"Keys with '{search_str}' > {keys_with_str}")
@@ -146,7 +146,7 @@ def IntegrateIntoGraph(gene, xpixel = "null", ypixel = "null"):
 
     return pathName
 
-def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7, xpixel = "null", ypixel = "null", xarray = "null", yarray = "null", startL=0.01):
+def SpatialDomainsDetectionSpaGCN(gene, adjCsv, xpixel = "null", ypixel = "null", xarray = "null", yarray = "null", startL=0.01):
     # Read the gene expression data
     adata=sc.read(gene)
 
@@ -189,17 +189,15 @@ def SpatialDomainsDetectionSpaGCN(gene, adjCsv, clusters=7, xpixel = "null", ypi
     sc.pp.normalize_per_cell(adata)
     sc.pp.log1p(adata)
     p=0.5
-    # TODO: find better way for these parameters
     l=spg.search_l(p, adj, start=startL, end=1000, tol=0.01, max_run=100)
 
     #If the number of clusters known, we can use the spg.search_res() fnction to search for suitable resolution(optional)
     #For this toy data, we set the number of clusters=7 since this tissue has 7 layers
-    n_clusters=clusters
+    n_clusters=7
     #Set seed
     r_seed=t_seed=n_seed=100
 
     # Search for optimal value of the resolution parameter
-    # TODO: find better way for these parameters
     res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed) 
 
     # Train the model
@@ -528,6 +526,94 @@ def MultipleTissue(firstTissue, secondTissue, firstHistology, secondHistology):
     # save scatter plot to file
     CheckFolder("sample_results")
     split = firstTissue.split("/")
+    name = split[len(split)-1].split(".")
+    pathName = "./sample_results/muti_sections_domains_" + name[0] + ".png"
+    plt.savefig(pathName, dpi=600)
+    plt.close()
+
+    return pathName
+
+
+def MultipleTissueMore(tissues, histologies): #send arrays
+    adata = []
+    img = []
+    for i in tissues:
+        # Load tissues datasets
+        adata.append(sc.read(tissues[i]))
+        # Load histology images
+        img.append(cv2.imread(histologies[i]))
+
+    # Define beta and scale factors for extracting color and z values from histology images
+    b=49
+    s=1
+    x_pixels = []
+    y_pixels = []
+
+    # Extract color and z values for cells in the tissues dataset
+    for i in adata:
+        x_pixels.append(adata[i].obs["x4"].tolist())
+        y_pixels.append(adata[i].obs["x5"].tolist())
+        adata[i].obs["color"]=spg.extract_color(x_pixel=x_pixels[i], y_pixel=y_pixels[i], image=img[i], beta=b)
+        z_scale=np.max([np.std(x_pixels[i]), np.std(y_pixels[i])])*s
+        adata[i].obs["z"]=(adata[i].obs["color"]-np.mean(adata[i].obs["color"]))/np.std(adata[i].obs["color"])*z_scale
+
+    # Delete the histology images to free up memory
+    del img
+
+    # Add x and y pixel coordinates to the first and second tissue datasets
+    adata[0].obs["x_pixel"]=x_pixels[0]
+    adata[0].obs["y_pixel"]=y_pixels[0]
+    for i in range(1, len(adata)):
+        adata[i].obs["x_pixel"]=x_pixels[i]-np.min(x_pixels[i])+np.min(x_pixels[i-1])
+        adata[i].obs["y_pixel"]=y_pixels[i]-np.min(y_pixels[i])+np.max(y_pixels[i-1])
+
+    # Make variable names unique in both tissue datasets
+    for i in adata:
+        adata[i].var_names_make_unique()
+
+    # Concatenate the two tissue datasets into a single AnnData object
+    for i in range(0, len(adata)-1, 2):
+        adata_all=AnnData.concatenate(adata[i], adata[i+1],join='inner',batch_key="dataset_batch",batch_categories=["0","1"])
+
+    
+    # Calculate pairwise distance between cells using their x, y, and z coordinates
+    X=np.array([adata_all.obs["x_pixel"], adata_all.obs["y_pixel"], adata_all.obs["z"]]).T.astype(np.float32)
+    adj=spg.pairwise_distance(X)
+
+    # Normalize gene expression values by total counts and log-transform
+    sc.pp.normalize_per_cell(adata_all, min_counts=0)
+    sc.pp.log1p(adata_all)
+    p=0.5 
+    #Find the l value given p
+    l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
+
+    res=1.0
+    seed=100
+    random.seed(seed)
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+
+    # train SpaGCN model with given parameters
+    clf=spg.SpaGCN()
+    clf.set_l(l)
+    clf.train(adata_all,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
+    y_pred, prob=clf.predict()
+    adata_all.obs["pred"]= y_pred
+    adata_all.obs["pred"]=adata_all.obs["pred"].astype('category')
+
+    colors_use=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#bcbd22', '#17becf', '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#bec1d4', '#bb7784', '#0000ff', '#111010', '#FFFF00',   '#1f77b4', '#800080', '#959595', 
+    '#7d87b9', '#bec1d4', '#d6bcc0', '#bb7784', '#8e063b', '#4a6fe3', '#8595e1', '#b5bbe3', '#e6afb9', '#e07b91', '#d33f6a', '#11c638', '#8dd593', '#c6dec7', '#ead3c6', '#f0b98d', '#ef9708', '#0fcfc0', '#9cded6', '#d5eae7', '#f3e1eb', '#f6c4e1', '#f79cd4']
+    num_celltype=len(adata_all.obs["pred"].unique())
+    adata_all.uns["pred_colors"]=list(colors_use[:num_celltype])
+    
+    # create scatter plot of predicted cell types
+    ax=sc.pl.scatter(adata_all,alpha=1,x="y_pixel",y="x_pixel",color="pred",show=False,size=150000/adata_all.shape[0])
+    ax.set_aspect('equal', 'box')
+    ax.axes.invert_yaxis()
+    
+    # save scatter plot to file
+    CheckFolder("sample_results")
+    split = tissues[0].split("/")
     name = split[len(split)-1].split(".")
     pathName = "./sample_results/muti_sections_domains_" + name[0] + ".png"
     plt.savefig(pathName, dpi=600)
