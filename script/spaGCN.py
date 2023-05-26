@@ -59,25 +59,32 @@ if __name__ == '__main__':
             else:
                 pathName = IdentifyMetaGene(gene=parsed_args.mode[1], results=parsed_args.mode[2])
             logging.info(f"Done, your pictures are located here -> {pathName}")
-        elif parsed_args.mode == '3':
-            given_tissues = int(len(parsed_args.multiple_tissue)/2)
-            num_tissue = 0
-            num_histology = 0
-            tissues = []
-            histology = []
-            for i in range(0, given_tissues): #tissues
-                if os.path.exists(parsed_args.multiple_tissue[i]) and ".h5ad" in parsed_args.multiple_tissue[i]:
-                    tissues.append(parsed_args.multiple_tissue[i])
-                    num_tissue=num_tissue+1
-            
-            for j in range(given_tissues, len(parsed_args.multiple_tissue)): #histology_images
-                if os.path.exists(parsed_args.multiple_tissue[j]) and (".tif" in parsed_args.multiple_tissue[j] or ".png" in parsed_args.multiple_tissue[j] or ".jpeg" in parsed_args.multiple_tissue[j]):
-                    histology.append(parsed_args.multiple_tissue[j])
-                    num_histology = num_histology + 1
-            
-            if num_histology==num_tissue and num_tissue==given_tissues and num_histology==given_tissues:
-                pathName = MultipleTissueMore(tissues, histology)
+        elif parsed_args.mode[0] == '3':
+            if len(parsed_args.mode) == 5 and os.path.exists(parsed_args.mode[1]) and ".h5ad" in parsed_args.mode[1] and os.path.exists(parsed_args.mode[2]) and ".h5ad" in parsed_args.mode[2] and os.path.exists(parsed_args.mode[3]) and (".tif" in parsed_args.mode[3] or ".png" in parsed_args.mode[3] or ".jpeg" in parsed_args.mode[3]) and os.path.exists(parsed_args.mode[4]) and (".tif" in parsed_args.mode[4] or ".png" in parsed_args.mode[4] or ".jpeg" in parsed_args.mode[4]):
+                pathName = MultipleTissue(parsed_args.mode[1], parsed_args.mode[2], parsed_args.mode[3], parsed_args.mode[4])
                 logging.info(f"Done, your picture are located here -> {pathName}")
+            elif len(parsed_args.mode) > 5:
+                given_tissues = int(len(parsed_args.mode)/2 + 1)
+                num_tissue = 0
+                num_histology = 0
+                tissues = []
+                histology = []
+                for i in range(1, given_tissues): #tissues
+                    if os.path.exists(parsed_args.mode[i]) and ".h5ad" in parsed_args.mode[i]:
+                        tissues.append(parsed_args.mode[i])
+                        num_tissue=num_tissue+1
+                
+                for j in range(given_tissues, len(parsed_args.mode)): #histology_images
+                    if os.path.exists(parsed_args.mode[j]) and (".tif" in parsed_args.mode[j] or ".png" in parsed_args.mode[j] or ".jpeg" in parsed_args.mode[j]):
+                        histology.append(parsed_args.mode[j])
+                        num_histology = num_histology + 1
+                
+                if num_histology==num_tissue and num_tissue==given_tissues and num_histology==given_tissues:
+                    pathName = MultipleTissueMore(tissues, histology)
+                    logging.info(f"Done, your picture are located here -> {pathName}")
+                else:
+                    # print error message and help if arguments are incorrect
+                    PrintError(parser)
             else:
                 # print error message and help if arguments are incorrect
                 PrintError(parser)
