@@ -252,6 +252,6 @@ Second chance with different keys
 
 ### Presentation-and-youtube
 
-Link to final presentation(in Serbian): [FINAL PRESENTATION](https://github.com/Master-Computational-Genomics-SpaGCN/SpaGCN/blob/master/script/finalPresentation/SpaGCN_rezultati.pptx "FINAL PRESENTATION")
+Link to final presentation(in Serbian): [FINAL PRESENTATION](https://github.com/Master-Computational-Genomics-SpaGCN/spaGCN-presentation/blob/main/finalPresentation/SpaGCN_rezultati.pptx "FINAL PRESENTATION")
 
 Link to youtube video: [YOUTUBE LINK](https://youtu.be/e4Ofv_IijKw "YOUTUBE LINK")
