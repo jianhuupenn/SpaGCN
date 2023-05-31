@@ -13,11 +13,12 @@ parser = argparse.ArgumentParser(prog='Computational Genomics Project SpaGCN', d
 
 # add arguments to parser
 parser.add_argument("--mode", nargs="+", help="Modes on which these programs work.(Mode 1: integrate gene & spatial domains(default), Mode 2: identify svg & identify meta, Mode 3: multiple tissue)", default='')
+parser.add_argument("--histology_image", help="Integrate and histology into a Graph. The path to the .tif file is required. It is used in combination with command: mode 1 or mode without number(default).", default='')
 #parser.add_argument("--convert_h5", nargs=2, help="Read original 10x_h5 data and save it to h5ad. The path to the h5 file is required.", default='')
-parser.add_argument("--start", help="Start value for search l. It is used in combination with command: spatial_domains.", type=float, default=0.01)
-parser.add_argument("--pixels", nargs=2, help="The x and y coordinates for pixels are typed here. It is used in combination with commands: integrate_gene, spatial_domains, identify_meta.", default='')
-parser.add_argument("--arrays", nargs=2, help="The x and y coordinates for arrays are typed here. It is used in combination with commands: spatial_domains, identify_svg, identify_meta.", default='')
-parser.add_argument("--raws", nargs=4, help="The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: identify_svg, identify_meta.", default='')
+parser.add_argument("--start", help="Start value for search l. It is used in combination with command: mode 1 or mode.", type=float, default=0.01)
+parser.add_argument("--pixels", nargs=2, help="The x and y coordinates for pixels are typed here. It is used in combination with commands: mode, mode 1 and mode 2", default='')
+parser.add_argument("--arrays", nargs=2, help="The x and y coordinates for arrays are typed here. It is used in combination with commands: mode, mode 1", default='')
+parser.add_argument("--raws", nargs=4, help="The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: mode 2", default='')
 parser.add_argument("--read_obs", help="Print all keys found in your file.", default='')
 parser.add_argument("--read_specific_obs", nargs=2, help="Print all specific keys found in your file.", default='')
 parser.add_argument("--verbose", choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Set the logging level")
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     if parsed_args.mode:
         if parsed_args.mode[0] == '1':
             gene = parsed_args.mode[1]
-            histology = parsed_args.mode[2]
+            histology = parsed_args.histology_image if parsed_args.histology_image else None
             xpixel = parsed_args.pixels[0] if parsed_args.pixels else "null"
             ypixel = parsed_args.pixels[1] if parsed_args.pixels else "null"
             xarray = parsed_args.arrays[0] if parsed_args.arrays else "null"
