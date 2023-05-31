@@ -14,8 +14,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 WORKDIR /opt
+RUN rm -rf /opt/SpaGCN
 RUN git clone https://github.com/Master-Computational-Genomics-SpaGCN/SpaGCN.git
 
 WORKDIR /opt/SpaGCN
+RUN git pull origin master
 
 COPY Dockerfile /opt
