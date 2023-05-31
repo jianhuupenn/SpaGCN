@@ -8,22 +8,15 @@
   - [SpaGCN script](#spagcn-script)
     - [Introduction](#introduction)
     - [Commands](#commands)
-      - [--convert_h5](#--convert_h5)
-      - [--integrate_gene](#--integrate_gene)
+      - [--mode](#--mode)
         - [--histology_image](#--histology_image)
         - [--pixels](#--pixels)
-      - [--spatial_domains](#--spatial_domains)
         - [--arrays](#--arrays)
-        - [--clusters](#--clusters)
         - [--start](#--start)
-      - [--identify_cvg](#--identify_cvg)
         - [--raws](#--raws)
-      - [--identify_meta](#--identify_meta)
-      - [--multiple_tissue](#--multiple_tissue)
-      - [--mode](#--mode)
       - [--verbose](#--verbose)
-      - [--read_keys](#--read_keys)
-      - [--read_specific_keys](#--read_specific_keys)
+      - [--read_obs](#--read_obs)
+      - [--read_specific_obs](#--read_specific_obs)
   - [Dockerfile](#dockerfile)
   - [File-E9.5_E1S1.MOSTA.h5ad](#file-e95_e1s1mostah5ad)
   - [File-Dorsal_midbrain_cell_bin.h5ad](#file-dorsal_midbrain_cell_binh5ad)
@@ -69,170 +62,111 @@ After that you can install the necessary libraries:
 
 By typing the following command, we get a list of commands that we can use
 ```
-python3 spaGCN.py -h
+usage: Computational Genomics Project SpaGCN [-h] [--mode MODE [MODE ...]] [--histology_image HISTOLOGY_IMAGE] [--start START] [--pixels PIXELS PIXELS] [--arrays ARRAYS ARRAYS] [--raws RAWS RAWS RAWS RAWS]
+                                             [--read_obs READ_OBS] [--read_specific_obs READ_SPECIFIC_OBS READ_SPECIFIC_OBS] [--verbose {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
 
-usage: Computational Genomics Project SpaGCN [-h] [--convert_h5 CONVERT_H5 CONVERT_H5] [--integrate_gene INTEGRATE_GENE] [--histology_image HISTOLOGY_IMAGE]
-                                             [--spatial_domains SPATIAL_DOMAINS SPATIAL_DOMAINS] [--start START] [--identify_svg IDENTIFY_SVG IDENTIFY_SVG]
-                                             [--identify_meta IDENTIFY_META IDENTIFY_META] [--multiple_tissue MULTIPLE_TISSUE [MULTIPLE_TISSUE ...]]
-                                             [--pixels PIXELS PIXELS] [--arrays ARRAYS ARRAYS] [--raws RAWS RAWS RAWS RAWS] [--read_keys READ_KEYS]
-                                             [--read_specific_keys READ_SPECIFIC_KEYS READ_SPECIFIC_KEYS] [--mode MODE [MODE ...]]
-                                             [--verbose {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-
-This program does multiple things, it can convert h5 file to h5ad. It does Integrate gene expression and histology into a Graph, Spatial domain detection using
-SpaGCN, Identify SVGs, Identify Meta Gene and Multiple tissue sections analysis.
+This program does multiple things, it can convert h5 file to h5ad. It does Integrate gene expression and histology into a Graph, Spatial domain detection using SpaGCN, Identify SVGs, Identify Meta Gene and Multiple tissue
+sections analysis.
 
 options:
   -h, --help            show this help message and exit
-  --convert_h5 CONVERT_H5 CONVERT_H5
-                        Read original 10x_h5 data and save it to h5ad. The path to the h5 file is required.
-  --integrate_gene INTEGRATE_GENE
-                        Integrate gene expression into a Graph. The path to the h5ad file is required
-  --histology_image HISTOLOGY_IMAGE
-                        Integrate and histology into a Graph. The path to the .tif file is required. It is used in combination with command: integrate_gene.
-  --spatial_domains SPATIAL_DOMAINS SPATIAL_DOMAINS
-                        Spatial domain detection using SpaGCN. Paths to h5ad and csv files are required.
-  --start START         Start value for search l. It is used in combination with command: spatial_domains.
-  --identify_svg IDENTIFY_SVG IDENTIFY_SVG
-                        Identify SVGs. Paths to h5ad gene matrix and h5ad results files are required.
-  --identify_meta IDENTIFY_META IDENTIFY_META
-                        Identify Meta Gene. Paths to h5ad gene matrix and h5ad results files are required.
-  --multiple_tissue MULTIPLE_TISSUE [MULTIPLE_TISSUE ...]
-                        Multiple tissue sections analysis.Paths to h5ad first tissue, h5ad second tissue, tif first tissue and tif second tissue files are
-                        required.
-  --pixels PIXELS PIXELS
-                        The x and y coordinates for pixels are typed here. It is used in combination with commands: integrate_gene, spatial_domains, identify_meta.
-  --arrays ARRAYS ARRAYS
-                        The x and y coordinates for arrays are typed here. It is used in combination with commands: spatial_domains, identify_svg, identify_meta.
-  --raws RAWS RAWS RAWS RAWS
-                        The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: identify_svg,
-                        identify_meta.
-  --read_keys READ_KEYS
-                        Print all keys found in your file.
-  --read_specific_keys READ_SPECIFIC_KEYS READ_SPECIFIC_KEYS
-                        Print all specific keys found in your file.
   --mode MODE [MODE ...]
-                        Modes on which these programs work.(Mode 1: spatial domains & identify svg, Mode 2: identify meta, Mode 3: multiple tissue)
+                        Modes on which these programs work.(Mode 1: integrate gene & spatial domains(default), Mode 2: identify svg & identify meta, Mode 3: multiple tissue)
+  --histology_image HISTOLOGY_IMAGE
+                        Integrate and histology into a Graph. The path to the .tif file is required. It is used in combination with command: mode 1 or mode without number(default).
+  --start START         Start value for search l. It is used in combination with command: mode 1 or mode.
+  --pixels PIXELS PIXELS
+                        The x and y coordinates for pixels are typed here. It is used in combination with commands: mode, mode 1 and mode 2
+  --arrays ARRAYS ARRAYS
+                        The x and y coordinates for arrays are typed here. It is used in combination with commands: mode, mode 1
+  --raws RAWS RAWS RAWS RAWS
+                        The x array, y array, x pixel and y pixel coordinates for rows are typed here. It is used in combination with commands: mode 2
+  --read_obs READ_OBS   Print all keys found in your file.
+  --read_specific_obs READ_SPECIFIC_OBS READ_SPECIFIC_OBS
+                        Print all specific keys found in your file.
   --verbose {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                         Set the logging level
 ```
   
 ------------
 
+##### --mode
 
-##### --convert_h5
-This command reads original 10x_h5 data and save it to h5ad.
-This command accepts two parameters, the first parameter must be a file of type .h5 and the second parameter must be a file of type .txt with positions.
-`python3 spaGCN.py --convert_h5 ./path/to/file/h5 ./path/to/file/txt`
-Example:
-`python3 spaGCN.py --convert_h5 ./data/151673/expression_matrix.h5 ./data/151673/positions.txt`
-As a response we get the path to the h5ad file.
-> Done, your converted h5 file are located here -> ./data/expression_matrix.h5ad
-
-![-convert_h5](https://media.discordapp.net/attachments/962669952362496003/1106639329717125240/image.png?width=1101&height=60 "-convert_h5")
+This command represents the modes of our project, we have 3 modes:
 
 ------------
 
+##### mode 1(or mode without number) spatial domains and(this mode is also the default, if no mode number is defined)
 
-##### --integrate_gene
-This command  integrate gene expression into a Graph. 
 This command accepts one parameter, parameter must be a file of type .h5ad.
-`python3 spaGCN.py --integrate_gene ./path/to/file/h5ad`
+`python3 spaGCN.py -mode 1 ./path/to/file/h5ad`
+
 Example:
-`python3 spaGCN.py --integrate_gene ./data/151673/sample_data.h5ad`
+`python3 spaGCN.py --mode 1 ./data/151673/sample_data.h5ad`
+
 As a response we get the path to the csv file.
 > INFO:root:Done, your csv file is located here -> ./data/sample_data.csv
-
-![-integrate_gene](https://media.discordapp.net/attachments/962669952362496003/1111393840025321512/image.png?width=1353&height=108 "-integrate_gene")
-
-If we have a histology, we get the result and a picture like in this location -> [PHOTO](https://github.com/Master-Computational-Genomics-SpaGCN/SpaGCN/blob/master/results/sample_data.jpg "PHOTO")
 
 ###### --histology_image
-This command is only used in combination with -integrate_gene and accepts one parameter, parameter must be a file of type .tif or .png or .jpg.
-`python3 spaGCN.py --integrate_gene ./path/to/file/h5ad --histology_image ./path/to/histology/file`
+This command is only used in combination with -mode 1 or mode and accepts one parameter, parameter must be a file of type .tif or .png or .jpg.
+`python3 spaGCN.py --mode 1 ./path/to/file/h5ad --histology_image ./path/to/histology/file`
 Example
-`python3 spaGCN.py --integrate_gene ./data/151673/sample_data.h5ad --histology_image ./data/151673/histology.tif`
+`python3 spaGCN.py --mode 1 ./data/151673/sample_data.h5ad --histology_image ./data/151673/histology.tif`
 As a response we get the path to the csv file.
 > INFO:root:Done, your csv file is located here -> ./data/sample_data.csv
 
-![histology](https://media.discordapp.net/attachments/962669952362496003/1111394491648196648/image.png?width=1440&height=122 "histology")
+If we have a histology, we get the result and a picture like in this location -> [PHOTO](https://github.com/Master-Computational-Genomics-SpaGCN/spaGCN-presentation/blob/main/resultImg/sample_data.jpg "PHOTO")
 
 ###### --pixels
-This command is only used in combination with commands: integrate_gene, spatial_domains, identify_meta. And they accept two parameters representing the coordinates. If this command is not used, then the program randomly selects the coordinates and informs the user (you can see it in the previous two pictures).
-`python3 spaGCN.py --integrate_gene ./path/to/file/h5ad --histology_image ./path/to/histology/file --pixels x y`
+This command is only used in combination with commands: mode, mode 1, mode 2. And they accept two parameters representing the coordinates. If this command is not used, then the program randomly selects the coordinates and informs the user.
+`python3 spaGCN.py --mode 1/or2 ./path/to/file/h5ad --histology_image ./path/to/histology/file --pixels x y`
 Example:
-`python3 spaGCN.py --integrate_gene ./data/151673/sample_data.h5ad --histology_image ./data/151673/histology.tif --pixels x4 x5`
+`python3 spaGCN.py --mode 1 ./data/151673/sample_data.h5ad --histology_image ./data/151673/histology.tif --pixels x4 x5`
 
-As a response we get the path to the csv file.
-> INFO:root:Done, your csv file is located here -> ./data/sample_data.csv
-
-![pixels](https://media.discordapp.net/attachments/962669952362496003/1111394990011203584/image.png?width=1440&height=122 "pixels")
-
-------------
-
-##### --spatial_domains
-This command detects the spatial domain using SpaGCN. And accepts two parameters, the first parameter must be a file of type .h5ad and the second parameter must be a file of type .csv(The file we got as a result of executing the -integrate_gene command).
-`python3 spaGCN.py --spatial_domains ./path/to/file/h5ad ./path/to/file/csv` + 
-`--pixels x y`
 ###### --arrays
-This command is only used in combination with commands: spatial_domains, identify_cvg, identify_meta. And they accept two parameters representing the coordinates. If this command is not used, then the program randomly selects the coordinates and informs the user (you can see it in the first two pictures).
-`python3 spaGCN.py -spatial_domains ./path/to/file/h5ad ./path/to/file/csv` + 
-`-pixels x y` + `-arrays x y`
+This command is only used in combination with commands: mode, mode 1, mode 2. And they accept two parameters representing the coordinates. If this command is not used, then the program randomly selects the coordinates and informs the user (you can see it in the first two pictures).
+`python3 spaGCN.py -mode 1 ./path/to/file/h5ad --histology_image ./path/to/histology/file` +  `--pixels x y` + `--arrays x y`
 
 ###### --start
 An int type value is added here, where we determine the starting point for determining the value of l. The default value is 0.01.
-`python3 spaGCN.py --spatial_domains ./path/to/file/h5ad ./path/to/file/csv` + 
-`--pixels x y` + `--arrays x y` + `-start 0.01`
+`python3 spaGCN.py -mode 1/or2 ./path/to/file/h5ad --histology_image ./path/to/histology/file` +  `--pixels x y` + `--arrays x y` + `--start 0.01`
 
-Example:
-`python3 spaGCN.py --spatial_domains ./data/151673/sample_data.h5ad ./data/sample_data.csv --pixels x4 x5 --arrays x2 x3 --start 0.01`
 As a result, the result.h5ad file and images of Spatial Domains and Refined Spatial Domains are obtained.
 > INFO:root:Done, your result file and pictures are located here -> ./sample_results/sample_data_results.h5ad ./sample_results/sample_data_pred.png ./sample_results/sample_data_refined_pred.png
 
-![spatial_domains](https://media.discordapp.net/attachments/962669952362496003/1111397160467050506/image.png?width=1168&height=662 "spatial_domains")
+![mode_1](https://media.discordapp.net/attachments/962669952362496003/1113437577433853962/image.png?width=1173&height=662 "mode_1")
 
 Results:
-
-![spatial_domains_img](https://media.discordapp.net/attachments/962669952362496003/1106646230433546250/image.png?width=926&height=535 "spatial_domains_img")
+![mode_1_res](https://media.discordapp.net/attachments/962669952362496003/1113438021774221352/image.png?width=1138&height=662 "mode_1_res")
 
 ------------
 
-##### --identify_svg
-This command identifies svg based on results from --spatial_domains. And accepts two parameters, the first parameter must be a original file of type .h5ad and the second parameter must be a file of type .h5ad(The file we got as a result of executing the -spatial_domains command).
-`python3 spaGCN.py --identify_svg ./path/to/file/h5ad ./path/to/file/h5ad` + `--arrays x y`
+##### mode 2 -  identify svg and identify meta are executed
+This command identifies svg based on results from --mode 1. And accepts two parameters, the first parameter must be a original file of type .h5ad and the second parameter must be a file of type .h5ad(The file we got as a result of executing the --mode 1 command).
+`python3 spaGCN.py -mode 2 ./path/to/file/h5ad ./path/to/file/h5ad` +  `--pixels x y` + `--arrays x y`
 
 ###### --raws
-The x array, y array, x pixel and y pixel coordinates for rows are typed here for result.h5ad. It is used in combination with commands: identify_cvg, identify_meta.
-`python3 spaGCN.py --identify_svg ./path/to/file/h5ad ./path/to/file/h5ad` + `--arrays x y` + `--raws x1 y1 x2 y2`
+The x array, y array, x pixel and y pixel coordinates for rows are typed here for result.h5ad. It is used in combination with commands: --mode 2.
+`python3 spaGCN.py --mode 2 ./path/to/file/h5ad ./path/to/file/h5ad` +  `--pixels x y` + `--arrays x y` + `--raws x1 y1 x2 y2`
 Example:
-`python3 spaGCN.py --identify_svg ./data/151673/sample_data.h5ad ./sample_results/sample_data_results.h5ad --arrays x2 x3 --raws x2 x3 x4 x5`
+`python3 spaGCN.py --mode 2 ./data/151673/sample_data.h5ad ./sample_results/sample_data_results.h5ad --pixels x y --arrays x x --raws x2 x3 x4 x5`
 
 As a result we get svg images:
-> INFO:root:Done, your pictures are located here -> ./sample_results/TMSB10.png ./sample_results/PCP4.png  
+> INFO:root:Done, your pictures are located here -> ./sample_results/TMSB10.png ./sample_results/PCP4.png 
 
-![identify_csv](https://media.discordapp.net/attachments/962669952362496003/1111405041400676383/image.png?width=1440&height=421 "identify_csv")
+![mode_2](https://media.discordapp.net/attachments/962669952362496003/1113439282120622141/image.png?width=1280&height=662 "mode_2")
 
 Results:
 ![identify_csv_img](https://media.discordapp.net/attachments/962669952362496003/1106648702174634044/image.png?width=1005&height=535 "identify_csv_img")
 
 > Observed differences in obtaining results:
 Based on sample_data.h5ad and sample_data_results.h5ad only managed to find two svg('TMSB10', 'PCP4'). While 5 svg('CAMK2N1', 'ENC1', 'GPM6A', 'ARPP19', 'HPCAL1') were found in the tutorial description. Among the files for downloading the tutorial there is also a differently generated result.h5ad through which I get the same results as in the tutorial, so I come to the conclusion that some part of the algorithm has been changed in the meantime because it generates a different result.h5ad that leads to a different result. Below is a proof image that I get the same result as in the tutorial using their result.h5ad file.
-![identify_csv_problem](https://media.discordapp.net/attachments/962669952362496003/1106650686705369108/image.png?width=1101&height=330 "identify_csv_problem")
+![identify_csv_problem](https://media.discordapp.net/attachments/962669952362496003/1113441263233007629/image.png?width=1300&height=662 "identify_csv_problem")
 ![identify_csv_problem_img](https://media.discordapp.net/attachments/962669952362496003/1106651242194808944/image.png?width=883&height=535 "identify_csv_problem_img")
 
-------------
-
-##### --identify_meta
-It is completely identical to the previous command. And accepts two parameters, the first parameter must be a original file of type .h5ad and the second parameter must be a file of type .h5ad(The file we got as a result of executing the -spatial_domains command). There is only one difference, here the command pixels is added.
-`python3 spaGCN.py --identify_csv ./path/to/file/h5ad ./path/to/file/h5ad` + 
-`--arrays x y` + `--pixels x y` + `--raws x1 y1 x2 y2`
-
-Example:
-`python3 spaGCN.py --identify_meta ./data/151673/sample_data.h5ad ./sample_results/sample_data_results.h5ad --arrays x2 x3 --pixels x4 x5 --raws x2 x3 x4 x5`
-
+For identify meta ->
 As a result we get images:
 > INFO:root:Done, your pictures are located here -> ./sample_results/identify_meta_GFAP.png ./sample_results/meta_finally_gene.png
-
-![identify_meta](https://media.discordapp.net/attachments/962669952362496003/1111405449254801418/image.png?width=1440&height=458 "identify_meta")
 
 Results:
 ![identify_meta_img](https://media.discordapp.net/attachments/962669952362496003/1106653290743210014/image.png?width=1025&height=535 "identify_meta_img")
@@ -242,10 +176,9 @@ Results:
 
 ------------
 
-##### --multiple_tissue
-
+##### mode 3 - multiple tissue are executed
 This command analyzes multiple tissue sections. It receives 4 parameters, the first parameter is the h5ad of the first tissue, the second parameter is the h5ad of the second tissue, the third parameter is the tif of the first tissue and the fourth parameter is the tif of the second tissue. This command can also accept more than 2 tissues.
-`python3 spaGCN.py -multiple_tissue ./path/to/file/h5ad ./path/to/file/h5ad ./path/to/file/tif ./path/to/file/tif`
+`python3 spaGCN.py -mode 3 ./paths/to/files/h5ad ./paths/to/files/tif...`
 
 Example:
 `python3 spaGCN.py --multiple_tissue ./data/Mouse_brain/MA1.h5ad ./data/Mouse_brain/MP1.h5ad ./data/Mouse_brain/MA1_histology.tif ./data/Mouse_brain/MP1_histology.tif`
@@ -253,24 +186,11 @@ Example:
 As a result we get pictures:
 > INFO:root:Done, your picture are located here -> ./sample_results/muti_sections_domains_MA1.png
 
-![multiple_tissue](https://media.discordapp.net/attachments/962669952362496003/1111406037413662811/image.png?width=1440&height=385 "multiple_tissue")
+![mode_3](https://media.discordapp.net/attachments/962669952362496003/1113441979217485924/image.png?width=1440&height=318 "mode_3")
 
 Results:
 
 ![multiple_tissue_img](https://media.discordapp.net/attachments/962669952362496003/1106659149338661025/image.png?width=911&height=533 "multiple_tissue_img")
-
-------------
-
-##### --mode
-
-This command represents the modes of our project, we have 3 modes:
-mode 1 - spatial domains and identify svg are executed (this mode is also the default, if no mode number is defined)
-`python3 spaGCN.py -mode 1 ./path/to/file/h5ad ./path/to/file/csv` + `xarray yarray` + `xpixel ypixel` + `start` or
-`python3 spaGCN.py -mode ./path/to/file/h5ad ./path/to/file/csv` + `xarray yarray` + `xpixel ypixel` + `start`
-mode 2 - identify meta is executed
-`python3 spaGCN.py -mode 2 ./path/to/file/h5ad ./path/to/file/csv` + `xarray yarray` + `xpixel ypixel`
-mode 3 - multiple tissue are executed
-`python3 spaGCN.py -mode 3 ./paths/to/files/h5ad ./paths/to/files/tif`
 
 ------------
 
@@ -280,13 +200,13 @@ The --verbose command is to provide a command-line option for setting the loggin
 
 ------------
 
-##### --read_keys
+##### --read_obs
 If you don't know the keys that are in your h5ad file, you can see them using this command. It accepts one parameter, which is a file of type h5ad. That way you can choose coordinates for pixels, arrays and raws.
 
 
 ------------
 
-##### --read_specific_keys
+##### --read_specific_obs
 It does the same as the previous command except that here goes another parameter which is of type string where we try to narrow down the selection of keys to select.
 
 ------------
@@ -302,7 +222,7 @@ And
 `docker run --rm -it spagcn:latest`
 add h5ad file/files to your docker container
 `docker cp -r /path/to/my-folder/my-file my-container:/app/my-folder`
-![docker](https://media.discordapp.net/attachments/962669952362496003/1106664137032994968/image.png?width=853&height=535 "docker")
+![docker](https://media.discordapp.net/attachments/962669952362496003/1113449620564082858/image.png?width=1185&height=662 "docker")
 
 The link to the DockerHub image is here ->[DockerHub SpaGCN](https://hub.docker.com/r/aleksa1902/spagcn/tags "DockerHub SpaGCN")
 
