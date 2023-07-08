@@ -14,9 +14,11 @@ from . models import *
 
 
 class SpaGCN(object):
-    def __init__(self):
+    def __init__(self, dtype=torch.float32, device="cpu"):
         super(SpaGCN, self).__init__()
         self.l=None
+        self.device = device
+        self.dtype = dtype
 
     def set_l(self, l):
         self.l=l
@@ -58,7 +60,7 @@ class SpaGCN(object):
             raise ValueError('l should not be set before fitting the model!')
         adj_exp=np.exp(-1*(adj**2)/(2*(self.l**2)))
         #----------Train model----------
-        self.model=simple_GC_DEC(embed.shape[1],embed.shape[1])
+        self.model=simple_GC_DEC(embed.shape[1],embed.shape[1],dtype=self.dtype,device=self.device)
         self.model.fit(embed,adj_exp,lr=self.lr,max_epochs=self.max_epochs,weight_decay=self.weight_decay,opt=self.opt,init_spa=self.init_spa,init=self.init,n_neighbors=self.n_neighbors,n_clusters=self.n_clusters,res=self.res, tol=self.tol)
         self.embed=embed
         self.adj_exp=adj_exp
@@ -67,15 +69,16 @@ class SpaGCN(object):
         z,q=self.model.predict(self.embed,self.adj_exp)
         y_pred = torch.argmax(q, dim=1).data.cpu().numpy()
         # Max probability plot
-        prob=q.detach().numpy()
+        prob=q.cpu().detach().numpy()
         return y_pred, prob
 
 
 
 class multiSpaGCN(object):
-    def __init__(self):
+    def __init__(self, device="cpu"):
         super(multiSpaGCN, self).__init__()
         self.l=None
+        self.device = device
 
     def train(self,adata_list,adj_list, l_list,
             num_pcs=50, 
@@ -122,7 +125,7 @@ class multiSpaGCN(object):
             pca.fit(self.adata_all.X)
             embed=pca.transform(self.adata_all.X)
         #----------Train model----------
-        self.model=simple_GC_DEC(embed.shape[1],embed.shape[1])
+        self.model=simple_GC_DEC(embed.shape[1],embed.shape[1],dtype=self.dtype,device=self.device)
         self.model.fit(embed,adj_exp_all,lr=self.lr,max_epochs=self.max_epochs,weight_decay=self.weight_decay,opt=self.opt,init_spa=self.init_spa,init=self.init,n_neighbors=self.n_neighbors,n_clusters=self.n_clusters,res=self.res, tol=self.tol)
         self.embed=embed
         self.adj_exp=adj_exp_all
@@ -131,6 +134,6 @@ class multiSpaGCN(object):
         z,q=self.model.predict(self.embed,self.adj_exp)
         y_pred = torch.argmax(q, dim=1).data.cpu().numpy()
         # Max probability plot
-        prob=q.detach().numpy()
+        prob=q.cpu().detach().numpy()
         return y_pred, prob
 
