@@ -14,7 +14,6 @@ setuptools.setup(
     url="https://github.com/jianhuupenn/SpaGCN",
     packages=setuptools.find_packages(),
     install_requires=["python-igraph","torch","pandas","numpy","scipy","scanpy","anndata","louvain","scikit-learn", "numba"],
-    #install_requires=[],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
