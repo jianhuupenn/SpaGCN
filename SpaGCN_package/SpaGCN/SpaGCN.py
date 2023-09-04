@@ -104,7 +104,7 @@ class multiSpaGCN(object):
         num_spots=0
         for i in adata_list: 
             num_spots+=i.shape[0]
-        adj_exp_all=np.empty((num_spots, num_spots))
+        adj_exp_all=np.zeros((num_spots, num_spots))
         start=0
         for i in range(len(l_list)):
             l=l_list[i]
