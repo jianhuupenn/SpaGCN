@@ -1,0 +1,2 @@
+SpaGCN==1.2.7
+opencv-python==4.5.4.58
