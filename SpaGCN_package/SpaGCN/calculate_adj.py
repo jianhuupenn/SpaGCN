@@ -46,7 +46,7 @@ def calculate_adj_matrix(x, y, x_pixel=None, y_pixel=None, image=None, beta=49, 
 	if histology:
 		assert (x_pixel is not None) & (x_pixel is not None) & (image is not None)
 		assert (len(x)==len(x_pixel)) & (len(y)==len(y_pixel))
-		print("Calculateing adj matrix using histology image...")
+		print("Calculating adj matrix using histology image...")
 		#beta to control the range of neighbourhood when calculate grey vale for one spot
 		#alpha to control the color scale
 		beta_half=round(beta/2)
@@ -73,7 +73,7 @@ def calculate_adj_matrix(x, y, x_pixel=None, y_pixel=None, image=None, beta=49, 
 		print("Var of x,y,z = ", np.var(x),np.var(y),np.var(z))
 		X=np.array([x, y, z]).T.astype(np.float32)
 	else:
-		print("Calculateing adj matrix using xy only...")
+		print("Calculating adj matrix using xy only...")
 		X=np.array([x, y]).T.astype(np.float32)
 	return pairwise_distance(X)
 
@@ -84,7 +84,7 @@ def calculate_adj_matrix(x, y, x_pixel=None, y_pixel=None, image=None, beta=49, 
 	if histology:
 		assert (x_pixel is not None) & (x_pixel is not None) & (image is not None)
 		assert (len(x)==len(x_pixel)) & (len(y)==len(y_pixel))
-		print("Calculateing adj matrix using histology image...")
+		print("Calculating adj matrix using histology image...")
 		#beta to control the range of neighbourhood when calculate grey vale for one spot
 		#alpha to control the color scale
 		beta_half=round(beta/2)
@@ -116,7 +116,7 @@ def calculate_adj_matrix(x, y, x_pixel=None, y_pixel=None, image=None, beta=49, 
 				x1,y1,z1,x2,y2,z2=x[i],y[i],z[i],x[j],y[j],z[j]
 				adj[i][j]=distance((x1,y1,z1),(x2,y2,z2))
 	else:
-		print("Calculateing adj matrix using xy only...")
+		print("Calculating adj matrix using xy only...")
 		for i in range(len(x)):
 			if i%50==0:
 				print("Calculating spot", i)
