@@ -185,8 +185,8 @@ def rank_genes_groups(input_adata, target_cluster,nbr_list, label_col, adj_nbr=T
         adata=input_adata.copy()
     adata.var_names_make_unique()
     adata.obs["target"]=((adata.obs[label_col]==target_cluster)*1).astype('category')
-    sc.tl.rank_genes_groups(adata, groupby="target",reference="rest", n_genes=adata.shape[1],method='wilcoxon')
-    pvals_adj=[i[0] for i in adata.uns['rank_genes_groups']["pvals_adj"]]
+    sc.tl.rank_genes_groups(adata, use_raw = False, groupby="target",reference="rest", n_genes=adata.shape[1],method='wilcoxon')
+    pvals_adj=[i[1] for i in adata.uns['rank_genes_groups']["pvals_adj"]]
     genes=[i[1] for i in adata.uns['rank_genes_groups']["names"]]
     if issparse(adata.X):
         obs_tidy=pd.DataFrame(adata.X.A)
