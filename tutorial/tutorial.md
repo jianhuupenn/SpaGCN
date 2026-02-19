@@ -62,7 +62,7 @@ If you do not have Python3.5 or Python3.6 installed, consider installing Anacond
 
 ```python
 #create an environment called SpaGCN
-conda create -n SpaGCN python=3.7.9
+conda create -n SpaGCN python=3.8.5
 #activate your environment 
 conda activate SpaGCN
 git clone https://github.com/jianhuupenn/SpaGCN
