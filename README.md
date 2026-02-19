@@ -14,12 +14,11 @@ For thorough details, see the preprint: [Biorxiv](https://www.biorxiv.org/conten
 
 ## Usage
 
-The [**SpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementation of a garph convolutional network for spatial transcriptomics. With SpaGCN, you can:
-
+The [**SpaGCN**](https://github.com/jianhuupenn/SpaGCN) package is an implementation of a graph convolutional network for spatial transcriptomics. With SpaGCN, you can:
 - Preprocess spatial transcriptomics data from various formats.
 - Build a graph convolutional network with deep iterative clustering algorithm to identify spatial domains
-- identify spatially variable genes for each spatial domain.
-- Create mete genes to mark each spatial domains
+- Identify spatially variable genes for each spatial domain.
+- Create meta genes to mark each spatial domains
 
 
 ## Tutorial
@@ -39,9 +38,9 @@ https://drive.google.com/drive/folders/1zten54vkjorp26T4iD0ApQGa9ut5eY42?usp=sha
 Please install Jupyter in order to open this notebook.
 
 #### New Features! EZ Mode SpaGCN now available.
-For users who are new to Python, we provide an Easy Mode SpaGCN. The parameter setting and intermedium steps are simplified.
+For users who are new to Python, we provide an Easy Mode SpaGCN. The parameter setting and intermediate steps are simplified.
 <br>
-Important Notes: This easy mode ONLY have basic functions and is ONLY for analysis purpose.
+Important Notes: This easy mode ONLY has basic functions and is ONLY for analysis purpose.
 <br>
 For method comparison, debugging, customizing parameters, and checking intermedium outputs, please refer to the detailed tutorial above.
 <br>
@@ -77,7 +76,7 @@ Environment 3:
 
 ## Contributing
 
-Souce code: [Github](https://github.com/jianhuupenn/SpaGCN)  
+Source code: [Github](https://github.com/jianhuupenn/SpaGCN)  
 
 We are continuing adding new features. Bug reports or feature requests are welcome. 
 
