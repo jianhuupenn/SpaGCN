@@ -3,20 +3,20 @@ from . util import *
 from . calculate_moran_I import *
 from . calculate_adj import *
 
-def detect_spatial_domains_ez_mode(adata, img, x_array, y_array, x_pixel, y_pixel, n_clusters, histology=True, s=1, b=49, p=0.5, r_seed=100, t_seed=100, n_seed=100):
+def detect_spatial_domains_ez_mode(adata, img, x_array, y_array, x_pixel, y_pixel, n_clusters, histology=True, s=1, b=49, p=0.5, r_seed=100, t_seed=100, n_seed=100, *, device="cpu"):
 	adj=calculate_adj_matrix(x=x_pixel,y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=img, beta=b, alpha=s, histology=histology)
 	prefilter_genes(adata,min_cells=3) # avoiding all genes are zeros
 	prefilter_specialgenes(adata)
 	sc.pp.normalize_per_cell(adata)
 	sc.pp.log1p(adata)
 	l=search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
-	res=search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed)
+	res=search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed, device=device)
 	clf=SpaGCN()
 	clf.set_l(l)
 	random.seed(r_seed)
 	torch.manual_seed(t_seed)
 	np.random.seed(n_seed)
-	clf.train(adata,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
+	clf.train(adata,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200, device=device)
 	y_pred, prob=clf.predict()
 	return y_pred
 

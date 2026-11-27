@@ -57,9 +57,13 @@ def find_l(p, adj, start=0.5, end=2,sep=0.01, tol=0.01):
     print("l not found, try bigger range or smaller sep!")
 
 def search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100):
+    return _search_l(p, lambda l: calculate_p(adj, l), start, end, tol, max_run)
+
+
+def _search_l(p, evaluate, start, end, tol, max_run):
     run=0
-    p_low=calculate_p(adj, start)
-    p_high=calculate_p(adj, end)
+    p_low=evaluate(start)
+    p_high=evaluate(end)
     if p_low>p+tol:
         print("l not found, try smaller start point.")
         return None
@@ -79,7 +83,7 @@ def search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100):
             print("Exact l not found, closest values are:\n"+"l="+str(start)+": "+"p="+str(p_low)+"\nl="+str(end)+": "+"p="+str(p_high))
             return None
         mid=(start+end)/2
-        p_mid=calculate_p(adj, mid)
+        p_mid=evaluate(mid)
         if np.abs(p_mid-p)<=tol:
             print("recommended l = ", str(mid))
             return mid
@@ -342,29 +346,30 @@ def find_meta_gene(input_adata,
     return meta_name, adata.obs["meta"].tolist()
 
 
-def search_res(adata, adj, l, target_num, start=0.4, step=0.1, tol=5e-3, lr=0.05, max_epochs=10, r_seed=100, t_seed=100, n_seed=100, max_run=10):
-    random.seed(r_seed)
-    torch.manual_seed(t_seed)
-    np.random.seed(n_seed)
-    res=start
-    print("Start at res = ", res, "step = ", step)
-    clf=SpaGCN()
-    clf.set_l(l)
-    clf.train(adata,adj,init_spa=True,init="louvain",res=res, tol=tol, lr=lr, max_epochs=max_epochs)
-    y_pred, _=clf.predict()
-    old_num=len(set(y_pred))
-    print("Res = ", res, "Num of clusters = ", old_num)
-    run=0
-    while old_num!=target_num:
+def search_res(adata, adj, l, target_num, start=0.4, step=0.1, tol=5e-3, lr=0.05, max_epochs=10, r_seed=100, t_seed=100, n_seed=100, max_run=10, *, device="cpu"):
+    def evaluate(resolution):
         random.seed(r_seed)
         torch.manual_seed(t_seed)
         np.random.seed(n_seed)
-        old_sign=1 if (old_num<target_num) else -1
         clf=SpaGCN()
         clf.set_l(l)
-        clf.train(adata,adj,init_spa=True,init="louvain",res=res+step*old_sign, tol=tol, lr=lr, max_epochs=max_epochs)
-        y_pred, _=clf.predict()
-        new_num=len(set(y_pred))
+        clf.train(adata, adj, init_spa=True, init="louvain", res=resolution,
+                  tol=tol, lr=lr, max_epochs=max_epochs, device=device)
+        y_pred, _ = clf.predict()
+        return len(set(y_pred))
+
+    return _search_resolution(target_num, evaluate, start, step, max_run)
+
+
+def _search_resolution(target_num, evaluate, start, step, max_run):
+    res=start
+    print("Start at res = ", res, "step = ", step)
+    old_num=evaluate(res)
+    print("Res = ", res, "Num of clusters = ", old_num)
+    run=0
+    while old_num!=target_num:
+        old_sign=1 if (old_num<target_num) else -1
+        new_num=evaluate(res+step*old_sign)
         print("Res = ", res+step*old_sign, "Num of clusters = ", new_num)
         if new_num==target_num:
             res=res+step*old_sign
